@@ -9,7 +9,8 @@ import { DeleteActivityDialog } from "./DeleteActivityDialog";
 import { ActivityEmptyState } from "./ActivityEmptyState";
 import { ActivityStatsBanner } from "./ActivityStatsBanner";
 import { Button } from "@/components/ui/Button";
-import { Calendar, Plus, Search, Sparkles } from "lucide-react";
+import { FeatureGuideModal } from "@/components/ui/FeatureGuideModal";
+import { Calendar, Plus, Search } from "lucide-react";
 
 export interface ActivityTimelineProps {
   initialActivities: ActivityDTO[];
@@ -98,16 +99,17 @@ export function ActivityTimeline({
 
     sortedKeys.forEach((key) => {
       const dateObj = new Date(`${key}T00:00:00`);
-      let label = dateObj.toLocaleDateString(undefined, {
-        weekday: "long",
+      let label = dateObj.toLocaleDateString("en-US", {
+        weekday: "short",
         month: "short",
         day: "numeric",
+        year: "numeric",
       });
 
       if (dateObj.toDateString() === todayStr) {
-        label = "Today";
+        label = `Today, ${dateObj.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
       } else if (dateObj.toDateString() === yesterdayStr) {
-        label = "Yesterday";
+        label = `Yesterday, ${dateObj.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
       }
 
       groups.push({
@@ -120,12 +122,12 @@ export function ActivityTimeline({
     return groups;
   }, [filteredActivities]);
 
-  const handleEdit = (act: ActivityDTO) => {
-    setEditingActivity(act);
+  const handleEdit = (activity: ActivityDTO) => {
+    setEditingActivity(activity);
   };
 
-  const handleDelete = (act: ActivityDTO) => {
-    setDeletingActivity(act);
+  const handleDelete = (activity: ActivityDTO) => {
+    setDeletingActivity(activity);
   };
 
   const handleMutationSuccess = () => {
@@ -134,43 +136,34 @@ export function ActivityTimeline({
 
   return (
     <div className="space-y-6">
-      {/* Stats Summary */}
+      {/* Aggregate Stats Summary */}
       {!hideStats && <ActivityStatsBanner activities={activities} />}
 
-      {/* Control Bar: Filters, Search & Log Activity Trigger */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-1">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Timeline</span>
-            <span className="ml-1 px-1.5 py-0.2 rounded-full bg-slate-800 text-slate-400 text-[10px]">
-              {activities.length}
-            </span>
-          </div>
+      {/* Control Bar: Search, Section & Tag Filter, How-To Guide, Log Activity Button */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-1">
+        {/* Search */}
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search activities or tags..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-xl glass-input pl-10 pr-4 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none"
+          />
         </div>
 
+        {/* Dropdowns & Log Button */}
         <div className="flex flex-wrap items-center gap-2.5">
-          {/* Search */}
-          <div className="relative min-w-[160px] flex-1 sm:flex-initial">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search activities..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-xl glass-input pl-9 pr-3 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none"
-            />
-          </div>
-
-          {/* Section Filter (if not inside single section view) */}
+          {/* Section Filter Dropdown */}
           {!defaultSectionId && sections.length > 0 && (
             <select
               value={sectionFilter}
               onChange={(e) => setSectionFilter(e.target.value)}
-              className="rounded-xl glass-input px-3 py-1.5 text-xs text-slate-200 bg-slate-900 focus:outline-none cursor-pointer"
+              className="rounded-xl glass-input px-3 py-2 text-xs text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 focus:outline-none cursor-pointer border border-slate-200 dark:border-slate-800"
             >
-              <option value="all">All Domains</option>
-              <option value="none">General</option>
+              <option value="all">All Sections</option>
+              <option value="none">General (No Section)</option>
               {sections.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -179,12 +172,12 @@ export function ActivityTimeline({
             </select>
           )}
 
-          {/* Tag Filter */}
+          {/* Tag Filter Dropdown */}
           {allTags.length > 0 && (
             <select
               value={tagFilter}
               onChange={(e) => setTagFilter(e.target.value)}
-              className="rounded-xl glass-input px-3 py-1.5 text-xs text-slate-200 bg-slate-900 focus:outline-none cursor-pointer"
+              className="rounded-xl glass-input px-3 py-2 text-xs text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 focus:outline-none cursor-pointer border border-slate-200 dark:border-slate-800"
             >
               <option value="all">All Tags</option>
               {allTags.map((tag) => (
@@ -195,38 +188,69 @@ export function ActivityTimeline({
             </select>
           )}
 
+          {/* Activity How-To Guide */}
+          <FeatureGuideModal
+            featureName="Activities"
+            title="How Activities & Focus Logging Work"
+            subtitle="Track focused sessions, deep work, and celebrate automated accomplishments."
+            steps={[
+              {
+                title: "Log Manual Focus Sessions",
+                description: "Record deep work blocks, coding sprints, reading, or workout sessions with duration in minutes.",
+                example: "Title: Algorithmic Problem Solving | Duration: 45 mins | Tags: #dsa, #leetcode",
+              },
+              {
+                title: "Automated Task Sync",
+                description: "When you complete a task on your tasks board, Progress Tracker automatically logs an activity entry here!",
+              },
+              {
+                title: "Tag Clouds & Filtering",
+                description: "Use tags like #deepwork, #writing, or #fitness to aggregate your time spent across specific disciplines in analytics.",
+              },
+              {
+                title: "Calendar & Focus Analytics",
+                description: "Every recorded minute flows into your daily focus totals and weekly productivity velocity charts.",
+              },
+            ]}
+            tip="Logging activity duration helps you see exact focus time breakdowns across your 7-day and 30-day analytics charts."
+          />
+
           {/* Log Activity Button */}
           <Button
             onClick={() => setIsLogOpen(true)}
-            size="sm"
-            className="gap-1.5 shrink-0 shadow-md shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-500"
+            size="md"
+            className="gap-2 shrink-0 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold shadow-md shadow-emerald-500/20"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-4 h-4" />
             <span>Log Activity</span>
           </Button>
         </div>
       </div>
 
-      {/* Chronological Timeline Container */}
-      {activities.length === 0 ? (
-        <ActivityEmptyState onLog={() => setIsLogOpen(true)} />
-      ) : groupedActivities.length === 0 ? (
-        <ActivityEmptyState onLog={() => setIsLogOpen(true)} filtered />
+      {/* Activities Timeline Groups / Empty State */}
+      {filteredActivities.length === 0 ? (
+        <ActivityEmptyState
+          filtered={sectionFilter !== "all" || tagFilter !== "all" || searchQuery.trim().length > 0}
+          onLog={() => setIsLogOpen(true)}
+        />
       ) : (
-        <div className="relative pl-2 sm:pl-4 space-y-8 before:absolute before:left-3.5 sm:before:left-5.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-slate-800/80">
+        <div className="space-y-8">
           {groupedActivities.map((group) => (
-            <div key={group.date} className="relative space-y-3">
-              {/* Date Header Tag */}
-              <div className="relative z-10 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-slate-850 text-xs font-bold text-slate-300 shadow-md">
-                <Calendar className="w-3 h-3 text-indigo-400" />
-                <span>{group.label}</span>
-                <span className="text-[10px] text-slate-500 font-normal ml-1">
-                  ({group.items.length})
+            <div key={group.date} className="space-y-3">
+              {/* Day Header Marker */}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-xs">
+                  <Calendar className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
+                  <span>{group.label}</span>
+                </div>
+                <div className="h-[1px] flex-1 bg-slate-200 dark:bg-slate-800" />
+                <span className="text-[11px] font-medium text-slate-500">
+                  {group.items.length} {group.items.length === 1 ? "entry" : "entries"}
                 </span>
               </div>
 
-              {/* Day's Activities */}
-              <div className="space-y-3 pt-1">
+              {/* Day Activities Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {group.items.map((act) => (
                   <ActivityCard
                     key={act.id}
@@ -247,24 +271,33 @@ export function ActivityTimeline({
         onClose={() => setIsLogOpen(false)}
         sections={sections}
         defaultSectionId={defaultSectionId}
-        onSuccess={handleMutationSuccess}
+        onSuccess={() => {
+          setIsLogOpen(false);
+          handleMutationSuccess();
+        }}
       />
 
       {/* Edit Activity Modal */}
       <ActivityModal
         isOpen={!!editingActivity}
+        onClose={() => setEditingActivity(null)}
         activity={editingActivity}
         sections={sections}
-        onClose={() => setEditingActivity(null)}
-        onSuccess={handleMutationSuccess}
+        onSuccess={() => {
+          setEditingActivity(null);
+          handleMutationSuccess();
+        }}
       />
 
-      {/* Delete Dialog */}
+      {/* Delete Confirmation Dialog */}
       <DeleteActivityDialog
         isOpen={!!deletingActivity}
         activity={deletingActivity}
         onClose={() => setDeletingActivity(null)}
-        onSuccess={handleMutationSuccess}
+        onSuccess={() => {
+          setDeletingActivity(null);
+          handleMutationSuccess();
+        }}
       />
     </div>
   );

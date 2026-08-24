@@ -3,6 +3,7 @@
 import * as React from "react";
 import { DashboardDataDTO, SectionDTO } from "@/types";
 import { DashboardHero } from "./DashboardHero";
+import { QuickStartGuide } from "./QuickStartGuide";
 import { WeeklyActivityChart } from "./WeeklyActivityChart";
 import { TodayTasksWidget } from "./TodayTasksWidget";
 import { TodayHabitsWidget } from "./TodayHabitsWidget";
@@ -22,23 +23,32 @@ export function DashboardView({ userName, data, sections }: DashboardViewProps) 
       {/* 1. Hero Welcome & Daily Completion Gauge */}
       <DashboardHero userName={userName} data={data} />
 
-      {/* 2. 7-Day Weekly Activity & Focus Chart */}
+      {/* 2. Interactive Quick-Start & Guidance Guide */}
+      <QuickStartGuide
+        sectionsCount={sections.length}
+        tasksCount={data.todayTasks.length}
+        habitsCount={data.activeHabits.length}
+        goalsCount={data.goals.length}
+        activitiesCount={data.recentActivities.length}
+      />
+
+      {/* 3. 7-Day Weekly Activity & Focus Chart */}
       <WeeklyActivityChart metrics={data.weeklyMetrics} />
 
-      {/* 3. Today's Tasks and Today's Habits Side-by-Side */}
+      {/* 4. Today's Tasks and Today's Habits Side-by-Side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <TodayTasksWidget tasks={data.todayTasks} sections={sections} />
         <TodayHabitsWidget habits={data.activeHabits} sections={sections} />
       </div>
 
-      {/* 4. Goals & Long-Term Targets */}
+      {/* 5. Goals & Long-Term Targets */}
       <GoalsWidget goals={data.goals} sections={sections} />
 
-      {/* 5. Recent Activity Feed */}
+      {/* 6. Recent Activity Feed */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-800/80 pb-3">
-          <Sparkles className="w-5 h-5 text-emerald-400" />
-          <h2 className="text-xl font-bold text-white tracking-tight">
+        <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800/80 pb-3">
+          <Sparkles className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
             Recent Activity Feed
           </h2>
         </div>

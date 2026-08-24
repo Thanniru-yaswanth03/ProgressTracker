@@ -8,6 +8,7 @@ import { SectionModal } from "./SectionModal";
 import { DeleteSectionDialog } from "./DeleteSectionDialog";
 import { SectionEmptyState } from "./SectionEmptyState";
 import { Button } from "@/components/ui/Button";
+import { FeatureGuideModal } from "@/components/ui/FeatureGuideModal";
 import { FolderPlus, Search } from "lucide-react";
 
 export interface SectionListProps {
@@ -63,27 +64,55 @@ export function SectionList({ initialSections }: SectionListProps) {
             placeholder="Search sections..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl glass-input pl-10 pr-4 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none"
+            className="w-full rounded-xl glass-input pl-10 pr-4 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none"
           />
         </div>
 
-        {/* Create Button */}
-        <Button
-          onClick={() => setIsCreateOpen(true)}
-          size="md"
-          className="gap-2 shrink-0 shadow-lg shadow-indigo-500/20"
-        >
-          <FolderPlus className="w-4 h-4" />
-          <span>New Section</span>
-        </Button>
+        {/* Action Controls: Guide & Create Button */}
+        <div className="flex items-center gap-3">
+          <FeatureGuideModal
+            featureName="Sections"
+            title="How Sections Work"
+            subtitle="Categorize your tasks, habits, and focus logs into organized project workspaces."
+            steps={[
+              {
+                title: "Create Categories for Life Domains",
+                description: "Group your priorities into areas like 'Software Engineering', 'Fitness & Health', or 'Personal Growth'.",
+                example: "Work Projects, Academic Research, Marathon Prep",
+              },
+              {
+                title: "Custom Accent Colors",
+                description: "Assign unique colors to each section to easily spot related tasks across your dashboard and calendar.",
+              },
+              {
+                title: "Dedicated Section Drill-Downs",
+                description: "Click any section card to view its dedicated hub showing only tasks, habits, and focus time for that project.",
+              },
+              {
+                title: "Safe Deletion",
+                description: "Deleting a section preserves all underlying tasks and habits by safely reassigning them to 'General'.",
+              },
+            ]}
+            tip="Create 3-5 high-level sections for maximum clarity without overcomplicating your workflow."
+          />
+
+          <Button
+            onClick={() => setIsCreateOpen(true)}
+            size="md"
+            className="gap-2 shrink-0 shadow-lg shadow-indigo-500/20"
+          >
+            <FolderPlus className="w-4 h-4" />
+            <span>New Section</span>
+          </Button>
+        </div>
       </div>
 
       {/* Grid or Empty State */}
       {sections.length === 0 ? (
         <SectionEmptyState onCreate={() => setIsCreateOpen(true)} />
       ) : filteredSections.length === 0 ? (
-        <div className="text-center py-12 rounded-2xl glass-panel border border-slate-800/80">
-          <p className="text-sm text-slate-400">
+        <div className="text-center py-12 rounded-2xl glass-panel border border-slate-200 dark:border-slate-800/80">
+          <p className="text-sm text-slate-600 dark:text-slate-400">
             No sections match &ldquo;{searchQuery}&rdquo;
           </p>
         </div>
@@ -100,27 +129,36 @@ export function SectionList({ initialSections }: SectionListProps) {
         </div>
       )}
 
-      {/* Create Modal */}
+      {/* Create Section Modal */}
       <SectionModal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
-        onSuccess={handleMutationSuccess}
+        onSuccess={() => {
+          setIsCreateOpen(false);
+          handleMutationSuccess();
+        }}
       />
 
-      {/* Edit / Rename Modal */}
+      {/* Edit Section Modal */}
       <SectionModal
         isOpen={!!editingSection}
-        section={editingSection}
         onClose={() => setEditingSection(null)}
-        onSuccess={handleMutationSuccess}
+        section={editingSection}
+        onSuccess={() => {
+          setEditingSection(null);
+          handleMutationSuccess();
+        }}
       />
 
-      {/* Delete Dialog */}
+      {/* Delete Confirmation Dialog */}
       <DeleteSectionDialog
         isOpen={!!deletingSection}
         section={deletingSection}
         onClose={() => setDeletingSection(null)}
-        onSuccess={handleMutationSuccess}
+        onSuccess={() => {
+          setDeletingSection(null);
+          handleMutationSuccess();
+        }}
       />
     </div>
   );

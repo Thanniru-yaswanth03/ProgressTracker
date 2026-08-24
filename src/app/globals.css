@@ -2,6 +2,26 @@
 
 @layer base {
   :root {
+    --background: #f8fafc;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --primary: #6366f1;
+    --primary-foreground: #ffffff;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #334155;
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+    --accent: #0284c7;
+    --accent-foreground: #0f172a;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e2e8f0;
+    --input: #ffffff;
+    --ring: #6366f1;
+  }
+
+  .dark {
     --background: #090d16;
     --foreground: #f1f5f9;
     --card: rgba(15, 23, 42, 0.75);
@@ -27,31 +47,48 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     min-height: 100vh;
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
-/* Glassmorphism & Glow utilities */
+/* Adaptive Glassmorphism & Card styling */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 .glass-input {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.dark .glass-input {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #f1f5f9;
+}
+
 .glass-input:focus {
-  background: rgba(15, 23, 42, 0.85);
   border-color: rgba(99, 102, 241, 0.8);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
 }
 
 .glow-gradient {
+  background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.1) 0%, rgba(56, 189, 248, 0.04) 50%, transparent 80%);
+}
+
+.dark .glow-gradient {
   background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, rgba(56, 189, 248, 0.05) 50%, transparent 80%);
 }
 
@@ -66,12 +103,12 @@
   background: linear-gradient(90deg, #6366f1, #38bdf8);
   border-radius: inherit;
   z-index: -1;
-  opacity: 0.6;
+  opacity: 0.5;
   filter: blur(4px);
   transition: opacity 0.3s ease;
 }
 
 .glow-pill:hover::before {
-  opacity: 1;
+  opacity: 0.9;
   filter: blur(8px);
 }

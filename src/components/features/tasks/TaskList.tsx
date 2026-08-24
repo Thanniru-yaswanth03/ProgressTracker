@@ -9,6 +9,7 @@ import { DeleteTaskDialog } from "./DeleteTaskDialog";
 import { TaskEmptyState } from "./TaskEmptyState";
 import { TaskStatsHeader } from "./TaskStatsHeader";
 import { Button } from "@/components/ui/Button";
+import { FeatureGuideModal } from "@/components/ui/FeatureGuideModal";
 import { Plus, Search } from "lucide-react";
 
 export interface TaskListProps {
@@ -92,14 +93,14 @@ export function TaskList({
       {/* Control Bar: Status Tabs, Section / Priority Filter, Search & Create */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-2">
         {/* Status Tabs */}
-        <div className="flex items-center p-1 rounded-xl bg-slate-900/90 border border-slate-800 self-start">
+        <div className="flex items-center p-1 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-none self-start">
           <button
             type="button"
             onClick={() => setStatusFilter("all")}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               statusFilter === "all"
                 ? "bg-indigo-600 text-white shadow-sm"
-                : "text-slate-400 hover:text-slate-200"
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
             All ({tasks.length})
@@ -110,7 +111,7 @@ export function TaskList({
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               statusFilter === "pending"
                 ? "bg-indigo-600 text-white shadow-sm"
-                : "text-slate-400 hover:text-slate-200"
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
             Pending ({pendingCount})
@@ -121,14 +122,14 @@ export function TaskList({
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               statusFilter === "completed"
                 ? "bg-indigo-600 text-white shadow-sm"
-                : "text-slate-400 hover:text-slate-200"
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
             Completed ({completedCount})
           </button>
         </div>
 
-        {/* Search, Filter Dropdowns & Create Button */}
+        {/* Search, Filter Dropdowns, How-To Guide & Create Button */}
         <div className="flex flex-wrap items-center gap-2.5">
           {/* Search */}
           <div className="relative min-w-[180px] flex-1 sm:flex-initial">
@@ -138,16 +139,16 @@ export function TaskList({
               placeholder="Search tasks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-xl glass-input pl-9 pr-3 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none"
+              className="w-full rounded-xl glass-input pl-9 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none"
             />
           </div>
 
-          {/* Section Filter Dropdown (if not inside a single section view) */}
+          {/* Section Filter Dropdown */}
           {!defaultSectionId && sections.length > 0 && (
             <select
               value={sectionFilter}
               onChange={(e) => setSectionFilter(e.target.value)}
-              className="rounded-xl glass-input px-3 py-1.5 text-xs text-slate-200 bg-slate-900 focus:outline-none cursor-pointer"
+              className="rounded-xl glass-input px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 focus:outline-none cursor-pointer border border-slate-200 dark:border-slate-800"
             >
               <option value="all">All Sections</option>
               <option value="none">General (No Section)</option>
@@ -163,7 +164,7 @@ export function TaskList({
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value as TaskPriority | "all")}
-            className="rounded-xl glass-input px-3 py-1.5 text-xs text-slate-200 bg-slate-900 focus:outline-none cursor-pointer"
+            className="rounded-xl glass-input px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 focus:outline-none cursor-pointer border border-slate-200 dark:border-slate-800"
           >
             <option value="all">All Priorities</option>
             <option value="urgent">Urgent</option>
@@ -172,23 +173,56 @@ export function TaskList({
             <option value="low">Low</option>
           </select>
 
+          {/* Task How-To Guide */}
+          <FeatureGuideModal
+            featureName="Tasks"
+            title="How Tasks Work"
+            subtitle="Plan, organize, and complete daily actions with automatic activity synchronization."
+            steps={[
+              {
+                title: "Create an Action Item",
+                description: "Give your task a clear, descriptive title representing a concrete outcome.",
+                example: "Deploy ProgressTracker to Vercel",
+              },
+              {
+                title: "Set Priority & Due Date",
+                description: "Assign Urgent for must-do today items, High for this week, or Medium/Low for backlog items.",
+              },
+              {
+                title: "Organize into Sections",
+                description: "Group tasks into specific life buckets like 'Work', 'Health', or 'Study' for focused filtering.",
+              },
+              {
+                title: "Check Off & Automatic Activity Logging",
+                description: "Checking off a task marks it completed and automatically records an activity entry in your timeline and daily history.",
+              },
+            ]}
+            tip="If you reopen a completed task, its auto-activity entry is cleanly removed so your history stays 100% accurate."
+          />
+
           {/* Create Task Button */}
           <Button
             onClick={() => setIsCreateOpen(true)}
             size="sm"
             className="gap-1.5 shrink-0 shadow-md shadow-indigo-500/20"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-4 h-4" />
             <span>New Task</span>
           </Button>
         </div>
       </div>
 
-      {/* Task Cards Grid or Empty State */}
-      {tasks.length === 0 ? (
-        <TaskEmptyState onCreate={() => setIsCreateOpen(true)} />
-      ) : filteredTasks.length === 0 ? (
-        <TaskEmptyState onCreate={() => setIsCreateOpen(true)} filtered />
+      {/* Task List Grid / Empty State */}
+      {filteredTasks.length === 0 ? (
+        <TaskEmptyState
+          filtered={
+            statusFilter !== "all" ||
+            sectionFilter !== "all" ||
+            priorityFilter !== "all" ||
+            searchQuery.trim().length > 0
+          }
+          onCreate={() => setIsCreateOpen(true)}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredTasks.map((task) => (
@@ -209,24 +243,33 @@ export function TaskList({
         onClose={() => setIsCreateOpen(false)}
         sections={sections}
         defaultSectionId={defaultSectionId}
-        onSuccess={handleMutationSuccess}
+        onSuccess={() => {
+          setIsCreateOpen(false);
+          handleMutationSuccess();
+        }}
       />
 
       {/* Edit Task Modal */}
       <TaskModal
         isOpen={!!editingTask}
+        onClose={() => setEditingTask(null)}
         task={editingTask}
         sections={sections}
-        onClose={() => setEditingTask(null)}
-        onSuccess={handleMutationSuccess}
+        onSuccess={() => {
+          setEditingTask(null);
+          handleMutationSuccess();
+        }}
       />
 
-      {/* Delete Task Dialog */}
+      {/* Delete Confirmation Dialog */}
       <DeleteTaskDialog
         isOpen={!!deletingTask}
         task={deletingTask}
         onClose={() => setDeletingTask(null)}
-        onSuccess={handleMutationSuccess}
+        onSuccess={() => {
+          setDeletingTask(null);
+          handleMutationSuccess();
+        }}
       />
     </div>
   );

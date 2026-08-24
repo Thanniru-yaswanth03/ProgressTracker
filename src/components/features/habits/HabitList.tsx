@@ -9,6 +9,7 @@ import { DeleteHabitDialog } from "./DeleteHabitDialog";
 import { HabitEmptyState } from "./HabitEmptyState";
 import { HabitStatsHeader } from "./HabitStatsHeader";
 import { Button } from "@/components/ui/Button";
+import { FeatureGuideModal } from "@/components/ui/FeatureGuideModal";
 import { Archive, Flame, Plus, Search } from "lucide-react";
 
 export interface HabitListProps {
@@ -86,30 +87,29 @@ export function HabitList({
       {/* Stats Summary */}
       {!hideStats && <HabitStatsHeader habits={habits} />}
 
-      {/* Control Bar: Tabs, Section Filter, Search & Create */}
+      {/* Control Bar: Tabs, Section Filter, Search, How-To Guide & Create */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-1">
         {/* Active vs Archived Tabs */}
-        <div className="flex items-center p-1 rounded-xl bg-slate-900/90 border border-slate-800 self-start">
+        <div className="flex items-center p-1 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-none self-start">
           <button
             type="button"
             onClick={() => setTab("active")}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
               tab === "active"
                 ? "bg-amber-500 text-slate-950 shadow-sm font-bold"
-                : "text-slate-400 hover:text-slate-200"
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
             <Flame className="w-3.5 h-3.5" />
-            <span>Active Habits ({activeCount})</span>
+            <span>Active ({activeCount})</span>
           </button>
-
           <button
             type="button"
             onClick={() => setTab("archived")}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
               tab === "archived"
-                ? "bg-amber-500 text-slate-950 shadow-sm font-bold"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-slate-700 text-white shadow-sm font-bold"
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
             <Archive className="w-3.5 h-3.5" />
@@ -117,17 +117,17 @@ export function HabitList({
           </button>
         </div>
 
-        {/* Search, Filter & Create Button */}
+        {/* Search, Filter, Guide & Create Button */}
         <div className="flex flex-wrap items-center gap-2.5">
           {/* Search */}
-          <div className="relative min-w-[170px] flex-1 sm:flex-initial">
+          <div className="relative min-w-[180px] flex-1 sm:flex-initial">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
             <input
               type="text"
               placeholder="Search habits..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-xl glass-input pl-9 pr-3 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none"
+              className="w-full rounded-xl glass-input pl-9 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none"
             />
           </div>
 
@@ -136,10 +136,10 @@ export function HabitList({
             <select
               value={sectionFilter}
               onChange={(e) => setSectionFilter(e.target.value)}
-              className="rounded-xl glass-input px-3 py-1.5 text-xs text-slate-200 bg-slate-900 focus:outline-none cursor-pointer"
+              className="rounded-xl glass-input px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 focus:outline-none cursor-pointer border border-slate-200 dark:border-slate-800"
             >
-              <option value="all">All Domains</option>
-              <option value="none">General (No Domain)</option>
+              <option value="all">All Sections</option>
+              <option value="none">General (No Section)</option>
               {sections.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -148,23 +148,51 @@ export function HabitList({
             </select>
           )}
 
-          {/* Create Button */}
+          {/* Habit How-To Guide */}
+          <FeatureGuideModal
+            featureName="Habits"
+            title="How Habits & Streaks Work"
+            subtitle="Build lasting routines with deterministic streak calculation and weekly schedules."
+            steps={[
+              {
+                title: "Choose Daily or Weekly",
+                description: "Daily habits track every day. Weekly habits let you pick target days (e.g. Mon/Wed/Fri).",
+                example: "Daily Meditation or Mon/Wed/Fri Gym Workout",
+              },
+              {
+                title: "Check In Daily",
+                description: "Click today's checkbox on your habit card to log your completion for the date.",
+              },
+              {
+                title: "Consecutive Streak Progression",
+                description: "Streaks increase for each consecutive scheduled day you complete. If today isn't logged yet, you have a grace period until end of day before your streak resets.",
+              },
+              {
+                title: "Longest Streak Record",
+                description: "Your highest historical streak is permanently saved and celebrated on your profile and analytics dashboard.",
+              },
+            ]}
+            tip="Checking in a habit also records an activity entry for that date and counts toward your daily completion score."
+          />
+
+          {/* Create Habit Button */}
           <Button
             onClick={() => setIsCreateOpen(true)}
             size="sm"
-            className="gap-1.5 shrink-0 shadow-md shadow-amber-500/20 bg-amber-600 hover:bg-amber-500 text-white"
+            className="gap-1.5 shrink-0 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold border-amber-400/30 shadow-md shadow-amber-500/20"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-4 h-4 text-slate-950" />
             <span>New Habit</span>
           </Button>
         </div>
       </div>
 
-      {/* Habit Cards Grid or Empty State */}
-      {habits.length === 0 ? (
-        <HabitEmptyState onCreate={() => setIsCreateOpen(true)} />
-      ) : filteredHabits.length === 0 ? (
-        <HabitEmptyState onCreate={() => setIsCreateOpen(true)} filtered />
+      {/* Habit Cards Grid / Empty State */}
+      {filteredHabits.length === 0 ? (
+        <HabitEmptyState
+          filtered={tab === "archived" || sectionFilter !== "all" || searchQuery.trim().length > 0}
+          onCreate={() => setIsCreateOpen(true)}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredHabits.map((habit) => (
@@ -179,30 +207,39 @@ export function HabitList({
         </div>
       )}
 
-      {/* Create Modal */}
+      {/* Create Habit Modal */}
       <HabitModal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
         sections={sections}
         defaultSectionId={defaultSectionId}
-        onSuccess={handleMutationSuccess}
+        onSuccess={() => {
+          setIsCreateOpen(false);
+          handleMutationSuccess();
+        }}
       />
 
-      {/* Edit Modal */}
+      {/* Edit Habit Modal */}
       <HabitModal
         isOpen={!!editingHabit}
+        onClose={() => setEditingHabit(null)}
         habit={editingHabit}
         sections={sections}
-        onClose={() => setEditingHabit(null)}
-        onSuccess={handleMutationSuccess}
+        onSuccess={() => {
+          setEditingHabit(null);
+          handleMutationSuccess();
+        }}
       />
 
-      {/* Delete Dialog */}
+      {/* Delete Confirmation Dialog */}
       <DeleteHabitDialog
         isOpen={!!deletingHabit}
         habit={deletingHabit}
         onClose={() => setDeletingHabit(null)}
-        onSuccess={handleMutationSuccess}
+        onSuccess={() => {
+          setDeletingHabit(null);
+          handleMutationSuccess();
+        }}
       />
     </div>
   );
