@@ -1,22 +1,23 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
-    --background: #f8fafc;
+    --background: #f1f5f9;
     --foreground: #0f172a;
     --card: #ffffff;
     --card-foreground: #0f172a;
-    --primary: #6366f1;
+    --card-border: #e2e8f0;
+    --card-sub: #f8fafc;
+    --card-sub-border: #e2e8f0;
+    --primary: #4f46e5;
     --primary-foreground: #ffffff;
-    --secondary: #f1f5f9;
-    --secondary-foreground: #334155;
-    --muted: #f1f5f9;
+    --secondary: #e2e8f0;
+    --secondary-foreground: #1e293b;
+    --muted: #f8fafc;
     --muted-foreground: #64748b;
-    --accent: #0284c7;
-    --accent-foreground: #0f172a;
-    --destructive: #ef4444;
-    --destructive-foreground: #ffffff;
-    --border: #e2e8f0;
+    --border: #cbd5e1;
     --input: #ffffff;
     --ring: #6366f1;
   }
@@ -26,16 +27,15 @@
     --foreground: #f1f5f9;
     --card: rgba(15, 23, 42, 0.75);
     --card-foreground: #f8fafc;
+    --card-border: rgba(255, 255, 255, 0.08);
+    --card-sub: rgba(15, 23, 42, 0.85);
+    --card-sub-border: rgba(148, 163, 184, 0.15);
     --primary: #6366f1;
     --primary-foreground: #ffffff;
     --secondary: #1e293b;
     --secondary-foreground: #cbd5e1;
     --muted: #1e293b;
     --muted-foreground: #94a3b8;
-    --accent: #38bdf8;
-    --accent-foreground: #0f172a;
-    --destructive: #ef4444;
-    --destructive-foreground: #ffffff;
     --border: rgba(148, 163, 184, 0.15);
     --input: rgba(30, 41, 59, 0.6);
     --ring: #6366f1;
@@ -47,30 +47,40 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     min-height: 100vh;
     overflow-x: hidden;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 }
 
-/* Adaptive Glassmorphism & Card styling */
+/* Glassmorphism & Card styling */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
 }
 
 .dark .glass-panel {
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(15, 23, 42, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-subcard {
+  background: var(--card-sub);
+  border: 1px solid var(--card-sub-border);
+}
+
+.dark .glass-subcard {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.15);
 }
 
 .glass-input {
   background: #ffffff;
   border: 1px solid #cbd5e1;
   color: #0f172a;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
 }
 
 .dark .glass-input {
@@ -80,35 +90,14 @@
 }
 
 .glass-input:focus {
-  border-color: rgba(99, 102, 241, 0.8);
+  border-color: #6366f1;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
 }
 
 .glow-gradient {
-  background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.1) 0%, rgba(56, 189, 248, 0.04) 50%, transparent 80%);
+  background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.06) 0%, rgba(56, 189, 248, 0.02) 50%, transparent 80%);
 }
 
 .dark .glow-gradient {
   background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, rgba(56, 189, 248, 0.05) 50%, transparent 80%);
-}
-
-.glow-pill {
-  position: relative;
-}
-
-.glow-pill::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  background: linear-gradient(90deg, #6366f1, #38bdf8);
-  border-radius: inherit;
-  z-index: -1;
-  opacity: 0.5;
-  filter: blur(4px);
-  transition: opacity 0.3s ease;
-}
-
-.glow-pill:hover::before {
-  opacity: 0.9;
-  filter: blur(8px);
 }

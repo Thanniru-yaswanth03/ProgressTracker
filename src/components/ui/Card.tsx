@@ -40,7 +40,7 @@ export function CardTitle({
   return (
     <h3
       className={cn(
-        "text-lg font-bold text-slate-100 tracking-tight flex items-center gap-2",
+        "text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2",
         className
       )}
       {...props}
@@ -56,8 +56,35 @@ export function CardDescription({
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn("text-xs text-slate-400", className)} {...props}>
+    <p className={cn("text-xs text-slate-600 dark:text-slate-400 leading-relaxed", className)} {...props}>
       {children}
     </p>
+  );
+}
+
+export function CardContent({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn("", className)} {...props}>
+      {children}
+    </div>
+  );
+}
+
+export function CardFooter({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("flex items-center pt-4 border-t border-slate-200 dark:border-slate-800", className)}
+      {...props}
+    >
+      {children}
+    </div>
   );
 }

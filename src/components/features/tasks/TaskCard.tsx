@@ -103,8 +103,8 @@ export function TaskCard({
   return (
     <Card
       className={cn(
-        "group flex flex-col justify-between p-4 transition-all duration-200 border-slate-800/80 hover:border-slate-700/80 relative overflow-hidden",
-        isCompleted && "opacity-65 bg-slate-950/40"
+        "group flex flex-col justify-between p-4 transition-all duration-200 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700/80 relative overflow-hidden",
+        isCompleted && "opacity-65 bg-slate-100/60 dark:bg-slate-950/40"
       )}
     >
       <div className="flex items-start gap-3.5">
@@ -118,7 +118,7 @@ export function TaskCard({
             "w-5 h-5 rounded-lg border flex items-center justify-center transition-all cursor-pointer mt-0.5 shrink-0 focus:outline-none focus:ring-2 focus:ring-indigo-500",
             isCompleted
               ? "bg-emerald-500 border-emerald-400 text-white shadow-sm shadow-emerald-500/30"
-              : "border-slate-600 hover:border-indigo-400 bg-slate-900/60"
+              : "border-slate-300 dark:border-slate-600 hover:border-indigo-400 bg-slate-50 dark:bg-slate-900/60"
           )}
         >
           {isCompleted && <Check className="w-3.5 h-3.5 stroke-[3]" />}
@@ -129,8 +129,8 @@ export function TaskCard({
           <div className="flex items-start justify-between gap-2">
             <h4
               className={cn(
-                "font-semibold text-sm text-slate-100 transition-all leading-tight",
-                isCompleted && "line-through text-slate-400 font-normal"
+                "font-semibold text-sm text-slate-900 dark:text-slate-100 transition-all leading-tight",
+                isCompleted && "line-through text-slate-400 dark:text-slate-500 font-normal"
               )}
             >
               {task.title}
@@ -141,7 +141,7 @@ export function TaskCard({
               <button
                 type="button"
                 onClick={() => onEdit(task)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 title="Edit task"
                 aria-label={`Edit ${task.title}`}
               >
@@ -150,7 +150,7 @@ export function TaskCard({
               <button
                 type="button"
                 onClick={() => onDelete(task)}
-                className="p-1 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
                 title="Delete task"
                 aria-label={`Delete ${task.title}`}
               >
@@ -160,7 +160,7 @@ export function TaskCard({
           </div>
 
           {task.description && (
-            <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
               {task.description}
             </p>
           )}

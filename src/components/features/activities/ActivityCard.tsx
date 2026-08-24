@@ -45,25 +45,25 @@ export function ActivityCard({ activity, onEdit, onDelete }: ActivityCardProps) 
     manual_entry: {
       label: "Accomplishment",
       icon: Sparkles,
-      color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      color: "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
       nodeBg: "bg-emerald-500 shadow-emerald-500/50",
     },
     task_completed: {
       label: "Task Done",
       icon: CheckCircle2,
-      color: "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      color: "text-sky-600 dark:text-sky-400 bg-sky-500/10 border-sky-500/20",
       nodeBg: "bg-sky-500 shadow-sky-500/50",
     },
     habit_completed: {
       label: "Habit Logged",
       icon: Flame,
-      color: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      color: "text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20",
       nodeBg: "bg-amber-500 shadow-amber-500/50",
     },
   }[activity.type] || {
     label: "Activity",
     icon: Sparkles,
-    color: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
+    color: "text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
     nodeBg: "bg-indigo-500 shadow-indigo-500/50",
   };
 
@@ -74,12 +74,12 @@ export function ActivityCard({ activity, onEdit, onDelete }: ActivityCardProps) 
       {/* Glowing Timeline Node Marker */}
       <div
         className={cn(
-          "absolute left-0 top-3.5 w-3 h-3 rounded-full border-2 border-slate-950 shadow-md transition-transform group-hover:scale-125",
+          "absolute left-0 top-3.5 w-3 h-3 rounded-full border-2 border-white dark:border-slate-950 shadow-md transition-transform group-hover:scale-125",
           typeDetails.nodeBg
         )}
       />
 
-      <Card className="p-4 border-slate-800/80 hover:border-slate-700/80 transition-all">
+      <Card className="p-4 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700/80 transition-all">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
           {/* Title and Summary */}
           <div className="space-y-1 flex-1 min-w-0">
@@ -94,17 +94,17 @@ export function ActivityCard({ activity, onEdit, onDelete }: ActivityCardProps) 
                 <span>{typeDetails.label}</span>
               </span>
 
-              <span className="text-xs text-slate-400 font-medium">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                 {formattedTime}
               </span>
             </div>
 
-            <h4 className="text-sm font-bold text-slate-100 tracking-tight leading-snug">
+            <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-snug">
               {activity.title}
             </h4>
 
             {activity.description && (
-              <p className="text-xs text-slate-400 leading-relaxed pt-0.5">
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed pt-0.5">
                 {activity.description}
               </p>
             )}
@@ -115,7 +115,7 @@ export function ActivityCard({ activity, onEdit, onDelete }: ActivityCardProps) 
             <button
               type="button"
               onClick={() => onEdit(activity)}
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               title="Edit activity"
               aria-label={`Edit ${activity.title}`}
             >
@@ -124,7 +124,7 @@ export function ActivityCard({ activity, onEdit, onDelete }: ActivityCardProps) 
             <button
               type="button"
               onClick={() => onDelete(activity)}
-              className="p-1 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+              className="p-1 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
               title="Delete activity"
               aria-label={`Delete ${activity.title}`}
             >
@@ -134,9 +134,9 @@ export function ActivityCard({ activity, onEdit, onDelete }: ActivityCardProps) 
         </div>
 
         {/* Metadata Footer: Duration, Section, and Tags */}
-        <div className="flex flex-wrap items-center gap-2 mt-3 pt-2.5 border-t border-slate-800/60">
+        <div className="flex flex-wrap items-center gap-2 mt-3 pt-2.5 border-t border-slate-200 dark:border-slate-800/60">
           {durationStr && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
               <Clock className="w-2.5 h-2.5" />
               <span>{durationStr}</span>
             </span>
@@ -161,9 +161,9 @@ export function ActivityCard({ activity, onEdit, onDelete }: ActivityCardProps) 
               {activity.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] text-slate-400 bg-slate-900 border border-slate-800"
+                  className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800"
                 >
-                  <Tag className="w-2 h-2 text-indigo-400" />
+                  <Tag className="w-2 h-2 text-indigo-500 dark:text-indigo-400" />
                   <span>{tag}</span>
                 </span>
               ))}
