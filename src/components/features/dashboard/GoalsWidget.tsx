@@ -8,7 +8,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { createGoalAction, updateGoalAction } from "@/server/actions/goal.actions";
-import { Calendar, ChevronRight, Clock, Edit2, Folder, Plus, Target } from "lucide-react";
+import { ChevronRight, Clock, Edit2, Folder, Plus, Target } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 

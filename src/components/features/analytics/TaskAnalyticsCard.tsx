@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { TaskStatsDTO } from "@/types";
-import { CheckSquare, CheckCircle2, AlertCircle } from "lucide-react";
+import { CheckSquare } from "lucide-react";
 
 interface TaskAnalyticsCardProps {
   taskStats: TaskStatsDTO;

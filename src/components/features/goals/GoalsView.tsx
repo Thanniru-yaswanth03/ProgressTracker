@@ -1,15 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { GoalDTO, SectionDTO, GoalStatus } from "@/types";
+import { GoalDTO, SectionDTO } from "@/types";
 import { GoalCard } from "./GoalCard";
 import { GoalFormModal } from "./GoalFormModal";
 import { QuickProgressModal } from "./QuickProgressModal";
 import {
   CheckCircle2,
-  Filter,
   Layers,
-  Pause,
   Plus,
   Search,
   Sparkles,

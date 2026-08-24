@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   Clock,
   Flame,
-  Layers,
   Sparkles,
   Target,
   Zap,

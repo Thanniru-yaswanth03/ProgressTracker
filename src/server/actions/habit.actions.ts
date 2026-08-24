@@ -3,11 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireUser } from "@/server/auth/session";
-import {
-  habitService,
-  CreateHabitSchema,
-  UpdateHabitSchema,
-} from "@/server/services/habit.service";
+import { habitService } from "@/server/services/habit.service";
 import {
   ActionResponse,
   HabitDTO,

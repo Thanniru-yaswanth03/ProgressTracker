@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { TaskDTO, SectionDTO } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { toggleTaskAction } from "@/server/actions/task.actions";
-import { Check, CheckSquare, ChevronRight, Clock, Plus } from "lucide-react";
+import { Check, CheckSquare, ChevronRight, Plus } from "lucide-react";
 import { TaskModal } from "@/components/features/tasks/TaskModal";
 import Link from "next/link";
 import { cn } from "@/lib/utils";

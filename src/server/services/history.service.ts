@@ -3,25 +3,16 @@ import { Task } from "@/models/Task";
 import { Activity } from "@/models/Activity";
 import { Habit } from "@/models/Habit";
 import { HabitLog } from "@/models/HabitLog";
-import { Goal } from "@/models/Goal";
 import { taskService } from "@/server/services/task.service";
 import { activityService } from "@/server/services/activity.service";
 import { habitService } from "@/server/services/habit.service";
 import { goalService } from "@/server/services/goal.service";
-import {
-  formatDateKey,
-  getDayOfWeek,
-  shiftDate,
-} from "@/server/services/streak.service";
+import { formatDateKey } from "@/server/services/streak.service";
 import { ValidationError } from "@/lib/errors";
 import {
   DayHistoryDTO,
   MonthHistoryDTO,
   DaySummaryDTO,
-  TaskDTO,
-  HabitDTO,
-  ActivityDTO,
-  GoalDTO,
 } from "@/types";
 import mongoose from "mongoose";
 
@@ -62,9 +53,6 @@ export const historyService = {
     const dateObj = new Date(year, month - 1, day);
     const dayOfWeek = dateObj.getDay();
     const dayLabel = DAY_NAMES[dayOfWeek];
-
-    const startOfDay = new Date(`${dateStr}T00:00:00.000Z`);
-    const endOfDay = new Date(`${dateStr}T23:59:59.999Z`);
 
     // Fetch domain entities in parallel
     const [habitLogs, allHabits, allTasks, allActivities, allGoals] =

@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { MonthHistoryDTO, DaySummaryDTO } from "@/types";
-import { ChevronLeft, ChevronRight, Sparkles, Zap } from "lucide-react";
+import { MonthHistoryDTO } from "@/types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface CalendarGridProps {
   monthData: MonthHistoryDTO;

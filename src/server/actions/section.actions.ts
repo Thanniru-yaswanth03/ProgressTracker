@@ -3,11 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireUser } from "@/server/auth/session";
-import {
-  sectionService,
-  CreateSectionSchema,
-  UpdateSectionSchema,
-} from "@/server/services/section.service";
+import { sectionService } from "@/server/services/section.service";
 import { ActionResponse, SectionDTO, CreateSectionInput, UpdateSectionInput } from "@/types";
 import { NotFoundError, ValidationError } from "@/lib/errors";
 

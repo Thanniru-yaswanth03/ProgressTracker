@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { HabitDTO, SectionDTO } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { toggleHabitLogAction } from "@/server/actions/habit.actions";
-import { Award, Check, ChevronRight, Flame, Plus } from "lucide-react";
+import { Check, ChevronRight, Flame, Plus } from "lucide-react";
 import { HabitModal } from "@/components/features/habits/HabitModal";
 import Link from "next/link";
 import { cn } from "@/lib/utils";

@@ -3,11 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireUser } from "@/server/auth/session";
-import {
-  taskService,
-  CreateTaskSchema,
-  UpdateTaskSchema,
-} from "@/server/services/task.service";
+import { taskService } from "@/server/services/task.service";
 import { ActionResponse, TaskDTO, CreateTaskInput, UpdateTaskInput, TaskStatus } from "@/types";
 import { NotFoundError, ValidationError } from "@/lib/errors";
 

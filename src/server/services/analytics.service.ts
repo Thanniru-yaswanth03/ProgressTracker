@@ -1,5 +1,4 @@
 import connectDB from "@/lib/db";
-import { User } from "@/models/User";
 import { Section } from "@/models/Section";
 import { Task } from "@/models/Task";
 import { Activity } from "@/models/Activity";
@@ -9,7 +8,6 @@ import { Goal } from "@/models/Goal";
 import {
   formatDateKey,
   shiftDate,
-  getDayOfWeek,
   calculateHabitStreak,
 } from "@/server/services/streak.service";
 import { ValidationError } from "@/lib/errors";

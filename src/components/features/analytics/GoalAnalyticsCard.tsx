@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { GoalStatsDTO } from "@/types";
-import { Target, CheckCircle2, PauseCircle, PlayCircle } from "lucide-react";
+import { Target } from "lucide-react";
 
 interface GoalAnalyticsCardProps {
   goalStats: GoalStatsDTO;

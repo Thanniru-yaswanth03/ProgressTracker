@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { WeeklyOverviewDTO, MonthlyOverviewDTO } from "@/types";
-import { BarChart3, Calendar, Clock, Flame, CheckSquare } from "lucide-react";
+import { BarChart3, Clock, Flame, CheckSquare } from "lucide-react";
 
 interface OverviewChartsProps {
   weeklyOverview: WeeklyOverviewDTO;

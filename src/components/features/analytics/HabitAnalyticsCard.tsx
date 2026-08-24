@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { HabitStatsDTO, StreakStatsDTO } from "@/types";
-import { Flame, Trophy, Award, Sparkles } from "lucide-react";
+import { Flame, Trophy } from "lucide-react";
 
 interface HabitAnalyticsCardProps {
   habitStats: HabitStatsDTO;

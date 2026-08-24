@@ -9,14 +9,13 @@ import { DeleteActivityDialog } from "./DeleteActivityDialog";
 import { ActivityEmptyState } from "./ActivityEmptyState";
 import { ActivityStatsBanner } from "./ActivityStatsBanner";
 import { Button } from "@/components/ui/Button";
-import { Calendar, Filter, Plus, Search, Sparkles, Tag } from "lucide-react";
+import { Calendar, Plus, Search, Sparkles } from "lucide-react";
 
 export interface ActivityTimelineProps {
   initialActivities: ActivityDTO[];
   sections: SectionDTO[];
   defaultSectionId?: string | null;
   hideStats?: boolean;
-  compact?: boolean;
 }
 
 export function ActivityTimeline({
@@ -24,7 +23,6 @@ export function ActivityTimeline({
   sections,
   defaultSectionId,
   hideStats = false,
-  compact = false,
 }: ActivityTimelineProps) {
   const router = useRouter();
   const [activities, setActivities] = React.useState<ActivityDTO[]>(initialActivities);

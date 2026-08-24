@@ -3,11 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireUser } from "@/server/auth/session";
-import {
-  activityService,
-  CreateActivitySchema,
-  UpdateActivitySchema,
-} from "@/server/services/activity.service";
+import { activityService } from "@/server/services/activity.service";
 import {
   ActionResponse,
   ActivityDTO,

@@ -4,8 +4,8 @@ import * as React from "react";
 import { MonthHistoryDTO, DayHistoryDTO } from "@/types";
 import { CalendarGrid } from "./CalendarGrid";
 import { DayHistoryDetail } from "./DayHistoryDetail";
-import { Calendar, History, Sparkles, TrendingUp, Zap } from "lucide-react";
-import { formatDateKey, shiftDate } from "@/server/services/streak.service";
+import { Calendar } from "lucide-react";
+import { formatDateKey } from "@/server/services/streak.service";
 
 interface HistoryViewProps {
   initialMonthData: MonthHistoryDTO;

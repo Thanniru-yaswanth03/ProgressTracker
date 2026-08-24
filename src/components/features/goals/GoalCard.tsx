@@ -11,7 +11,6 @@ import {
   Pause,
   Play,
   Plus,
-  Target,
   Trash2,
 } from "lucide-react";
 import {

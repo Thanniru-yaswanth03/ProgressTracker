@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Eye, EyeOff, Lock, Mail, User as UserIcon, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User as UserIcon, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { registerAction } from "@/server/actions/auth.actions";
 

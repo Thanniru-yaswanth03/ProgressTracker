@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { ActivityStatsDTO } from "@/types";
-import { Clock, Sparkles, Layers, Tag } from "lucide-react";
+import { Sparkles, Layers, Tag } from "lucide-react";
 
 interface ActivityAnalyticsCardProps {
   activityStats: ActivityStatsDTO;

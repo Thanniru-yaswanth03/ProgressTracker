@@ -7,15 +7,7 @@ import { TaskAnalyticsCard } from "./TaskAnalyticsCard";
 import { HabitAnalyticsCard } from "./HabitAnalyticsCard";
 import { ActivityAnalyticsCard } from "./ActivityAnalyticsCard";
 import { GoalAnalyticsCard } from "./GoalAnalyticsCard";
-import {
-  BarChart3,
-  Flame,
-  CheckCircle2,
-  Clock,
-  Sparkles,
-  TrendingUp,
-  Award,
-} from "lucide-react";
+import { TrendingUp } from "lucide-react";
 
 interface AnalyticsViewProps {
   analytics: AnalyticsDTO;

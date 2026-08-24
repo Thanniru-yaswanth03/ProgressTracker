@@ -3,7 +3,7 @@
 import * as React from "react";
 import { GoalDTO, SectionDTO, CreateGoalInput, UpdateGoalInput, GoalStatus } from "@/types";
 import { createGoalAction, updateGoalAction } from "@/server/actions/goal.actions";
-import { Calendar, Check, Layers, Loader2, Sparkles, Target, X } from "lucide-react";
+import { Calendar, Layers, Loader2, Target, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface GoalFormModalProps {

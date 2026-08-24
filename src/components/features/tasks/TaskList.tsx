@@ -9,7 +9,7 @@ import { DeleteTaskDialog } from "./DeleteTaskDialog";
 import { TaskEmptyState } from "./TaskEmptyState";
 import { TaskStatsHeader } from "./TaskStatsHeader";
 import { Button } from "@/components/ui/Button";
-import { Filter, Folder, Plus, Search, SlidersHorizontal } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
 export interface TaskListProps {
   initialTasks: TaskDTO[];

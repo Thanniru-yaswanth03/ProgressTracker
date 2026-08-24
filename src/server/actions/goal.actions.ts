@@ -3,11 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireUser } from "@/server/auth/session";
-import {
-  goalService,
-  CreateGoalSchema,
-  UpdateGoalSchema,
-} from "@/server/services/goal.service";
+import { goalService } from "@/server/services/goal.service";
 import {
   ActionResponse,
   GoalDTO,
