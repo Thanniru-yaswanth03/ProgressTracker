@@ -3,6 +3,7 @@ import connectDB from "@/lib/db";
 import { Activity, IActivityDocument } from "@/models/Activity";
 import { Section } from "@/models/Section";
 import { NotFoundError, ValidationError } from "@/lib/errors";
+import { escapeRegex, dateStringSchema, isValidDateString } from "@/lib/utils";
 import {
   ActivityDTO,
   ActivityType,
@@ -16,9 +17,9 @@ import mongoose from "mongoose";
 export const CreateActivitySchema = z.object({
   title: z
     .string()
+    .trim()
     .min(1, "Activity title is required")
-    .max(100, "Activity title cannot exceed 100 characters")
-    .trim(),
+    .max(100, "Activity title cannot exceed 100 characters"),
   description: z
     .string()
     .max(500, "Description cannot exceed 500 characters")
@@ -31,18 +32,18 @@ export const CreateActivitySchema = z.object({
     .max(1440, "Duration cannot exceed 1440 minutes")
     .optional()
     .default(0),
-  occurredAt: z.string().nullable().optional(),
+  occurredAt: dateStringSchema.nullable().optional(),
   tags: z.array(z.string().trim()).optional().default([]),
-  type: z.enum(["manual_entry", "task_completed", "habit_completed"]).optional().default("manual_entry"),
-  refId: z.string().nullable().optional(),
+  type: z.literal("manual_entry").optional().default("manual_entry"),
+  refId: z.null().optional(),
 });
 
 export const UpdateActivitySchema = z.object({
   title: z
     .string()
+    .trim()
     .min(1, "Activity title is required")
     .max(100, "Activity title cannot exceed 100 characters")
-    .trim()
     .optional(),
   description: z
     .string()
@@ -54,7 +55,7 @@ export const UpdateActivitySchema = z.object({
     .min(0, "Duration cannot be negative")
     .max(1440, "Duration cannot exceed 1440 minutes")
     .optional(),
-  occurredAt: z.string().nullable().optional(),
+  occurredAt: dateStringSchema.nullable().optional(),
   tags: z.array(z.string().trim()).optional(),
 });
 
@@ -114,15 +115,21 @@ export const activityService = {
     }
 
     if (filters?.search && filters.search.trim()) {
-      const searchRegex = new RegExp(filters.search.trim(), "i");
+      const searchRegex = new RegExp(escapeRegex(filters.search.trim()), "i");
       query.$or = [{ title: searchRegex }, { description: searchRegex }, { tags: searchRegex }];
     }
 
     if (filters?.from || filters?.to) {
       const dateQuery: Record<string, Date> = {};
-      if (filters.from) dateQuery.$gte = new Date(filters.from);
-      if (filters.to) dateQuery.$lte = new Date(filters.to);
-      query.occurredAt = dateQuery;
+      if (filters.from && isValidDateString(filters.from)) {
+        dateQuery.$gte = new Date(filters.from);
+      }
+      if (filters.to && isValidDateString(filters.to)) {
+        dateQuery.$lte = new Date(filters.to);
+      }
+      if (Object.keys(dateQuery).length > 0) {
+        query.occurredAt = dateQuery;
+      }
     }
 
     const limit = filters?.limit || 100;
@@ -260,10 +267,8 @@ export const activityService = {
 
     const activity = await Activity.create({
       userId: new mongoose.Types.ObjectId(userId),
-      type: validated.type || "manual_entry",
-      refId: validated.refId && mongoose.Types.ObjectId.isValid(validated.refId)
-        ? new mongoose.Types.ObjectId(validated.refId)
-        : null,
+      type: "manual_entry",
+      refId: null,
       sectionId: sectionObjectId,
       title: validated.title,
       description: validated.description,

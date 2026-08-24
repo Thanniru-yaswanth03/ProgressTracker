@@ -41,6 +41,7 @@ const HabitLogSchema = new Schema<IHabitLogDocument>(
 // CRITICAL UNIQUE COMPOUND INDEX: Guarantees idempotency — exactly one log per habit per date
 HabitLogSchema.index({ habitId: 1, date: 1 }, { unique: true });
 HabitLogSchema.index({ userId: 1, date: 1 });
+HabitLogSchema.index({ userId: 1, habitId: 1, date: 1 });
 
 export const HabitLog: Model<IHabitLogDocument> =
   mongoose.models.HabitLog ||

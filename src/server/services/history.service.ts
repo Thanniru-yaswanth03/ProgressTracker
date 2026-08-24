@@ -41,7 +41,10 @@ export const historyService = {
       throw new ValidationError("Invalid user ID");
     }
 
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    if (
+      !/^\d{4}-\d{2}-\d{2}$/.test(dateStr) ||
+      isNaN(new Date(`${dateStr}T00:00:00`).getTime())
+    ) {
       throw new ValidationError("Invalid date format. Must be YYYY-MM-DD");
     }
 
@@ -144,11 +147,15 @@ export const historyService = {
       throw new ValidationError("Invalid month format. Must be YYYY-MM");
     }
 
+    const [year, month] = yearMonthStr.split("-").map(Number);
+    if (month < 1 || month > 12) {
+      throw new ValidationError("Invalid month value. Must be between 01 and 12");
+    }
+
     await connectDB();
     const userObjectId = new mongoose.Types.ObjectId(userId);
     const todayStr = formatDateKey(new Date());
 
-    const [year, month] = yearMonthStr.split("-").map(Number);
     const monthName = `${MONTH_NAMES[month - 1]} ${year}`;
 
     // Number of days in this month

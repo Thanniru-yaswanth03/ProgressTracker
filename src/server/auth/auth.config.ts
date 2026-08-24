@@ -7,7 +7,13 @@ export const authConfig: NextAuthConfig = {
   session: {
     strategy: "jwt",
   },
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "progresstracker_super_secret_jwt_auth_key_2026_x87v2",
+  secret: (() => {
+    const secret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+    if (!secret && process.env.NODE_ENV === "production") {
+      throw new Error("AUTH_SECRET or NEXTAUTH_SECRET environment variable is required in production");
+    }
+    return secret;
+  })(),
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;

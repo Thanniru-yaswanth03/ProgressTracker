@@ -142,6 +142,13 @@ export async function toggleHabitLogAction(
       data: result,
     };
   } catch (error) {
+    if (error instanceof ValidationError) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+
     if (error instanceof NotFoundError) {
       return {
         success: false,

@@ -29,17 +29,29 @@ export const userService = {
 
     const passwordHash = await hashPassword(validated.password);
 
-    const user = await User.create({
-      name: validated.name,
-      email: validated.email,
-      passwordHash,
-    });
+    try {
+      const user = await User.create({
+        name: validated.name,
+        email: validated.email,
+        passwordHash,
+      });
 
-    return {
-      id: user._id.toString(),
-      name: user.name,
-      email: user.email,
-    };
+      return {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+      };
+    } catch (err: unknown) {
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "code" in err &&
+        (err as { code: number }).code === 11000
+      ) {
+        throw new ValidationError("An account with this email already exists.");
+      }
+      throw err;
+    }
   },
 
   /**

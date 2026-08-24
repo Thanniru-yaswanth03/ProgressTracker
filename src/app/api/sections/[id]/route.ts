@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/server/auth/session";
 import { sectionService } from "@/server/services/section.service";
-import { NotFoundError } from "@/lib/errors";
+import { NotFoundError, ValidationError } from "@/lib/errors";
 import { z } from "zod";
 
 export async function GET(
@@ -48,6 +48,9 @@ export async function PATCH(
   } catch (error) {
     if (error instanceof NotFoundError) {
       return NextResponse.json({ error: "Section not found" }, { status: 404 });
+    }
+    if (error instanceof ValidationError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
     if (error instanceof z.ZodError) {
       return NextResponse.json(

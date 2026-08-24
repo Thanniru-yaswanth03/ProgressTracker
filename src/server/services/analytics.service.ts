@@ -50,15 +50,36 @@ export const analyticsService = {
     const userObjectId = new mongoose.Types.ObjectId(userId);
     const todayStr = formatDateKey(new Date());
 
-    // 1. Concurrently fetch all user collections in a single batch
+    // 1. Concurrently fetch all user collections with lean projections in a single batch
     const [sections, tasks, habits, habitLogs, activities, goals] =
       await Promise.all([
-        Section.find({ userId: userObjectId }).sort({ order: 1 }).exec(),
-        Task.find({ userId: userObjectId }).exec(),
-        Habit.find({ userId: userObjectId }).exec(),
-        HabitLog.find({ userId: userObjectId }).exec(),
-        Activity.find({ userId: userObjectId }).sort({ occurredAt: -1 }).exec(),
-        Goal.find({ userId: userObjectId }).sort({ createdAt: -1 }).exec(),
+        Section.find({ userId: userObjectId })
+          .sort({ order: 1 })
+          .select("_id userId name color description order createdAt updatedAt")
+          .lean()
+          .exec(),
+        Task.find({ userId: userObjectId })
+          .select("_id userId status priority sectionId completedAt createdAt")
+          .lean()
+          .exec(),
+        Habit.find({ userId: userObjectId })
+          .select("_id userId title frequency targetDays sectionId archived createdAt")
+          .lean()
+          .exec(),
+        HabitLog.find({ userId: userObjectId })
+          .select("_id habitId date completed")
+          .lean()
+          .exec(),
+        Activity.find({ userId: userObjectId })
+          .sort({ occurredAt: -1 })
+          .select("_id userId title duration tags occurredAt sectionId")
+          .lean()
+          .exec(),
+        Goal.find({ userId: userObjectId })
+          .sort({ createdAt: -1 })
+          .select("_id userId title description targetValue currentValue unit targetDate status sectionId createdAt updatedAt")
+          .lean()
+          .exec(),
       ]);
 
     // Section lookup map
@@ -71,8 +92,8 @@ export const analyticsService = {
         color: s.color,
         description: s.description || "",
         order: s.order || 0,
-        createdAt: s.createdAt.toISOString(),
-        updatedAt: s.updatedAt.toISOString(),
+        createdAt: new Date(s.createdAt).toISOString(),
+        updatedAt: new Date(s.updatedAt).toISOString(),
       });
     });
 
@@ -522,11 +543,11 @@ export const analyticsService = {
         targetValue: g.targetValue,
         currentValue: g.currentValue,
         unit: g.unit,
-        targetDate: g.targetDate ? g.targetDate.toISOString() : undefined,
+        targetDate: g.targetDate ? new Date(g.targetDate).toISOString() : undefined,
         status: g.status,
         progressPercentage: gProgress,
-        createdAt: g.createdAt.toISOString(),
-        updatedAt: g.updatedAt.toISOString(),
+        createdAt: new Date(g.createdAt).toISOString(),
+        updatedAt: new Date(g.updatedAt).toISOString(),
       };
     });
 

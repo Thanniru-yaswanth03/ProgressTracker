@@ -72,8 +72,10 @@ const GoalSchema = new Schema<IGoalDocument>(
   }
 );
 
-// Compound index for querying active goals efficiently
+// Compound indexes for querying active goals and filtering efficiently
 GoalSchema.index({ userId: 1, status: 1 });
+GoalSchema.index({ userId: 1, sectionId: 1 });
+GoalSchema.index({ userId: 1, createdAt: -1 });
 
 export const Goal: Model<IGoalDocument> =
   mongoose.models.Goal || mongoose.model<IGoalDocument>("Goal", GoalSchema);

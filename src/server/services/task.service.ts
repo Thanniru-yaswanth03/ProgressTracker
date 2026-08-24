@@ -4,6 +4,7 @@ import { Task, ITaskDocument } from "@/models/Task";
 import { Section } from "@/models/Section";
 import { activityService } from "@/server/services/activity.service";
 import { NotFoundError, ValidationError } from "@/lib/errors";
+import { escapeRegex, dateStringSchema } from "@/lib/utils";
 import {
   TaskDTO,
   CreateTaskInput,
@@ -16,9 +17,9 @@ import mongoose from "mongoose";
 export const CreateTaskSchema = z.object({
   title: z
     .string()
+    .trim()
     .min(1, "Task title is required")
-    .max(100, "Task title cannot exceed 100 characters")
-    .trim(),
+    .max(100, "Task title cannot exceed 100 characters"),
   description: z
     .string()
     .max(500, "Description cannot exceed 500 characters")
@@ -26,15 +27,15 @@ export const CreateTaskSchema = z.object({
     .default(""),
   sectionId: z.string().nullable().optional(),
   priority: z.enum(["low", "medium", "high", "urgent"]).optional().default("medium"),
-  dueDate: z.string().nullable().optional(),
+  dueDate: dateStringSchema.nullable().optional(),
 });
 
 export const UpdateTaskSchema = z.object({
   title: z
     .string()
+    .trim()
     .min(1, "Task title is required")
     .max(100, "Task title cannot exceed 100 characters")
-    .trim()
     .optional(),
   description: z
     .string()
@@ -42,7 +43,7 @@ export const UpdateTaskSchema = z.object({
     .optional(),
   sectionId: z.string().nullable().optional(),
   priority: z.enum(["low", "medium", "high", "urgent"]).optional(),
-  dueDate: z.string().nullable().optional(),
+  dueDate: dateStringSchema.nullable().optional(),
   status: z.enum(["pending", "completed"]).optional(),
 });
 
@@ -98,7 +99,7 @@ export const taskService = {
     }
 
     if (filters?.search && filters.search.trim()) {
-      const searchRegex = new RegExp(filters.search.trim(), "i");
+      const searchRegex = new RegExp(escapeRegex(filters.search.trim()), "i");
       query.$or = [{ title: searchRegex }, { description: searchRegex }];
     }
 

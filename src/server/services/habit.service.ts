@@ -10,6 +10,7 @@ import {
   formatDateKey,
 } from "@/server/services/streak.service";
 import { NotFoundError, ValidationError } from "@/lib/errors";
+import { escapeRegex } from "@/lib/utils";
 import {
   HabitDTO,
   CreateHabitInput,
@@ -22,9 +23,9 @@ import mongoose from "mongoose";
 export const CreateHabitSchema = z.object({
   title: z
     .string()
+    .trim()
     .min(1, "Habit title is required")
-    .max(100, "Habit title cannot exceed 100 characters")
-    .trim(),
+    .max(100, "Habit title cannot exceed 100 characters"),
   description: z
     .string()
     .max(500, "Description cannot exceed 500 characters")
@@ -41,9 +42,9 @@ export const CreateHabitSchema = z.object({
 export const UpdateHabitSchema = z.object({
   title: z
     .string()
+    .trim()
     .min(1, "Habit title is required")
     .max(100, "Habit title cannot exceed 100 characters")
-    .trim()
     .optional(),
   description: z
     .string()
@@ -122,7 +123,7 @@ export const habitService = {
     }
 
     if (filters?.search && filters.search.trim()) {
-      const searchRegex = new RegExp(filters.search.trim(), "i");
+      const searchRegex = new RegExp(escapeRegex(filters.search.trim()), "i");
       query.$or = [{ title: searchRegex }, { description: searchRegex }];
     }
 
@@ -378,7 +379,10 @@ export const habitService = {
     }
 
     const targetDate = dateStr || formatDateKey(new Date());
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(targetDate)) {
+    if (
+      !/^\d{4}-\d{2}-\d{2}$/.test(targetDate) ||
+      isNaN(new Date(`${targetDate}T00:00:00`).getTime())
+    ) {
       throw new ValidationError("Invalid date format. Must be YYYY-MM-DD");
     }
 
@@ -395,6 +399,7 @@ export const habitService = {
     // Check if log already exists
     const existingLog = await HabitLog.findOne({
       habitId: habit._id,
+      userId: new mongoose.Types.ObjectId(userId),
       date: targetDate,
     }).exec();
 
@@ -402,7 +407,10 @@ export const habitService = {
 
     if (existingLog) {
       // Uncheck habit
-      await HabitLog.deleteOne({ _id: existingLog._id }).exec();
+      await HabitLog.deleteOne({
+        _id: existingLog._id,
+        userId: new mongoose.Types.ObjectId(userId),
+      }).exec();
       // Remove corresponding activity record
       await activityService.removeActivityByRef(userId, habitId, "habit_completed");
       completed = false;
@@ -476,8 +484,11 @@ export const habitService = {
       throw new NotFoundError("Habit not found");
     }
 
-    // Clean up habit logs
-    await HabitLog.deleteMany({ habitId: habit._id }).exec();
+    // Clean up habit logs scoped strictly to user and habit
+    await HabitLog.deleteMany({
+      habitId: habit._id,
+      userId: new mongoose.Types.ObjectId(userId),
+    }).exec();
 
     // Clean up activity entries
     await activityService.removeActivityByRef(userId, habitId, "habit_completed");

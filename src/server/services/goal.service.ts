@@ -3,6 +3,7 @@ import connectDB from "@/lib/db";
 import { Goal, IGoalDocument } from "@/models/Goal";
 import { Section } from "@/models/Section";
 import { NotFoundError, ValidationError } from "@/lib/errors";
+import { escapeRegex, dateStringSchema } from "@/lib/utils";
 import {
   GoalDTO,
   CreateGoalInput,
@@ -17,16 +18,16 @@ export const CreateGoalSchema = z
   .object({
     title: z
       .string()
+      .trim()
       .min(1, "Goal title is required")
-      .max(120, "Goal title cannot exceed 120 characters")
-      .trim(),
+      .max(120, "Goal title cannot exceed 120 characters"),
     description: z
       .string()
       .max(500, "Description cannot exceed 500 characters")
       .optional()
       .default(""),
     sectionId: z.string().nullable().optional(),
-    targetDate: z.string().nullable().optional(),
+    targetDate: dateStringSchema.nullable().optional(),
     currentValue: z.number().min(0, "Current progress cannot be negative").optional().default(0),
     targetValue: z.number().min(0.01, "Target value must be greater than 0").optional().default(100),
     unit: z.string().max(20, "Unit cannot exceed 20 characters").optional().default("%"),
@@ -39,16 +40,16 @@ export const CreateGoalSchema = z
 export const UpdateGoalSchema = z.object({
   title: z
     .string()
+    .trim()
     .min(1, "Goal title is required")
     .max(120, "Goal title cannot exceed 120 characters")
-    .trim()
     .optional(),
   description: z
     .string()
     .max(500, "Description cannot exceed 500 characters")
     .optional(),
   sectionId: z.string().nullable().optional(),
-  targetDate: z.string().nullable().optional(),
+  targetDate: dateStringSchema.nullable().optional(),
   currentValue: z.number().min(0, "Current progress cannot be negative").optional(),
   targetValue: z.number().min(0.01, "Target value must be greater than 0").optional(),
   unit: z.string().max(20, "Unit cannot exceed 20 characters").optional(),
@@ -116,7 +117,7 @@ export const goalService = {
     }
 
     if (filters?.search && filters.search.trim()) {
-      const searchRegex = new RegExp(filters.search.trim(), "i");
+      const searchRegex = new RegExp(escapeRegex(filters.search.trim()), "i");
       query.$or = [{ title: searchRegex }, { description: searchRegex }];
     }
 

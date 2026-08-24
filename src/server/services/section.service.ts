@@ -6,15 +6,16 @@ import { Habit } from "@/models/Habit";
 import { Activity } from "@/models/Activity";
 import { Goal } from "@/models/Goal";
 import { NotFoundError, ValidationError } from "@/lib/errors";
+import { escapeRegex } from "@/lib/utils";
 import { SectionDTO, CreateSectionInput, UpdateSectionInput } from "@/types";
 import mongoose from "mongoose";
 
 export const CreateSectionSchema = z.object({
   name: z
     .string()
+    .trim()
     .min(1, "Section name is required")
-    .max(50, "Section name cannot exceed 50 characters")
-    .trim(),
+    .max(50, "Section name cannot exceed 50 characters"),
   description: z
     .string()
     .max(200, "Description cannot exceed 200 characters")
@@ -30,9 +31,9 @@ export const CreateSectionSchema = z.object({
 export const UpdateSectionSchema = z.object({
   name: z
     .string()
+    .trim()
     .min(1, "Section name is required")
     .max(50, "Section name cannot exceed 50 characters")
-    .trim()
     .optional(),
   description: z
     .string()
@@ -100,6 +101,7 @@ export const sectionService = {
 
   /**
    * Creates a new section scoped to the authenticated user.
+   * Calculates next maximum order and enforces unique section names per user.
    */
   async createSection(userId: string, input: CreateSectionInput): Promise<SectionDTO> {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
@@ -109,19 +111,49 @@ export const sectionService = {
     const validated = CreateSectionSchema.parse(input);
     await connectDB();
 
-    const count = await Section.countDocuments({
-      userId: new mongoose.Types.ObjectId(userId),
-    });
+    const userObjectId = new mongoose.Types.ObjectId(userId);
 
-    const section = await Section.create({
-      userId: new mongoose.Types.ObjectId(userId),
-      name: validated.name,
-      description: validated.description,
-      color: validated.color,
-      order: count,
-    });
+    // Pre-check for duplicate section name within user scope (case-insensitive)
+    const existing = await Section.findOne({
+      userId: userObjectId,
+      name: { $regex: new RegExp(`^${escapeRegex(validated.name)}$`, "i") },
+    }).exec();
 
-    return toSectionDTO(section);
+    if (existing) {
+      throw new ValidationError("A section with this name already exists");
+    }
+
+    // Safely determine next order by querying highest order rather than counting documents
+    const highestOrderSection = await Section.findOne({
+      userId: userObjectId,
+    })
+      .sort({ order: -1 })
+      .select("order")
+      .exec();
+
+    const nextOrder = highestOrderSection ? (highestOrderSection.order ?? 0) + 1 : 0;
+
+    try {
+      const section = await Section.create({
+        userId: userObjectId,
+        name: validated.name,
+        description: validated.description,
+        color: validated.color,
+        order: nextOrder,
+      });
+
+      return toSectionDTO(section);
+    } catch (err: unknown) {
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "code" in err &&
+        (err as { code: number }).code === 11000
+      ) {
+        throw new ValidationError("A section with this name already exists");
+      }
+      throw err;
+    }
   },
 
   /**
@@ -144,24 +176,52 @@ export const sectionService = {
     const validated = UpdateSectionSchema.parse(input);
     await connectDB();
 
-    const section = await Section.findOneAndUpdate(
-      {
-        _id: new mongoose.Types.ObjectId(sectionId),
-        userId: new mongoose.Types.ObjectId(userId),
-      },
-      { $set: validated },
-      { returnDocument: "after", runValidators: true }
-    ).exec();
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const sectionObjectId = new mongoose.Types.ObjectId(sectionId);
 
-    if (!section) {
-      throw new NotFoundError("Section not found");
+    // If renaming, check for duplicate names per user
+    if (validated.name) {
+      const existing = await Section.findOne({
+        _id: { $ne: sectionObjectId },
+        userId: userObjectId,
+        name: { $regex: new RegExp(`^${escapeRegex(validated.name)}$`, "i") },
+      }).exec();
+
+      if (existing) {
+        throw new ValidationError("A section with this name already exists");
+      }
     }
 
-    return toSectionDTO(section);
+    try {
+      const section = await Section.findOneAndUpdate(
+        {
+          _id: sectionObjectId,
+          userId: userObjectId,
+        },
+        { $set: validated },
+        { returnDocument: "after", runValidators: true }
+      ).exec();
+
+      if (!section) {
+        throw new NotFoundError("Section not found");
+      }
+
+      return toSectionDTO(section);
+    } catch (err: unknown) {
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "code" in err &&
+        (err as { code: number }).code === 11000
+      ) {
+        throw new ValidationError("A section with this name already exists");
+      }
+      throw err;
+    }
   },
 
   /**
-   * Deletes an owned section. Throws NotFoundError if section doesn't exist or isn't owned by user.
+   * Deletes an owned section and cleanly disassociates all user-owned dependent documents.
    */
   async deleteSection(sectionId: string, userId: string): Promise<boolean> {
     if (
@@ -174,9 +234,12 @@ export const sectionService = {
     }
 
     await connectDB();
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const sectionObjectId = new mongoose.Types.ObjectId(sectionId);
+
     const result = await Section.findOneAndDelete({
-      _id: new mongoose.Types.ObjectId(sectionId),
-      userId: new mongoose.Types.ObjectId(userId),
+      _id: sectionObjectId,
+      userId: userObjectId,
     }).exec();
 
     if (!result) {
@@ -186,19 +249,19 @@ export const sectionService = {
     // Disassociate section from any owned tasks, habits, activities, and goals
     await Promise.all([
       Task.updateMany(
-        { userId: new mongoose.Types.ObjectId(userId), sectionId: new mongoose.Types.ObjectId(sectionId) },
+        { userId: userObjectId, sectionId: sectionObjectId },
         { $set: { sectionId: null } }
       ).exec(),
       Habit.updateMany(
-        { userId: new mongoose.Types.ObjectId(userId), sectionId: new mongoose.Types.ObjectId(sectionId) },
+        { userId: userObjectId, sectionId: sectionObjectId },
         { $set: { sectionId: null } }
       ).exec(),
       Activity.updateMany(
-        { userId: new mongoose.Types.ObjectId(userId), sectionId: new mongoose.Types.ObjectId(sectionId) },
+        { userId: userObjectId, sectionId: sectionObjectId },
         { $set: { sectionId: null } }
       ).exec(),
       Goal.updateMany(
-        { userId: new mongoose.Types.ObjectId(userId), sectionId: new mongoose.Types.ObjectId(sectionId) },
+        { userId: userObjectId, sectionId: sectionObjectId },
         { $set: { sectionId: null } }
       ).exec(),
     ]);

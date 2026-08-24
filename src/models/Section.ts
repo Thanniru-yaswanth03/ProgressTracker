@@ -48,7 +48,7 @@ const SectionSchema = new Schema<ISectionDocument>(
 
 // Compound indexes for fast scoped sorting and unique naming within user scope
 SectionSchema.index({ userId: 1, order: 1 });
-SectionSchema.index({ userId: 1, name: 1 });
+SectionSchema.index({ userId: 1, name: 1 }, { unique: true });
 
 export const Section: Model<ISectionDocument> =
   mongoose.models.Section ||

@@ -95,6 +95,13 @@ export async function updateSectionAction(
       };
     }
 
+    if (error instanceof ValidationError) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+
     console.error("updateSectionAction error:", error);
     return {
       success: false,
@@ -125,6 +132,13 @@ export async function deleteSectionAction(
       return {
         success: false,
         error: "Section not found.",
+      };
+    }
+
+    if (error instanceof ValidationError) {
+      return {
+        success: false,
+        error: error.message,
       };
     }
 

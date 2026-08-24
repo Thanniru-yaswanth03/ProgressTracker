@@ -118,7 +118,7 @@ export const dashboardService = {
     const tasksByDate = new Map<string, number>();
     weekCompletedTasks.forEach((t) => {
       if (t.completedAt) {
-        const dKey = formatDateKey(t.completedAt);
+        const dKey = formatDateKey(new Date(t.completedAt));
         tasksByDate.set(dKey, (tasksByDate.get(dKey) || 0) + 1);
       }
     });
@@ -126,7 +126,7 @@ export const dashboardService = {
     // Map activity minutes by date
     const activityMinutesByDate = new Map<string, number>();
     weekActivities.forEach((a) => {
-      const dKey = formatDateKey(a.occurredAt);
+      const dKey = formatDateKey(new Date(a.occurredAt));
       activityMinutesByDate.set(
         dKey,
         (activityMinutesByDate.get(dKey) || 0) + (a.duration || 0)

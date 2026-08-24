@@ -1,6 +1,14 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/progress_tracker";
+const MONGODB_URI =
+  process.env.MONGODB_URI ||
+  (process.env.NODE_ENV !== "production"
+    ? "mongodb://127.0.0.1:27017/progress_tracker"
+    : undefined);
+
+if (!MONGODB_URI) {
+  throw new Error("MONGODB_URI is not configured");
+}
 
 interface MongooseCache {
   conn: typeof mongoose | null;
