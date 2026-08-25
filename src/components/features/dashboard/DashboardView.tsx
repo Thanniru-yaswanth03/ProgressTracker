@@ -3,6 +3,7 @@
 import * as React from "react";
 import { DashboardDataDTO, SectionDTO } from "@/types";
 import { DashboardHero } from "./DashboardHero";
+import { AiInsightsWidget } from "@/components/features/ai/AiInsightsWidget";
 import { QuickStartGuide } from "./QuickStartGuide";
 import { WeeklyActivityChart } from "./WeeklyActivityChart";
 import { TodayTasksWidget } from "./TodayTasksWidget";
@@ -23,7 +24,10 @@ export function DashboardView({ userName, data, sections }: DashboardViewProps) 
       {/* 1. Hero Welcome & Daily Completion Gauge */}
       <DashboardHero userName={userName} data={data} />
 
-      {/* 2. Interactive Quick-Start & Guidance Guide */}
+      {/* 2. Live AI Progress Intelligence & Actionable Insights */}
+      <AiInsightsWidget />
+
+      {/* 3. Interactive Quick-Start & Guidance Guide */}
       <QuickStartGuide
         sectionsCount={sections.length}
         tasksCount={data.todayTasks.length}

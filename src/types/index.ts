@@ -516,3 +516,51 @@ export interface AnalyticsDTO {
   activeDaysStats: ActiveDaysStatsDTO;
 }
 
+export type AIPriorityLevel = "critical" | "high" | "medium" | "low";
+
+export interface AIPriorityItem {
+  taskId?: string;
+  taskTitle: string;
+  priority: AIPriorityLevel;
+  reason: string;
+  estimatedMinutes?: number;
+  goalTitle?: string;
+  isOverdue?: boolean;
+}
+
+export interface AIResponseDTO {
+  answer: string;
+  summary: string;
+  priorities: AIPriorityItem[];
+  insights: string[];
+  warnings: string[];
+  suggestedActions: string[];
+}
+
+export interface AIChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  structuredData?: AIResponseDTO;
+  createdAt: string;
+}
+
+export interface AIChatRequestInput {
+  messages: Array<{
+    role: "user" | "assistant";
+    content: string;
+  }>;
+}
+
+export interface AIQuickInsightsDTO {
+  greeting: string;
+  highlights: string[];
+  urgentTasksCount: number;
+  overdueTasksCount: number;
+  bestStreakHabit?: string | null;
+  bestStreakDays?: number;
+  dailyRate: number;
+  weeklyTasksDone: number;
+  recommendation: string;
+}
+

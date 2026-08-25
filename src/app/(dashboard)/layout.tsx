@@ -2,6 +2,7 @@ import * as React from "react";
 import { requireUser } from "@/server/auth/session";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { AiAssistantTrigger } from "@/components/features/ai/AiAssistantTrigger";
 import {
   Activity as ActivityIcon,
   BarChart3,
@@ -136,6 +137,9 @@ export default async function DashboardLayout({
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         {children}
       </main>
+
+      {/* Floating AI Assistant Trigger */}
+      <AiAssistantTrigger />
 
       {/* Footer */}
       <footer className="border-t border-slate-200 dark:border-slate-850 py-6 text-center text-xs text-slate-500 bg-white/50 dark:bg-slate-950/40">
