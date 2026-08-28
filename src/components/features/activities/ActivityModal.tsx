@@ -8,6 +8,8 @@ import { ActivityDTO, SectionDTO } from "@/types";
 import { createActivityAction, updateActivityAction } from "@/server/actions/activity.actions";
 import { Calendar, Clock, Folder, Sparkles, Tag, X } from "lucide-react";
 
+import { useToast } from "@/components/providers/ToastProvider";
+
 export interface ActivityModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,6 +27,7 @@ export function ActivityModal({
   defaultSectionId,
   onSuccess,
 }: ActivityModalProps) {
+  const toast = useToast();
   const isEditing = !!activity;
 
   const [title, setTitle] = React.useState("");
@@ -115,8 +118,10 @@ export function ActivityModal({
           setIsLoading(false);
           if (res.errors) setFieldErrors(res.errors);
           if (res.error) setError(res.error);
+          toast.error("Failed to update activity", res.error || "Please check inputs.");
           return;
         }
+        toast.success("Activity updated", `"${payload.title}" saved.`);
         if (res.data && onSuccess) onSuccess(res.data);
       } else {
         const res = await createActivityAction(payload);
@@ -124,8 +129,10 @@ export function ActivityModal({
           setIsLoading(false);
           if (res.errors) setFieldErrors(res.errors);
           if (res.error) setError(res.error);
+          toast.error("Failed to log activity", res.error || "Please check inputs.");
           return;
         }
+        toast.success("Activity logged! ⏱️", `"${payload.title}" added to timeline.`);
         if (res.data && onSuccess) onSuccess(res.data);
       }
 
@@ -134,6 +141,7 @@ export function ActivityModal({
     } catch (err) {
       console.error("ActivityModal error:", err);
       setError("An unexpected error occurred. Please try again.");
+      toast.error("Activity action failed", "An unexpected error occurred.");
       setIsLoading(false);
     }
   };

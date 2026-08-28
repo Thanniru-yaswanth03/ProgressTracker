@@ -1,17 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { Modal } from "@/components/ui/Modal";
-import { Button } from "@/components/ui/Button";
+import { DeleteConfirmDialog } from "@/components/ui/DeleteConfirmDialog";
 import { ActivityDTO } from "@/types";
 import { deleteActivityAction } from "@/server/actions/activity.actions";
-import { AlertTriangle } from "lucide-react";
+import { useToast } from "@/components/providers/ToastProvider";
 
 export interface DeleteActivityDialogProps {
   isOpen: boolean;
   onClose: () => void;
   activity: ActivityDTO | null;
-  onSuccess?: () => void;
+  onSuccess?: (deletedActivityId: string) => void;
 }
 
 export function DeleteActivityDialog({
@@ -20,66 +19,44 @@ export function DeleteActivityDialog({
   activity,
   onSuccess,
 }: DeleteActivityDialogProps) {
+  const toast = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
 
   if (!activity) return null;
 
   const handleDelete = async () => {
-    setError(null);
     setIsLoading(true);
 
     try {
       const res = await deleteActivityAction(activity.id);
       if (!res.success) {
-        setError(res.error || "Failed to delete activity.");
+        toast.error("Failed to delete activity", res.error || "Please try again.");
         setIsLoading(false);
         return;
       }
 
+      toast.success("Activity deleted", `"${activity.title}" was removed from timeline.`);
       setIsLoading(false);
       onClose();
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess(activity.id);
     } catch (err) {
       console.error("DeleteActivityDialog error:", err);
-      setError("An unexpected error occurred.");
+      toast.error("Failed to delete activity", "An unexpected error occurred.");
       setIsLoading(false);
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Delete Activity Record" maxWidth="sm">
-      <div className="space-y-4 pt-1">
-        <div className="flex items-start gap-3 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-700 dark:text-rose-300 text-xs leading-relaxed">
-          <AlertTriangle className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
-          <div>
-            Are you sure you want to delete <span className="font-bold text-[var(--foreground)]">&ldquo;{activity.title}&rdquo;</span>? This will remove it permanently from your timeline history.
-          </div>
-        </div>
-
-        {error && <p className="text-xs text-rose-600 dark:text-rose-400 font-medium">{error}</p>}
-
-        <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-[var(--border-subtle)]">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-            disabled={isLoading}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="button"
-            variant="danger"
-            size="sm"
-            onClick={handleDelete}
-            isLoading={isLoading}
-          >
-            Delete Activity
-          </Button>
-        </div>
-      </div>
-    </Modal>
+    <DeleteConfirmDialog
+      isOpen={isOpen}
+      onClose={onClose}
+      onConfirm={handleDelete}
+      title="Delete Activity Record"
+      itemName={activity.title}
+      itemType="Activity"
+      warningText="This will remove this record permanently from your timeline and history calculations."
+      confirmButtonText="Delete Activity"
+      isLoading={isLoading}
+    />
   );
 }

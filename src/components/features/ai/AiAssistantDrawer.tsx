@@ -20,6 +20,8 @@ import {
 import { cn } from "@/lib/utils";
 import { AIChatMessage, AIPriorityItem, AIResponseDTO } from "@/types";
 
+import { createPortal } from "react-dom";
+
 export interface AiAssistantDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -40,6 +42,7 @@ export function AiAssistantDrawer({
   onClose,
   initialPrompt,
 }: AiAssistantDrawerProps) {
+  const [mounted, setMounted] = React.useState(false);
   const [messages, setMessages] = React.useState<AIChatMessage[]>([
     {
       id: "welcome-msg",
@@ -49,6 +52,10 @@ export function AiAssistantDrawer({
       createdAt: new Date().toISOString(),
     },
   ]);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [input, setInput] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
@@ -160,13 +167,13 @@ export function AiAssistantDrawer({
     setError(null);
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+  return createPortal(
+    <div className="fixed inset-0 z-[999] flex justify-end">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-enter-fade"
+        className="fixed inset-0 bg-black/50 dark:bg-black/70 transition-opacity animate-enter-fade"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -176,7 +183,7 @@ export function AiAssistantDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="AI Progress Assistant"
-        className="relative w-full max-w-xl sm:max-w-2xl h-full bg-[var(--surface)] text-[var(--foreground)] border-l border-[var(--border)] shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300"
+        className="relative w-full max-w-xl sm:max-w-2xl h-full bg-[var(--surface-elevated)] text-[var(--foreground)] border-l border-[var(--border)] shadow-[var(--shadow-dropdown)] flex flex-col z-10 animate-in slide-in-from-right duration-300"
       >
         {/* Header */}
         <div className="px-5 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--surface-sub)] shrink-0">
@@ -373,7 +380,8 @@ export function AiAssistantDrawer({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

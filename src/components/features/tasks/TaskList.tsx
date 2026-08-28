@@ -243,8 +243,9 @@ export function TaskList({
         onClose={() => setIsCreateOpen(false)}
         sections={sections}
         defaultSectionId={defaultSectionId}
-        onSuccess={() => {
+        onSuccess={(savedTask) => {
           setIsCreateOpen(false);
+          setTasks((prev) => [savedTask, ...prev.filter((t) => t.id !== savedTask.id)]);
           handleMutationSuccess();
         }}
       />
@@ -255,8 +256,9 @@ export function TaskList({
         onClose={() => setEditingTask(null)}
         task={editingTask}
         sections={sections}
-        onSuccess={() => {
+        onSuccess={(savedTask) => {
           setEditingTask(null);
+          setTasks((prev) => prev.map((t) => (t.id === savedTask.id ? savedTask : t)));
           handleMutationSuccess();
         }}
       />
@@ -266,7 +268,11 @@ export function TaskList({
         isOpen={!!deletingTask}
         task={deletingTask}
         onClose={() => setDeletingTask(null)}
-        onSuccess={() => {
+        onSuccess={(deletedTaskId) => {
+          const idToRemove = deletedTaskId || deletingTask?.id;
+          if (idToRemove) {
+            setTasks((prev) => prev.filter((t) => t.id !== idToRemove));
+          }
           setDeletingTask(null);
           handleMutationSuccess();
         }}

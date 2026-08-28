@@ -4,16 +4,16 @@
 
 @layer base {
   :root {
-    /* ─── Warm Productivity & Momentum Design Tokens ─── */
+    /* ─── Warm Productivity & Momentum Design Tokens (Light Mode) ─── */
     
     /* Background & Surfaces */
-    --background: #faf8f5;           /* Warm Ivory */
-    --foreground: #1c1917;           /* Deep Warm Charcoal */
-    --surface: #ffffff;              /* Crisp Pure White Surface */
+    --background: #fcfbfa;           /* Clean warm ivory */
+    --foreground: #18181b;           /* Deep Charcoal Slate */
+    --surface: #ffffff;              /* Pure White Surface */
     --surface-elevated: #ffffff;     /* Elevated Card Surface */
-    --surface-sub: #f4efe6;          /* Slightly deeper warm neutral */
-    --surface-hover: #f5f0e8;        /* Subtle hover surface */
-    --surface-active: #eee7db;
+    --surface-sub: #f6f3ee;          /* Recessed Subcard Surface */
+    --surface-hover: #f3efe7;        /* Subtle hover surface */
+    --surface-active: #ebe5dc;
     
     /* Primary Accent (Signature Burnt Orange / Tangerine) */
     --primary: #ea580c;              /* Burnt Orange */
@@ -31,16 +31,16 @@
     
     /* Neutral & Muted Elements */
     --muted: #f4efe6;
-    --muted-foreground: #78716c;     /* Warm Slate / Stone */
+    --muted-foreground: #71717a;     /* Neutral Slate */
     
     /* Borders & Dividers */
-    --border: #e7e0d3;               /* Hairline warm stone border */
-    --border-subtle: #f0ebe1;
-    --border-strong: #d6ccbb;
+    --border: #e4e0d8;               /* Hairline warm stone border */
+    --border-subtle: #ede9e1;
+    --border-strong: #d4cec2;
     
     /* Form Inputs */
     --input: #ffffff;
-    --input-border: #d6ccbb;
+    --input-border: #d4cec2;
     --ring: #ea580c;                 /* Warm Orange Focus Ring */
     
     /* Semantic Status Tokens */
@@ -61,74 +61,74 @@
     --info-foreground: #075985;
     
     /* Shadows & Elevation */
-    --shadow-subtle: 0 1px 2px 0 rgba(28, 25, 23, 0.04);
-    --shadow-card: 0 1px 3px 0 rgba(28, 25, 23, 0.06), 0 1px 2px -1px rgba(28, 25, 23, 0.06);
-    --shadow-elevated: 0 10px 25px -5px rgba(28, 25, 23, 0.07), 0 8px 10px -6px rgba(28, 25, 23, 0.05);
-    --shadow-dropdown: 0 20px 30px -10px rgba(28, 25, 23, 0.12);
+    --shadow-subtle: 0 1px 2px 0 rgba(24, 24, 27, 0.03);
+    --shadow-card: 0 1px 3px 0 rgba(24, 24, 27, 0.04), 0 1px 2px -1px rgba(24, 24, 27, 0.04);
+    --shadow-elevated: 0 10px 25px -5px rgba(24, 24, 27, 0.06), 0 8px 10px -6px rgba(24, 24, 27, 0.04);
+    --shadow-dropdown: 0 20px 32px -8px rgba(24, 24, 27, 0.12), 0 8px 16px -4px rgba(24, 24, 27, 0.08);
   }
 
   .dark {
-    /* ─── Premium Deep Charcoal / Graphite Dark Mode (Calm & Editorial) ─── */
+    /* ─── Premium Deep Charcoal / Graphite Dark Mode (Linear / Raycast Aesthetic) ─── */
     
     /* Background & Surfaces */
-    --background: #141416;           /* Deep Charcoal Slate (NOT pure black) */
-    --foreground: #f4f4f5;           /* Warm Off-White */
-    --surface: #1b1b1f;              /* Tailored Surface */
-    --surface-elevated: #222227;     /* Elevated Card Surface */
-    --surface-sub: #17171a;          /* Recessed Subcard Surface */
-    --surface-hover: #26262d;        /* Hover state */
-    --surface-active: #2f2f38;
+    --background: #0d0d0f;           /* Deep Obsidian */
+    --foreground: #f4f4f5;           /* Crisp Warm Off-White */
+    --surface: #141417;              /* Primary Slate Surface */
+    --surface-elevated: #1a1a1f;     /* Elevated Card Surface */
+    --surface-sub: #111114;          /* Recessed Subcard Surface */
+    --surface-hover: #1f1f25;        /* Interactive hover state */
+    --surface-active: #272730;
     
     /* Primary Accent (Tangerine / Burnt Orange) */
     --primary: #f97316;              /* Vibrant Tangerine */
     --primary-hover: #fb923c;        /* Lighter Tangerine */
     --primary-active: #ea580c;
-    --primary-soft: rgba(249, 115, 22, 0.14);
-    --primary-soft-border: rgba(249, 115, 22, 0.28);
+    --primary-soft: rgba(249, 115, 22, 0.12);
+    --primary-soft-border: rgba(249, 115, 22, 0.25);
     --primary-foreground: #ffffff;
     
     /* Secondary Accent (Muted Teal) */
     --secondary: #14b8a6;            /* Luminous Teal */
     --secondary-hover: #2dd4bf;
-    --secondary-soft: rgba(20, 184, 166, 0.14);
+    --secondary-soft: rgba(20, 184, 166, 0.12);
     --secondary-foreground: #5eead4;
     
     /* Neutral & Muted Elements */
-    --muted: #222227;
-    --muted-foreground: #a1a1aa;     /* Calm Muted Zinc */
+    --muted: #1c1c22;
+    --muted-foreground: #94949e;     /* Calm Muted Zinc */
     
     /* Borders & Dividers */
-    --border: #2a2a32;               /* Crisp graphite border */
-    --border-subtle: #202026;
-    --border-strong: #383844;
+    --border: #23232a;               /* Crisp graphite border */
+    --border-subtle: #1a1a20;
+    --border-strong: #32323d;
     
     /* Form Inputs */
-    --input: #18181c;
-    --input-border: #2a2a32;
+    --input: #121215;
+    --input-border: #23232a;
     --ring: #f97316;
     
     /* Semantic Status Tokens */
     --success: #22c55e;
-    --success-soft: rgba(34, 197, 94, 0.14);
+    --success-soft: rgba(34, 197, 94, 0.12);
     --success-foreground: #86efac;
     
     --warning: #f59e0b;
-    --warning-soft: rgba(245, 158, 11, 0.14);
+    --warning-soft: rgba(245, 158, 11, 0.12);
     --warning-foreground: #fde68a;
     
     --danger: #f43f5e;
-    --danger-soft: rgba(244, 63, 94, 0.14);
+    --danger-soft: rgba(244, 63, 94, 0.12);
     --danger-foreground: #fca5a5;
     
     --info: #38bdf8;
-    --info-soft: rgba(56, 189, 248, 0.14);
+    --info-soft: rgba(56, 189, 248, 0.12);
     --info-foreground: #bae6fd;
     
     /* Shadows & Elevation */
-    --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
-    --shadow-card: 0 2px 8px 0 rgba(0, 0, 0, 0.35);
-    --shadow-elevated: 0 12px 28px -4px rgba(0, 0, 0, 0.5);
-    --shadow-dropdown: 0 24px 40px -8px rgba(0, 0, 0, 0.6);
+    --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.35);
+    --shadow-card: 0 2px 8px 0 rgba(0, 0, 0, 0.45);
+    --shadow-elevated: 0 12px 28px -4px rgba(0, 0, 0, 0.6);
+    --shadow-dropdown: 0 24px 48px -8px rgba(0, 0, 0, 0.75);
   }
 
   * {
@@ -141,7 +141,7 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
     min-height: 100vh;
     overflow-x: hidden;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 }
 
@@ -150,7 +150,7 @@
   background-color: var(--surface);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-card);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .surface-card:hover {
@@ -234,7 +234,25 @@
 }
 
 .animate-enter-fade {
-  animation: subtle-fade-in 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: subtle-fade-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modal-scale-in {
+  from { opacity: 0; transform: scale(0.96) translateY(6px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-modal-in {
+  animation: modal-scale-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes toast-slide-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-toast-in {
+  animation: toast-slide-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Custom Clean Scrollbar */

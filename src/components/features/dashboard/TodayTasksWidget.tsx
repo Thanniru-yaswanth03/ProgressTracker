@@ -10,6 +10,8 @@ import { TaskModal } from "@/components/features/tasks/TaskModal";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
+import { useToast } from "@/components/providers/ToastProvider";
+
 export interface TodayTasksWidgetProps {
   tasks: TaskDTO[];
   sections: SectionDTO[];
@@ -17,6 +19,7 @@ export interface TodayTasksWidgetProps {
 
 export function TodayTasksWidget({ tasks: initialTasks, sections }: TodayTasksWidgetProps) {
   const router = useRouter();
+  const toast = useToast();
   const [tasks, setTasks] = React.useState<TaskDTO[]>(initialTasks);
   const [tab, setTab] = React.useState<"pending" | "completed">("pending");
   const [togglingId, setTogglingId] = React.useState<string | null>(null);
@@ -55,7 +58,11 @@ export function TodayTasksWidget({ tasks: initialTasks, sections }: TodayTasksWi
         setTasks((prev) =>
           prev.map((t) => (t.id === task.id ? { ...t, status: task.status } : t))
         );
+        toast.error("Failed to update task", res.error || "Please try again.");
       } else {
+        if (nextStatus === "completed") {
+          toast.success("Task completed! 🎉", `"${task.title}" recorded to timeline.`);
+        }
         router.refresh();
       }
     } catch {
@@ -63,6 +70,7 @@ export function TodayTasksWidget({ tasks: initialTasks, sections }: TodayTasksWi
       setTasks((prev) =>
         prev.map((t) => (t.id === task.id ? { ...t, status: task.status } : t))
       );
+      toast.error("Failed to update task", "An unexpected error occurred.");
     } finally {
       setTogglingId(null);
     }

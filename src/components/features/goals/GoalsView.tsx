@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { GoalDTO, SectionDTO } from "@/types";
 import { GoalCard } from "./GoalCard";
 import { GoalFormModal } from "./GoalFormModal";
 import { QuickProgressModal } from "./QuickProgressModal";
+import { DeleteGoalDialog } from "./DeleteGoalDialog";
 import { FeatureGuideModal } from "@/components/ui/FeatureGuideModal";
 import { Button } from "@/components/ui/Button";
 import {
@@ -25,6 +27,9 @@ interface GoalsViewProps {
 type TabType = "active" | "completed" | "paused" | "all";
 
 export function GoalsView({ initialGoals, sections }: GoalsViewProps) {
+  const router = useRouter();
+  const [goals, setGoals] = React.useState<GoalDTO[]>(initialGoals);
+
   const [activeTab, setActiveTab] = React.useState<TabType>("active");
   const [selectedSection, setSelectedSection] = React.useState<string>("all");
   const [searchQuery, setSearchQuery] = React.useState<string>("");
@@ -35,9 +40,15 @@ export function GoalsView({ initialGoals, sections }: GoalsViewProps) {
   const [isQuickProgressOpen, setIsQuickProgressOpen] = React.useState(false);
   const [quickProgressGoal, setQuickProgressGoal] = React.useState<GoalDTO | null>(null);
 
+  const [deletingGoal, setDeletingGoal] = React.useState<GoalDTO | null>(null);
+
+  React.useEffect(() => {
+    setGoals(initialGoals);
+  }, [initialGoals]);
+
   // Filter goals
   const filteredGoals = React.useMemo(() => {
-    return initialGoals.filter((g) => {
+    return goals.filter((g) => {
       // Tab filter
       if (activeTab === "active" && g.status !== "in_progress") return false;
       if (activeTab === "completed" && g.status !== "completed") return false;
@@ -62,18 +73,18 @@ export function GoalsView({ initialGoals, sections }: GoalsViewProps) {
 
       return true;
     });
-  }, [initialGoals, activeTab, selectedSection, searchQuery]);
+  }, [goals, activeTab, selectedSection, searchQuery]);
 
   // Overall Statistics
-  const totalCount = initialGoals.length;
-  const activeCount = initialGoals.filter((g) => g.status === "in_progress").length;
-  const completedCount = initialGoals.filter((g) => g.status === "completed").length;
-  const pausedCount = initialGoals.filter((g) => g.status === "paused").length;
+  const totalCount = goals.length;
+  const activeCount = goals.filter((g) => g.status === "in_progress").length;
+  const completedCount = goals.filter((g) => g.status === "completed").length;
+  const pausedCount = goals.filter((g) => g.status === "paused").length;
 
   const avgProgress =
     totalCount > 0
       ? Math.round(
-          initialGoals.reduce((sum, g) => sum + g.progressPercentage, 0) / totalCount
+          goals.reduce((sum, g) => sum + g.progressPercentage, 0) / totalCount
         )
       : 0;
 
@@ -90,6 +101,14 @@ export function GoalsView({ initialGoals, sections }: GoalsViewProps) {
   const handleOpenQuickProgress = (goal: GoalDTO) => {
     setQuickProgressGoal(goal);
     setIsQuickProgressOpen(true);
+  };
+
+  const handleDelete = (goal: GoalDTO) => {
+    setDeletingGoal(goal);
+  };
+
+  const handleMutationSuccess = () => {
+    router.refresh();
   };
 
   return (
@@ -334,7 +353,9 @@ export function GoalsView({ initialGoals, sections }: GoalsViewProps) {
               key={goal.id}
               goal={goal}
               onEdit={handleOpenEdit}
+              onDelete={handleDelete}
               onQuickProgress={handleOpenQuickProgress}
+              onMutationSuccess={handleMutationSuccess}
             />
           ))}
         </div>
@@ -346,6 +367,14 @@ export function GoalsView({ initialGoals, sections }: GoalsViewProps) {
         onClose={() => setIsFormModalOpen(false)}
         initialGoal={editingGoal}
         sections={sections}
+        onSuccess={(savedGoal) => {
+          setIsFormModalOpen(false);
+          setGoals((prev) => [
+            savedGoal,
+            ...prev.filter((g) => g.id !== savedGoal.id),
+          ]);
+          handleMutationSuccess();
+        }}
       />
 
       {/* Quick Progress Stepper Modal */}
@@ -353,6 +382,28 @@ export function GoalsView({ initialGoals, sections }: GoalsViewProps) {
         isOpen={isQuickProgressOpen}
         onClose={() => setIsQuickProgressOpen(false)}
         goal={quickProgressGoal}
+        onSuccess={(updatedGoal) => {
+          setIsQuickProgressOpen(false);
+          setGoals((prev) =>
+            prev.map((g) => (g.id === updatedGoal.id ? updatedGoal : g))
+          );
+          handleMutationSuccess();
+        }}
+      />
+
+      {/* Delete Goal Dialog */}
+      <DeleteGoalDialog
+        isOpen={!!deletingGoal}
+        goal={deletingGoal}
+        onClose={() => setDeletingGoal(null)}
+        onSuccess={(deletedGoalId) => {
+          const idToRemove = deletedGoalId || deletingGoal?.id;
+          if (idToRemove) {
+            setGoals((prev) => prev.filter((g) => g.id !== idToRemove));
+          }
+          setDeletingGoal(null);
+          handleMutationSuccess();
+        }}
       />
     </div>
   );

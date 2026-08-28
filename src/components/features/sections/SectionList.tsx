@@ -133,8 +133,9 @@ export function SectionList({ initialSections }: SectionListProps) {
       <SectionModal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
-        onSuccess={() => {
+        onSuccess={(savedSection) => {
           setIsCreateOpen(false);
+          setSections((prev) => [savedSection, ...prev.filter((s) => s.id !== savedSection.id)]);
           handleMutationSuccess();
         }}
       />
@@ -144,8 +145,9 @@ export function SectionList({ initialSections }: SectionListProps) {
         isOpen={!!editingSection}
         onClose={() => setEditingSection(null)}
         section={editingSection}
-        onSuccess={() => {
+        onSuccess={(savedSection) => {
           setEditingSection(null);
+          setSections((prev) => prev.map((s) => (s.id === savedSection.id ? savedSection : s)));
           handleMutationSuccess();
         }}
       />
@@ -155,7 +157,11 @@ export function SectionList({ initialSections }: SectionListProps) {
         isOpen={!!deletingSection}
         section={deletingSection}
         onClose={() => setDeletingSection(null)}
-        onSuccess={() => {
+        onSuccess={(deletedSectionId) => {
+          const idToRemove = deletedSectionId || deletingSection?.id;
+          if (idToRemove) {
+            setSections((prev) => prev.filter((s) => s.id !== idToRemove));
+          }
           setDeletingSection(null);
           handleMutationSuccess();
         }}

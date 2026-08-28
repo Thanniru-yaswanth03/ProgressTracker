@@ -8,6 +8,8 @@ import { HabitDTO, HabitFrequency, SectionDTO } from "@/types";
 import { createHabitAction, updateHabitAction } from "@/server/actions/habit.actions";
 import { Calendar, Flame, Folder, Repeat } from "lucide-react";
 
+import { useToast } from "@/components/providers/ToastProvider";
+
 export interface HabitModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -35,6 +37,7 @@ export function HabitModal({
   defaultSectionId,
   onSuccess,
 }: HabitModalProps) {
+  const toast = useToast();
   const isEditing = !!habit;
 
   const [title, setTitle] = React.useState("");
@@ -107,8 +110,10 @@ export function HabitModal({
           setIsLoading(false);
           if (res.errors) setFieldErrors(res.errors);
           if (res.error) setError(res.error);
+          toast.error("Failed to update habit", res.error || "Please check the form inputs.");
           return;
         }
+        toast.success("Habit updated", `"${payload.title}" saved.`);
         if (res.data && onSuccess) onSuccess(res.data);
       } else {
         const res = await createHabitAction(payload);
@@ -116,8 +121,10 @@ export function HabitModal({
           setIsLoading(false);
           if (res.errors) setFieldErrors(res.errors);
           if (res.error) setError(res.error);
+          toast.error("Failed to create habit", res.error || "Please check the form inputs.");
           return;
         }
+        toast.success("Habit created", `"${payload.title}" routine started!`);
         if (res.data && onSuccess) onSuccess(res.data);
       }
 
@@ -126,6 +133,7 @@ export function HabitModal({
     } catch (err) {
       console.error("HabitModal error:", err);
       setError("An unexpected error occurred. Please try again.");
+      toast.error("Habit action failed", "An unexpected error occurred.");
       setIsLoading(false);
     }
   };

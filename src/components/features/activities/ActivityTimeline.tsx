@@ -271,8 +271,9 @@ export function ActivityTimeline({
         onClose={() => setIsLogOpen(false)}
         sections={sections}
         defaultSectionId={defaultSectionId}
-        onSuccess={() => {
+        onSuccess={(savedActivity) => {
           setIsLogOpen(false);
+          setActivities((prev) => [savedActivity, ...prev.filter((a) => a.id !== savedActivity.id)]);
           handleMutationSuccess();
         }}
       />
@@ -283,8 +284,9 @@ export function ActivityTimeline({
         onClose={() => setEditingActivity(null)}
         activity={editingActivity}
         sections={sections}
-        onSuccess={() => {
+        onSuccess={(savedActivity) => {
           setEditingActivity(null);
+          setActivities((prev) => prev.map((a) => (a.id === savedActivity.id ? savedActivity : a)));
           handleMutationSuccess();
         }}
       />
@@ -294,7 +296,11 @@ export function ActivityTimeline({
         isOpen={!!deletingActivity}
         activity={deletingActivity}
         onClose={() => setDeletingActivity(null)}
-        onSuccess={() => {
+        onSuccess={(deletedActivityId) => {
+          const idToRemove = deletedActivityId || deletingActivity?.id;
+          if (idToRemove) {
+            setActivities((prev) => prev.filter((a) => a.id !== idToRemove));
+          }
           setDeletingActivity(null);
           handleMutationSuccess();
         }}

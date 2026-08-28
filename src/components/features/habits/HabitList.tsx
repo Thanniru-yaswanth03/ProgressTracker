@@ -213,8 +213,9 @@ export function HabitList({
         onClose={() => setIsCreateOpen(false)}
         sections={sections}
         defaultSectionId={defaultSectionId}
-        onSuccess={() => {
+        onSuccess={(savedHabit) => {
           setIsCreateOpen(false);
+          setHabits((prev) => [savedHabit, ...prev.filter((h) => h.id !== savedHabit.id)]);
           handleMutationSuccess();
         }}
       />
@@ -225,8 +226,9 @@ export function HabitList({
         onClose={() => setEditingHabit(null)}
         habit={editingHabit}
         sections={sections}
-        onSuccess={() => {
+        onSuccess={(savedHabit) => {
           setEditingHabit(null);
+          setHabits((prev) => prev.map((h) => (h.id === savedHabit.id ? savedHabit : h)));
           handleMutationSuccess();
         }}
       />
@@ -236,7 +238,11 @@ export function HabitList({
         isOpen={!!deletingHabit}
         habit={deletingHabit}
         onClose={() => setDeletingHabit(null)}
-        onSuccess={() => {
+        onSuccess={(deletedHabitId) => {
+          const idToRemove = deletedHabitId || deletingHabit?.id;
+          if (idToRemove) {
+            setHabits((prev) => prev.filter((h) => h.id !== idToRemove));
+          }
           setDeletingHabit(null);
           handleMutationSuccess();
         }}

@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { useToast } from "@/components/providers/ToastProvider";
+
 export interface TaskCardProps {
   task: TaskDTO;
   onEdit: (task: TaskDTO) => void;
@@ -29,6 +31,7 @@ export function TaskCard({
   onDelete,
   onToggleSuccess,
 }: TaskCardProps) {
+  const toast = useToast();
   const [isCompleted, setIsCompleted] = React.useState(task.status === "completed");
   const [isToggling, setIsToggling] = React.useState(false);
 
@@ -48,11 +51,18 @@ export function TaskCard({
       );
       if (!res.success) {
         setIsCompleted(!nextState); // Rollback on failure
-      } else if (res.data && onToggleSuccess) {
-        onToggleSuccess(res.data);
+        toast.error("Failed to update task status", res.error || "Please try again.");
+      } else {
+        if (nextState) {
+          toast.success("Task completed! 🎉", `"${task.title}" recorded to your activity timeline.`);
+        }
+        if (res.data && onToggleSuccess) {
+          onToggleSuccess(res.data);
+        }
       }
     } catch {
       setIsCompleted(!nextState);
+      toast.error("Failed to update task status", "An unexpected error occurred.");
     } finally {
       setIsToggling(false);
     }

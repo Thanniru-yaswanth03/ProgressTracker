@@ -17,20 +17,29 @@ import {
   updateGoalProgressAction,
   toggleGoalPauseAction,
   completeGoalAction,
-  deleteGoalAction,
 } from "@/server/actions/goal.actions";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/components/providers/ToastProvider";
 
 interface GoalCardProps {
   goal: GoalDTO;
   onEdit: (goal: GoalDTO) => void;
+  onDelete: (goal: GoalDTO) => void;
   onQuickProgress: (goal: GoalDTO) => void;
+  onMutationSuccess?: () => void;
 }
 
-export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
+export function GoalCard({
+  goal,
+  onEdit,
+  onDelete,
+  onQuickProgress,
+  onMutationSuccess,
+}: GoalCardProps) {
   const router = useRouter();
+  const toast = useToast();
   const [isPending, startTransition] = React.useTransition();
   const [showMenu, setShowMenu] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
@@ -47,8 +56,15 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
       const res = await updateGoalProgressAction(goal.id, nextVal);
       if (!res.success) {
         setErrorMsg(res.error || "Failed to update progress");
+        toast.error("Failed to update progress", res.error || "Please try again.");
       } else {
+        if (nextVal >= goal.targetValue) {
+          toast.success("Goal milestone completed! 🎉", `"${goal.title}" reached 100%!`);
+        } else {
+          toast.success("Progress saved", `+${amount} logged for "${goal.title}"`);
+        }
         router.refresh();
+        if (onMutationSuccess) onMutationSuccess();
       }
     });
   };
@@ -56,12 +72,19 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
   const handleTogglePause = () => {
     setShowMenu(false);
     setErrorMsg(null);
+    const willPause = !isPaused;
     startTransition(async () => {
       const res = await toggleGoalPauseAction(goal.id);
       if (!res.success) {
         setErrorMsg(res.error || "Failed to toggle pause state");
+        toast.error("Failed to toggle pause", res.error || "Please try again.");
       } else {
+        toast.info(
+          willPause ? "Goal paused" : "Goal resumed",
+          `"${goal.title}" is now ${willPause ? "paused" : "in progress"}.`
+        );
         router.refresh();
+        if (onMutationSuccess) onMutationSuccess();
       }
     });
   };
@@ -73,24 +96,18 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
       const res = await completeGoalAction(goal.id);
       if (!res.success) {
         setErrorMsg(res.error || "Failed to complete goal");
+        toast.error("Failed to complete goal", res.error || "Please try again.");
       } else {
+        toast.success("Goal completed! 🎉", `"${goal.title}" marked as completed!`);
         router.refresh();
+        if (onMutationSuccess) onMutationSuccess();
       }
     });
   };
 
   const handleDelete = () => {
     setShowMenu(false);
-    if (!confirm(`Are you sure you want to delete goal "${goal.title}"?`)) return;
-
-    startTransition(async () => {
-      const res = await deleteGoalAction(goal.id);
-      if (!res.success) {
-        setErrorMsg(res.error || "Failed to delete goal");
-      } else {
-        router.refresh();
-      }
-    });
+    onDelete(goal);
   };
 
   // Status pill color
@@ -188,7 +205,7 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
                   className="fixed inset-0 z-20"
                   onClick={() => setShowMenu(false)}
                 />
-                <div className="absolute right-0 mt-1 w-44 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border)] shadow-xl p-1 z-30 flex flex-col gap-0.5 animate-enter-fade">
+                <div className="absolute right-0 mt-1 w-44 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border)] shadow-[var(--shadow-dropdown)] p-1 z-30 flex flex-col gap-0.5 animate-enter-fade">
                   {!isCompleted && (
                     <>
                       <button

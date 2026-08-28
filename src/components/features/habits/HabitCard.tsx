@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { useToast } from "@/components/providers/ToastProvider";
+
 export interface HabitCardProps {
   habit: HabitDTO;
   onEdit: (habit: HabitDTO) => void;
@@ -29,6 +31,7 @@ export function HabitCard({
   onDelete,
   onMutationSuccess,
 }: HabitCardProps) {
+  const toast = useToast();
   const [week, setWeek] = React.useState<HabitDayStatus[]>(habit.weekHistory);
   const [streak, setStreak] = React.useState(habit.streak);
   const [togglingDate, setTogglingDate] = React.useState<string | null>(null);
@@ -56,9 +59,13 @@ export function HabitCard({
         setWeek((prev) =>
           prev.map((d) => (d.date === day.date ? { ...d, completed: day.completed } : d))
         );
+        toast.error("Failed to log habit", res.error || "Please try again.");
       } else if (res.data?.habit) {
         setStreak(res.data.habit.streak);
         setWeek(res.data.habit.weekHistory);
+        if (nextCompleted) {
+          toast.success("Habit checked in! 🔥", `Streak is now ${res.data.habit.streak.currentStreak} days.`);
+        }
         if (onMutationSuccess) onMutationSuccess();
       }
     } catch {
@@ -66,6 +73,7 @@ export function HabitCard({
       setWeek((prev) =>
         prev.map((d) => (d.date === day.date ? { ...d, completed: day.completed } : d))
       );
+      toast.error("Failed to log habit", "An unexpected error occurred.");
     } finally {
       setTogglingDate(null);
     }
@@ -73,10 +81,19 @@ export function HabitCard({
 
   const handleToggleArchive = async () => {
     setIsArchiving(true);
+    const willArchive = !habit.archived;
     try {
-      const res = await archiveHabitAction(habit.id, !habit.archived);
-      if (res.success && onMutationSuccess) {
-        onMutationSuccess();
+      const res = await archiveHabitAction(habit.id, willArchive);
+      if (res.success) {
+        toast.success(
+          willArchive ? "Habit archived" : "Habit unarchived",
+          `"${habit.title}" has been ${willArchive ? "moved to archive" : "restored to active"}.`
+        );
+        if (onMutationSuccess) {
+          onMutationSuccess();
+        }
+      } else {
+        toast.error("Failed to update habit archive status", res.error || "Please try again.");
       }
     } finally {
       setIsArchiving(false);

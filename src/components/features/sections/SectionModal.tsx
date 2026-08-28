@@ -22,6 +22,8 @@ export const PRESET_COLORS = [
   { name: "Charcoal", hex: "#4b5563" },
 ];
 
+import { useToast } from "@/components/providers/ToastProvider";
+
 export interface SectionModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -35,6 +37,7 @@ export function SectionModal({
   section,
   onSuccess,
 }: SectionModalProps) {
+  const toast = useToast();
   const isEditing = !!section;
 
   const [name, setName] = React.useState("");
@@ -79,9 +82,11 @@ export function SectionModal({
           setIsLoading(false);
           if (res.errors) setFieldErrors(res.errors);
           if (res.error) setError(res.error);
+          toast.error("Failed to update section", res.error || "Please check inputs.");
           return;
         }
 
+        toast.success("Section updated", `"${name.trim()}" saved.`);
         if (res.data && onSuccess) {
           onSuccess(res.data);
         }
@@ -96,9 +101,11 @@ export function SectionModal({
           setIsLoading(false);
           if (res.errors) setFieldErrors(res.errors);
           if (res.error) setError(res.error);
+          toast.error("Failed to create section", res.error || "Please check inputs.");
           return;
         }
 
+        toast.success("Section created", `"${name.trim()}" domain added.`);
         if (res.data && onSuccess) {
           onSuccess(res.data);
         }
@@ -109,6 +116,7 @@ export function SectionModal({
     } catch (err) {
       console.error("SectionModal error:", err);
       setError("An unexpected error occurred. Please try again.");
+      toast.error("Section action failed", "An unexpected error occurred.");
       setIsLoading(false);
     }
   };

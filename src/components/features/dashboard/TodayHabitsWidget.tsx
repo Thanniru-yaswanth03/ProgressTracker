@@ -10,6 +10,8 @@ import { HabitModal } from "@/components/features/habits/HabitModal";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
+import { useToast } from "@/components/providers/ToastProvider";
+
 export interface TodayHabitsWidgetProps {
   habits: HabitDTO[];
   sections: SectionDTO[];
@@ -17,6 +19,7 @@ export interface TodayHabitsWidgetProps {
 
 export function TodayHabitsWidget({ habits: initialHabits, sections }: TodayHabitsWidgetProps) {
   const router = useRouter();
+  const toast = useToast();
   const [habits, setHabits] = React.useState<HabitDTO[]>(initialHabits);
   const [togglingId, setTogglingId] = React.useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = React.useState(false);
@@ -57,7 +60,11 @@ export function TodayHabitsWidget({ habits: initialHabits, sections }: TodayHabi
         setHabits((prev) =>
           prev.map((h) => (h.id === habit.id ? { ...h, streak: habit.streak } : h))
         );
+        toast.error("Failed to log habit", res.error || "Please try again.");
       } else {
+        if (nextCompleted) {
+          toast.success("Habit checked in! 🔥", `"${habit.title}" logged for today.`);
+        }
         router.refresh();
       }
     } catch {
@@ -65,6 +72,7 @@ export function TodayHabitsWidget({ habits: initialHabits, sections }: TodayHabi
       setHabits((prev) =>
         prev.map((h) => (h.id === habit.id ? { ...h, streak: habit.streak } : h))
       );
+      toast.error("Failed to log habit", "An unexpected error occurred.");
     } finally {
       setTogglingId(null);
     }

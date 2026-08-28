@@ -8,6 +8,8 @@ import { SectionDTO, TaskDTO, TaskPriority } from "@/types";
 import { createTaskAction, updateTaskAction } from "@/server/actions/task.actions";
 import { Calendar, CheckSquare, Flag, Folder } from "lucide-react";
 
+import { useToast } from "@/components/providers/ToastProvider";
+
 export interface TaskModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -32,6 +34,7 @@ export function TaskModal({
   defaultSectionId,
   onSuccess,
 }: TaskModalProps) {
+  const toast = useToast();
   const isEditing = !!task;
 
   const [title, setTitle] = React.useState("");
@@ -87,9 +90,11 @@ export function TaskModal({
           setIsLoading(false);
           if (res.errors) setFieldErrors(res.errors);
           if (res.error) setError(res.error);
+          toast.error("Failed to update task", res.error || "Please check the form inputs.");
           return;
         }
 
+        toast.success("Task updated", `"${payload.title}" saved.`);
         if (res.data && onSuccess) onSuccess(res.data);
       } else {
         const res = await createTaskAction(payload);
@@ -97,9 +102,11 @@ export function TaskModal({
           setIsLoading(false);
           if (res.errors) setFieldErrors(res.errors);
           if (res.error) setError(res.error);
+          toast.error("Failed to create task", res.error || "Please check the form inputs.");
           return;
         }
 
+        toast.success("Task created", `"${payload.title}" added to your list.`);
         if (res.data && onSuccess) onSuccess(res.data);
       }
 
@@ -108,6 +115,7 @@ export function TaskModal({
     } catch (err) {
       console.error("TaskModal error:", err);
       setError("An unexpected error occurred. Please try again.");
+      toast.error("Task action failed", "An unexpected error occurred.");
       setIsLoading(false);
     }
   };

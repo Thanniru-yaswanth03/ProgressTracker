@@ -12,6 +12,8 @@ import { ChevronRight, Clock, Edit2, Folder, Plus, Target } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
+import { useToast } from "@/components/providers/ToastProvider";
+
 export interface GoalsWidgetProps {
   goals: GoalDTO[];
   sections: SectionDTO[];
@@ -19,6 +21,7 @@ export interface GoalsWidgetProps {
 
 export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps) {
   const router = useRouter();
+  const toast = useToast();
   const [goals, setGoals] = React.useState<GoalDTO[]>(initialGoals);
   const [isCreateOpen, setIsCreateOpen] = React.useState(false);
   const [editingGoal, setEditingGoal] = React.useState<GoalDTO | null>(null);
@@ -65,7 +68,7 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
 
     try {
       if (editingGoal) {
-        await updateGoalAction(editingGoal.id, {
+        const res = await updateGoalAction(editingGoal.id, {
           title,
           description,
           sectionId: sectionId || null,
@@ -74,9 +77,14 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
           targetValue: Number(targetValue),
           unit,
         });
-        setEditingGoal(null);
+        if (res.success) {
+          toast.success("Milestone updated", `"${title}" saved.`);
+          setEditingGoal(null);
+        } else {
+          toast.error("Failed to update milestone", res.error || "Please try again.");
+        }
       } else {
-        await createGoalAction({
+        const res = await createGoalAction({
           title,
           description,
           sectionId: sectionId || null,
@@ -85,9 +93,16 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
           targetValue: Number(targetValue),
           unit,
         });
-        setIsCreateOpen(false);
+        if (res.success) {
+          toast.success("Milestone target created", `"${title}" added.`);
+          setIsCreateOpen(false);
+        } else {
+          toast.error("Failed to create milestone", res.error || "Please try again.");
+        }
       }
       router.refresh();
+    } catch {
+      toast.error("An error occurred", "Please try again.");
     } finally {
       setIsLoading(false);
     }
