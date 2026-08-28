@@ -29,59 +29,59 @@ export function TaskStatsHeader({ tasks }: TaskStatsHeaderProps) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {/* Total Tasks */}
-      <Card className="p-4 flex items-center gap-3.5 border-slate-800/80">
-        <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
+      <Card className="p-4 flex items-center gap-3.5">
+        <div className="w-10 h-10 rounded-xl bg-[var(--primary-soft)] border border-[var(--primary-soft-border)] flex items-center justify-center text-[var(--primary)] shrink-0">
           <ListTodo className="w-5 h-5" />
         </div>
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
             Total Tasks
           </div>
-          <div className="text-xl font-extrabold text-white mt-0.5">{total}</div>
+          <div className="text-xl font-extrabold text-[var(--foreground)] mt-0.5">{total}</div>
         </div>
       </Card>
 
       {/* Pending Tasks */}
-      <Card className="p-4 flex items-center gap-3.5 border-slate-800/80">
-        <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 shrink-0">
+      <Card className="p-4 flex items-center gap-3.5">
+        <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0">
           <Clock className="w-5 h-5" />
         </div>
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
             Pending
           </div>
-          <div className="text-xl font-extrabold text-white mt-0.5">{pending}</div>
+          <div className="text-xl font-extrabold text-[var(--foreground)] mt-0.5">{pending}</div>
         </div>
       </Card>
 
       {/* Completed Tasks */}
-      <Card className="p-4 flex items-center gap-3.5 border-slate-800/80">
-        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+      <Card className="p-4 flex items-center gap-3.5">
+        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
           <CheckCircle2 className="w-5 h-5" />
         </div>
         <div className="flex-1">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
               Completed
             </span>
-            <span className="text-[10px] font-bold text-emerald-400">
+            <span className="text-[10px] font-extrabold text-emerald-700 dark:text-emerald-400">
               {completionPercentage}%
             </span>
           </div>
-          <div className="text-xl font-extrabold text-white mt-0.5">{completed}</div>
+          <div className="text-xl font-extrabold text-[var(--foreground)] mt-0.5">{completed}</div>
         </div>
       </Card>
 
       {/* Overdue Tasks */}
-      <Card className="p-4 flex items-center gap-3.5 border-slate-800/80">
-        <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-red-500/20 flex items-center justify-center text-rose-400 shrink-0">
+      <Card className="p-4 flex items-center gap-3.5">
+        <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
           <AlertCircle className="w-5 h-5" />
         </div>
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
             Overdue
           </div>
-          <div className="text-xl font-extrabold text-rose-400 mt-0.5">{overdue}</div>
+          <div className="text-xl font-extrabold text-rose-600 dark:text-rose-400 mt-0.5">{overdue}</div>
         </div>
       </Card>
     </div>

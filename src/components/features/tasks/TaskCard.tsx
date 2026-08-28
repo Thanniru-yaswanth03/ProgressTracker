@@ -94,31 +94,31 @@ export function TaskCard({
   const dueInfo = getDueDateInfo();
 
   const priorityVariants = {
-    low: { label: "Low", className: "bg-slate-800/80 text-slate-400 border-slate-700/50" },
-    medium: { label: "Medium", className: "bg-sky-500/10 text-sky-400 border-sky-500/30" },
-    high: { label: "High", className: "bg-amber-500/10 text-amber-400 border-amber-500/30" },
-    urgent: { label: "Urgent", className: "bg-rose-500/10 text-rose-400 border-rose-500/30" },
+    low: { label: "Low", className: "bg-[var(--surface-sub)] text-[var(--muted-foreground)] border-[var(--border)]" },
+    medium: { label: "Medium", className: "bg-sky-500/10 text-sky-700 dark:text-sky-400 border-sky-500/25" },
+    high: { label: "High", className: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/25" },
+    urgent: { label: "Urgent", className: "bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/25" },
   };
 
   return (
     <Card
       className={cn(
-        "group flex flex-col justify-between p-4 transition-all duration-200 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700/80 relative overflow-hidden",
-        isCompleted && "opacity-65 bg-slate-100/60 dark:bg-slate-950/40"
+        "group flex flex-col justify-between p-4 transition-all duration-200 relative overflow-hidden",
+        isCompleted && "opacity-60 bg-[var(--surface-sub)]/50"
       )}
     >
       <div className="flex items-start gap-3.5">
-        {/* Custom Checkbox */}
+        {/* Custom Animated Checkbox */}
         <button
           type="button"
           onClick={handleToggle}
           disabled={isToggling}
           aria-label={isCompleted ? "Mark task as pending" : "Mark task as completed"}
           className={cn(
-            "w-5 h-5 rounded-lg border flex items-center justify-center transition-all cursor-pointer mt-0.5 shrink-0 focus:outline-none focus:ring-2 focus:ring-indigo-500",
+            "w-5 h-5 rounded-lg border flex items-center justify-center transition-all cursor-pointer mt-0.5 shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]",
             isCompleted
-              ? "bg-emerald-500 border-emerald-400 text-white shadow-sm shadow-emerald-500/30"
-              : "border-slate-300 dark:border-slate-600 hover:border-indigo-400 bg-slate-50 dark:bg-slate-900/60"
+              ? "bg-emerald-500 border-emerald-400 text-white shadow-xs animate-check-pop"
+              : "border-[var(--border-strong)] hover:border-[var(--primary)] bg-[var(--surface-sub)]"
           )}
         >
           {isCompleted && <Check className="w-3.5 h-3.5 stroke-[3]" />}
@@ -129,8 +129,8 @@ export function TaskCard({
           <div className="flex items-start justify-between gap-2">
             <h4
               className={cn(
-                "font-semibold text-sm text-slate-900 dark:text-slate-100 transition-all leading-tight",
-                isCompleted && "line-through text-slate-400 dark:text-slate-500 font-normal"
+                "font-semibold text-sm text-[var(--foreground)] transition-all leading-tight",
+                isCompleted && "line-through text-[var(--muted-foreground)] font-normal"
               )}
             >
               {task.title}
@@ -141,7 +141,7 @@ export function TaskCard({
               <button
                 type="button"
                 onClick={() => onEdit(task)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                className="p-1 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
                 title="Edit task"
                 aria-label={`Edit ${task.title}`}
               >
@@ -150,7 +150,7 @@ export function TaskCard({
               <button
                 type="button"
                 onClick={() => onDelete(task)}
-                className="p-1 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                className="p-1 rounded-lg text-[var(--muted-foreground)] hover:text-rose-600 hover:bg-rose-500/10 transition-colors cursor-pointer"
                 title="Delete task"
                 aria-label={`Delete ${task.title}`}
               >
@@ -160,21 +160,21 @@ export function TaskCard({
           </div>
 
           {task.description && (
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+            <p className="text-xs text-[var(--muted-foreground)] mt-1 line-clamp-2 leading-relaxed">
               {task.description}
             </p>
           )}
 
           {/* Tags & Badges */}
-          <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-slate-800/60">
+          <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-[var(--border-subtle)]">
             {/* Section Tag */}
             {task.section ? (
               <span
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border"
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium border"
                 style={{
-                  color: task.section.color || "#6366f1",
-                  backgroundColor: `${task.section.color || "#6366f1"}15`,
-                  borderColor: `${task.section.color || "#6366f1"}30`,
+                  color: task.section.color || "var(--primary)",
+                  backgroundColor: `${task.section.color || "#ea580c"}15`,
+                  borderColor: `${task.section.color || "#ea580c"}30`,
                 }}
               >
                 <Folder className="w-2.5 h-2.5" />
@@ -185,7 +185,7 @@ export function TaskCard({
             {/* Priority Badge */}
             <span
               className={cn(
-                "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border",
+                "inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold border",
                 priorityVariants[task.priority]?.className
               )}
             >
@@ -197,7 +197,7 @@ export function TaskCard({
             {dueInfo && (
               <Badge variant={dueInfo.variant} className="text-[10px] gap-1">
                 {dueInfo.isOverdue ? (
-                  <Clock className="w-2.5 h-2.5 text-rose-400" />
+                  <Clock className="w-2.5 h-2.5 text-rose-500" />
                 ) : (
                   <Calendar className="w-2.5 h-2.5" />
                 )}

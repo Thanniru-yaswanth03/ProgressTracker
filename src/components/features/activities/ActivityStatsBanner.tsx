@@ -31,56 +31,56 @@ export function ActivityStatsBanner({ activities }: ActivityStatsBannerProps) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {/* Total Activities */}
-      <Card className="p-4 flex items-center gap-3.5 border-slate-800/80">
-        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+      <Card className="p-4 flex items-center gap-3.5">
+        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
           <Sparkles className="w-5 h-5" />
         </div>
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
             Accomplishments
           </div>
-          <div className="text-xl font-extrabold text-white mt-0.5">{totalCount}</div>
+          <div className="text-xl font-extrabold text-[var(--foreground)] mt-0.5">{totalCount}</div>
         </div>
       </Card>
 
       {/* Total Time Logged */}
-      <Card className="p-4 flex items-center gap-3.5 border-slate-800/80">
-        <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 shrink-0">
+      <Card className="p-4 flex items-center gap-3.5">
+        <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0">
           <Clock className="w-5 h-5" />
         </div>
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
             Time Logged
           </div>
-          <div className="text-xl font-extrabold text-white mt-0.5">{timeFormatted}</div>
+          <div className="text-xl font-extrabold text-[var(--foreground)] mt-0.5">{timeFormatted}</div>
         </div>
       </Card>
 
       {/* Active Sections */}
-      <Card className="p-4 flex items-center gap-3.5 border-slate-800/80">
-        <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
+      <Card className="p-4 flex items-center gap-3.5">
+        <div className="w-10 h-10 rounded-xl bg-[var(--primary-soft)] border border-[var(--primary-soft-border)] flex items-center justify-center text-[var(--primary)] shrink-0">
           <Flame className="w-5 h-5" />
         </div>
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
             Active Domains
           </div>
-          <div className="text-xl font-extrabold text-indigo-400 mt-0.5">
+          <div className="text-xl font-extrabold text-[var(--primary)] mt-0.5">
             {sectionSet.size}
           </div>
         </div>
       </Card>
 
       {/* Unique Tags */}
-      <Card className="p-4 flex items-center gap-3.5 border-slate-800/80">
-        <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+      <Card className="p-4 flex items-center gap-3.5">
+        <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
           <Tag className="w-5 h-5" />
         </div>
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
             Tracked Tags
           </div>
-          <div className="text-xl font-extrabold text-amber-400 mt-0.5">
+          <div className="text-xl font-extrabold text-amber-600 dark:text-amber-400 mt-0.5">
             {tagSet.size}
           </div>
         </div>

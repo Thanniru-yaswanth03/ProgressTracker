@@ -4,100 +4,266 @@
 
 @layer base {
   :root {
-    --background: #f1f5f9;
-    --foreground: #0f172a;
-    --card: #ffffff;
-    --card-foreground: #0f172a;
-    --card-border: #e2e8f0;
-    --card-sub: #f8fafc;
-    --card-sub-border: #e2e8f0;
-    --primary: #4f46e5;
+    /* ─── Warm Productivity & Momentum Design Tokens ─── */
+    
+    /* Background & Surfaces */
+    --background: #faf8f5;           /* Warm Ivory */
+    --foreground: #1c1917;           /* Deep Warm Charcoal */
+    --surface: #ffffff;              /* Crisp Pure White Surface */
+    --surface-elevated: #ffffff;     /* Elevated Card Surface */
+    --surface-sub: #f4efe6;          /* Slightly deeper warm neutral */
+    --surface-hover: #f5f0e8;        /* Subtle hover surface */
+    --surface-active: #eee7db;
+    
+    /* Primary Accent (Signature Burnt Orange / Tangerine) */
+    --primary: #ea580c;              /* Burnt Orange */
+    --primary-hover: #c2410c;        /* Deep Rust Orange */
+    --primary-active: #9a3412;
+    --primary-soft: #ffedd5;         /* Soft Amber/Peach tint */
+    --primary-soft-border: #fed7aa;
     --primary-foreground: #ffffff;
-    --secondary: #e2e8f0;
-    --secondary-foreground: #1e293b;
-    --muted: #f8fafc;
-    --muted-foreground: #64748b;
-    --border: #cbd5e1;
+    
+    /* Secondary Accent (Muted Editorial Teal) */
+    --secondary: #0d9488;            /* Muted Teal */
+    --secondary-hover: #0f766e;
+    --secondary-soft: #ccfbf1;
+    --secondary-foreground: #134e4a;
+    
+    /* Neutral & Muted Elements */
+    --muted: #f4efe6;
+    --muted-foreground: #78716c;     /* Warm Slate / Stone */
+    
+    /* Borders & Dividers */
+    --border: #e7e0d3;               /* Hairline warm stone border */
+    --border-subtle: #f0ebe1;
+    --border-strong: #d6ccbb;
+    
+    /* Form Inputs */
     --input: #ffffff;
-    --ring: #6366f1;
+    --input-border: #d6ccbb;
+    --ring: #ea580c;                 /* Warm Orange Focus Ring */
+    
+    /* Semantic Status Tokens */
+    --success: #16a34a;              /* Natural Green */
+    --success-soft: #dcfce7;
+    --success-foreground: #14532d;
+    
+    --warning: #d97706;              /* Warm Amber */
+    --warning-soft: #fef3c7;
+    --warning-foreground: #78350f;
+    
+    --danger: #e11d48;               /* Warm Crimson/Coral */
+    --danger-soft: #ffe4e6;
+    --danger-foreground: #881337;
+    
+    --info: #0284c7;                 /* Sky Blue */
+    --info-soft: #e0f2fe;
+    --info-foreground: #075985;
+    
+    /* Shadows & Elevation */
+    --shadow-subtle: 0 1px 2px 0 rgba(28, 25, 23, 0.04);
+    --shadow-card: 0 1px 3px 0 rgba(28, 25, 23, 0.06), 0 1px 2px -1px rgba(28, 25, 23, 0.06);
+    --shadow-elevated: 0 10px 25px -5px rgba(28, 25, 23, 0.07), 0 8px 10px -6px rgba(28, 25, 23, 0.05);
+    --shadow-dropdown: 0 20px 30px -10px rgba(28, 25, 23, 0.12);
   }
 
   .dark {
-    --background: #090d16;
-    --foreground: #f1f5f9;
-    --card: rgba(15, 23, 42, 0.75);
-    --card-foreground: #f8fafc;
-    --card-border: rgba(255, 255, 255, 0.08);
-    --card-sub: rgba(15, 23, 42, 0.85);
-    --card-sub-border: rgba(148, 163, 184, 0.15);
-    --primary: #6366f1;
+    /* ─── Premium Deep Charcoal / Graphite Dark Mode (Calm & Editorial) ─── */
+    
+    /* Background & Surfaces */
+    --background: #141416;           /* Deep Charcoal Slate (NOT pure black) */
+    --foreground: #f4f4f5;           /* Warm Off-White */
+    --surface: #1b1b1f;              /* Tailored Surface */
+    --surface-elevated: #222227;     /* Elevated Card Surface */
+    --surface-sub: #17171a;          /* Recessed Subcard Surface */
+    --surface-hover: #26262d;        /* Hover state */
+    --surface-active: #2f2f38;
+    
+    /* Primary Accent (Tangerine / Burnt Orange) */
+    --primary: #f97316;              /* Vibrant Tangerine */
+    --primary-hover: #fb923c;        /* Lighter Tangerine */
+    --primary-active: #ea580c;
+    --primary-soft: rgba(249, 115, 22, 0.14);
+    --primary-soft-border: rgba(249, 115, 22, 0.28);
     --primary-foreground: #ffffff;
-    --secondary: #1e293b;
-    --secondary-foreground: #cbd5e1;
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
-    --border: rgba(148, 163, 184, 0.15);
-    --input: rgba(30, 41, 59, 0.6);
-    --ring: #6366f1;
+    
+    /* Secondary Accent (Muted Teal) */
+    --secondary: #14b8a6;            /* Luminous Teal */
+    --secondary-hover: #2dd4bf;
+    --secondary-soft: rgba(20, 184, 166, 0.14);
+    --secondary-foreground: #5eead4;
+    
+    /* Neutral & Muted Elements */
+    --muted: #222227;
+    --muted-foreground: #a1a1aa;     /* Calm Muted Zinc */
+    
+    /* Borders & Dividers */
+    --border: #2a2a32;               /* Crisp graphite border */
+    --border-subtle: #202026;
+    --border-strong: #383844;
+    
+    /* Form Inputs */
+    --input: #18181c;
+    --input-border: #2a2a32;
+    --ring: #f97316;
+    
+    /* Semantic Status Tokens */
+    --success: #22c55e;
+    --success-soft: rgba(34, 197, 94, 0.14);
+    --success-foreground: #86efac;
+    
+    --warning: #f59e0b;
+    --warning-soft: rgba(245, 158, 11, 0.14);
+    --warning-foreground: #fde68a;
+    
+    --danger: #f43f5e;
+    --danger-soft: rgba(244, 63, 94, 0.14);
+    --danger-foreground: #fca5a5;
+    
+    --info: #38bdf8;
+    --info-soft: rgba(56, 189, 248, 0.14);
+    --info-foreground: #bae6fd;
+    
+    /* Shadows & Elevation */
+    --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+    --shadow-card: 0 2px 8px 0 rgba(0, 0, 0, 0.35);
+    --shadow-elevated: 0 12px 28px -4px rgba(0, 0, 0, 0.5);
+    --shadow-dropdown: 0 24px 40px -8px rgba(0, 0, 0, 0.6);
+  }
+
+  * {
+    border-color: var(--border);
   }
 
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
     min-height: 100vh;
     overflow-x: hidden;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
 }
 
-/* Glassmorphism & Card styling */
+/* ─── Surface & Container Classes ─── */
+.surface-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.surface-card:hover {
+  border-color: var(--border-strong);
+}
+
+.surface-elevated {
+  background-color: var(--surface-elevated);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-elevated);
+}
+
+.surface-subcard {
+  background-color: var(--surface-sub);
+  border: 1px solid var(--border-subtle);
+}
+
+/* ─── Form Inputs ─── */
+.form-input-base {
+  background-color: var(--input);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.form-input-base:hover {
+  border-color: var(--border-strong);
+}
+
+.form-input-base:focus {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+  outline: none;
+}
+
+/* Backward compatibility aliases */
 .glass-panel {
-  background: var(--card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--card-border);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
 }
 
 .dark .glass-panel {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
 }
 
 .glass-subcard {
-  background: var(--card-sub);
-  border: 1px solid var(--card-sub-border);
-}
-
-.dark .glass-subcard {
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(148, 163, 184, 0.15);
+  background-color: var(--surface-sub);
+  border: 1px solid var(--border-subtle);
 }
 
 .glass-input {
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #0f172a;
-  transition: all 0.2s ease;
-}
-
-.dark .glass-input {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  color: #f1f5f9;
+  background-color: var(--input);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  transition: all 0.18s ease;
 }
 
 .glass-input:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+  outline: none;
 }
 
-.glow-gradient {
-  background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.06) 0%, rgba(56, 189, 248, 0.02) 50%, transparent 80%);
+/* ─── Micro-Interactions & Transitions ─── */
+@keyframes checkmark-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-.dark .glow-gradient {
-  background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, rgba(56, 189, 248, 0.05) 50%, transparent 80%);
+.animate-check-pop {
+  animation: checkmark-pop 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes subtle-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-enter-fade {
+  animation: subtle-fade-in 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom Clean Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* ─── Accessibility: Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -56,7 +56,7 @@ export function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/75 backdrop-blur-md transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-stone-950/60 dark:bg-black/75 backdrop-blur-xs transition-opacity animate-enter-fade"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -67,35 +67,37 @@ export function Modal({
         aria-modal="true"
         aria-labelledby="modal-title"
         className={cn(
-          "relative w-full rounded-2xl glass-panel border border-slate-700/80 bg-slate-900/95 p-6 shadow-2xl transition-all animate-in zoom-in-95 duration-200 z-10",
+          "relative w-full rounded-2xl bg-[var(--surface-elevated)] border border-[var(--border)] p-6 shadow-[var(--shadow-dropdown)] transition-all z-10 animate-enter-fade",
           maxWidthClasses[maxWidth]
         )}
       >
         {/* Header */}
-        <div className="flex items-start justify-between pb-3">
+        <div className="flex items-start justify-between pb-3 border-b border-[var(--border-subtle)]">
           <div>
             <h2
               id="modal-title"
-              className="text-lg font-bold text-slate-100 tracking-tight"
+              className="text-base sm:text-lg font-bold text-[var(--foreground)] tracking-tight"
             >
               {title}
             </h2>
             {description && (
-              <p className="text-xs text-slate-400 mt-0.5">{description}</p>
+              <p className="text-xs text-[var(--muted-foreground)] mt-0.5 leading-relaxed">
+                {description}
+              </p>
             )}
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+            className="rounded-lg p-1.5 text-[var(--muted-foreground)] hover:bg-[var(--surface-hover)] hover:text-[var(--foreground)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--ring)] cursor-pointer"
             aria-label="Close modal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="mt-3">{children}</div>
+        <div className="mt-4">{children}</div>
       </div>
     </div>
   );

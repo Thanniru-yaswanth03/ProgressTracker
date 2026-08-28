@@ -55,18 +55,18 @@ export function DeleteSectionDialog({
       maxWidth="sm"
     >
       <div className="space-y-4 pt-1">
-        <div className="flex items-start gap-3 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs leading-relaxed">
-          <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+        <div className="flex items-start gap-3 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-700 dark:text-red-300 text-xs leading-relaxed">
+          <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
           <div>
-            Are you sure you want to delete <span className="font-bold text-white">&ldquo;{section.name}&rdquo;</span>? This action cannot be undone.
+            Are you sure you want to delete <span className="font-bold text-[var(--foreground)]">&ldquo;{section.name}&rdquo;</span>? Associated tasks and habits will be moved to General.
           </div>
         </div>
 
         {error && (
-          <p className="text-xs text-red-400 font-medium">{error}</p>
+          <p className="text-xs text-red-500 font-medium">{error}</p>
         )}
 
-        <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-800">
+        <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-[var(--border-subtle)]">
           <Button
             type="button"
             variant="ghost"

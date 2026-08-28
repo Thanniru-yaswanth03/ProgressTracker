@@ -5,6 +5,7 @@ import { GoalDTO, SectionDTO, CreateGoalInput, UpdateGoalInput, GoalStatus } fro
 import { createGoalAction, updateGoalAction } from "@/server/actions/goal.actions";
 import { Calendar, Layers, Loader2, Target, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
 
 interface GoalFormModalProps {
   isOpen: boolean;
@@ -152,23 +153,23 @@ export function GoalFormModal({
     targetValue > 0 ? Math.min(100, Math.round((currentValue / targetValue) * 100)) : 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-enter-fade">
       <div
-        className="w-full max-w-xl rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="w-full max-w-xl rounded-2xl bg-[var(--surface-elevated)] border border-[var(--border)] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
         role="dialog"
         aria-modal="true"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-800 bg-slate-900/80">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--border-subtle)]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+            <div className="w-10 h-10 rounded-xl bg-[var(--primary-soft)] border border-[var(--primary-soft-border)] flex items-center justify-center text-[var(--primary)]">
               <Target className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white tracking-tight">
+              <h2 className="text-base sm:text-lg font-bold text-[var(--foreground)] tracking-tight">
                 {isEdit ? "Edit Goal" : "Create New Goal"}
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[var(--muted-foreground)]">
                 {isEdit
                   ? "Update target metrics and details"
                   : "Define a quantifiable milestone with custom units"}
@@ -179,7 +180,7 @@ export function GoalFormModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-xl text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -187,17 +188,17 @@ export function GoalFormModal({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
           {errorMsg && (
-            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-medium">
+            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-medium">
               {errorMsg}
             </div>
           )}
 
           {/* Goal Title */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              Goal Title <span className="text-rose-400">*</span>
+          <div className="space-y-1.5 text-left">
+            <label className="block text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
+              Goal Title <span className="text-rose-500">*</span>
             </label>
             <input
               type="text"
@@ -206,17 +207,17 @@ export function GoalFormModal({
               placeholder="e.g. Complete 70 DSA problems, Study MongoDB, Build App"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--input)] border border-[var(--border)] text-[var(--foreground)] placeholder-[var(--muted-foreground)] text-xs sm:text-sm focus:outline-none focus:border-[var(--ring)] focus:ring-3 focus:ring-[var(--primary-soft)] transition-all"
             />
             {fieldErrors.title && (
-              <p className="mt-1 text-xs text-rose-400">{fieldErrors.title[0]}</p>
+              <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">{fieldErrors.title[0]}</p>
             )}
           </div>
 
           {/* Description */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              Description <span className="text-slate-500 text-[10px] lowercase">(optional)</span>
+          <div className="space-y-1.5 text-left">
+            <label className="block text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
+              Description <span className="lowercase opacity-75">(optional)</span>
             </label>
             <textarea
               rows={2}
@@ -224,20 +225,20 @@ export function GoalFormModal({
               placeholder="Brief motivation, milestones, or notes..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--input)] border border-[var(--border)] text-[var(--foreground)] placeholder-[var(--muted-foreground)] text-xs sm:text-sm focus:outline-none focus:border-[var(--ring)] focus:ring-3 focus:ring-[var(--primary-soft)] transition-all resize-none"
             />
           </div>
 
           {/* Section Selector */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+          <div className="space-y-1.5 text-left">
+            <label className="block text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
               Section / Category
             </label>
             <div className="relative">
               <select
                 value={sectionId}
                 onChange={(e) => setSectionId(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent appearance-none cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--input)] border border-[var(--border)] text-[var(--foreground)] text-xs sm:text-sm focus:outline-none focus:border-[var(--ring)] appearance-none cursor-pointer"
               >
                 <option value="none">No Section (General)</option>
                 {sections.map((sec) => (
@@ -246,15 +247,15 @@ export function GoalFormModal({
                   </option>
                 ))}
               </select>
-              <Layers className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+              <Layers className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted-foreground)] pointer-events-none" />
             </div>
           </div>
 
           {/* Target & Current Values */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                Target Value <span className="text-rose-400">*</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
+                Target Value <span className="text-rose-500">*</span>
               </label>
               <input
                 type="number"
@@ -263,12 +264,12 @@ export function GoalFormModal({
                 required
                 value={targetValue}
                 onChange={(e) => setTargetValue(Number(e.target.value))}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--input)] border border-[var(--border)] text-[var(--foreground)] text-xs sm:text-sm focus:outline-none focus:border-[var(--ring)]"
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
                 Current Progress
               </label>
               <input
@@ -278,14 +279,14 @@ export function GoalFormModal({
                 step="any"
                 value={currentValue}
                 onChange={(e) => setCurrentValue(Number(e.target.value))}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--input)] border border-[var(--border)] text-[var(--foreground)] text-xs sm:text-sm focus:outline-none focus:border-[var(--ring)]"
               />
             </div>
           </div>
 
           {/* Unit Customization & Quick Suggestions */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+          <div className="space-y-1.5 text-left">
+            <label className="block text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
               Unit of Measurement
             </label>
             <input
@@ -294,19 +295,19 @@ export function GoalFormModal({
               placeholder="e.g. problems, hours, percent, pages, km"
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent mb-2"
+              className="w-full px-3.5 py-2 rounded-xl bg-[var(--input)] border border-[var(--border)] text-[var(--foreground)] placeholder-[var(--muted-foreground)] text-xs sm:text-sm focus:outline-none focus:border-[var(--ring)] mb-2"
             />
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[11px] text-slate-500 mr-1">Presets:</span>
+              <span className="text-[10px] text-[var(--muted-foreground)] mr-1">Presets:</span>
               {COMMON_UNITS.map((u) => (
                 <button
                   key={u}
                   type="button"
                   onClick={() => setUnit(u)}
-                  className={`px-2 py-0.5 rounded-md text-[11px] font-medium border transition-colors ${
+                  className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border transition-colors cursor-pointer ${
                     unit.toLowerCase() === u.toLowerCase()
-                      ? "bg-indigo-600 text-white border-indigo-500"
-                      : "bg-slate-800/80 text-slate-400 border-slate-700 hover:text-white hover:bg-slate-750"
+                      ? "bg-[var(--primary)] text-white border-[var(--primary)]"
+                      : "bg-[var(--surface-sub)] text-[var(--muted-foreground)] border-[var(--border)] hover:bg-[var(--surface-hover)] hover:text-[var(--foreground)]"
                   }`}
                 >
                   {u}
@@ -316,31 +317,31 @@ export function GoalFormModal({
           </div>
 
           {/* Target Deadline Date */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              Target Deadline <span className="text-slate-500 text-[10px] lowercase">(optional)</span>
+          <div className="space-y-1.5 text-left">
+            <label className="block text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
+              Target Deadline <span className="lowercase opacity-75">(optional)</span>
             </label>
             <div className="relative">
               <input
                 type="date"
                 value={targetDate}
                 onChange={(e) => setTargetDate(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent [color-scheme:dark]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--input)] border border-[var(--border)] text-[var(--foreground)] text-xs sm:text-sm focus:outline-none focus:border-[var(--ring)]"
               />
-              <Calendar className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+              <Calendar className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted-foreground)] pointer-events-none" />
             </div>
           </div>
 
           {/* Edit-only Status Selector */}
           {isEdit && (
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+            <div className="space-y-1.5 text-left">
+              <label className="block text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
                 Goal Status
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as GoalStatus)}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--input)] border border-[var(--border)] text-[var(--foreground)] text-xs sm:text-sm focus:outline-none focus:border-[var(--ring)] cursor-pointer"
               >
                 <option value="in_progress">In Progress (Active)</option>
                 <option value="paused">Paused</option>
@@ -351,40 +352,40 @@ export function GoalFormModal({
           )}
 
           {/* Live Progress Preview */}
-          <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800/80">
-            <div className="flex items-center justify-between text-xs mb-2">
-              <span className="text-slate-400 font-medium">Calculated Initial Progress:</span>
-              <span className="font-bold text-indigo-400 text-sm">
+          <div className="p-3.5 rounded-xl bg-[var(--surface-sub)] border border-[var(--border-subtle)] text-left">
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <span className="text-[var(--muted-foreground)] font-medium">Calculated Initial Progress:</span>
+              <span className="font-bold text-[var(--primary)]">
                 {currentPercent}% ({currentValue} / {targetValue} {unit || "%"})
               </span>
             </div>
-            <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[var(--border)] rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-sky-400 rounded-full transition-all duration-300"
+                className="h-full bg-[var(--primary)] rounded-full transition-all duration-300"
                 style={{ width: `${currentPercent}%` }}
               />
             </div>
           </div>
 
           {/* Footer Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
-            <button
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[var(--border-subtle)]">
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               onClick={onClose}
               disabled={isPending}
-              className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
             >
               Cancel
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="submit"
-              disabled={isPending}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-indigo-600 to-sky-500 text-white shadow-lg shadow-indigo-500/25 hover:opacity-95 transition-opacity disabled:opacity-50"
+              size="sm"
+              isLoading={isPending}
             >
-              {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-              <span>{isEdit ? "Save Changes" : "Create Goal"}</span>
-            </button>
+              {isEdit ? "Save Changes" : "Create Goal"}
+            </Button>
           </div>
         </form>
       </div>

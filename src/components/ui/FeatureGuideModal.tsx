@@ -35,7 +35,7 @@ export function FeatureGuideModal({
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10 gap-1.5 font-medium"
+        className="text-xs text-[var(--primary)] hover:bg-[var(--primary-soft)] gap-1.5 font-medium"
       >
         <HelpCircle className="w-3.5 h-3.5" />
         <span>{triggerButtonText}</span>
@@ -54,20 +54,20 @@ export function FeatureGuideModal({
             {steps.map((step, index) => (
               <div
                 key={index}
-                className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-start gap-3"
+                className="p-3.5 rounded-xl bg-[var(--surface-sub)] border border-[var(--border)] flex items-start gap-3"
               >
-                <div className="w-6 h-6 rounded-full bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-full bg-[var(--primary-soft)] text-[var(--primary)] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 border border-[var(--primary-soft-border)]">
                   {index + 1}
                 </div>
                 <div className="flex-1 text-left">
-                  <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                  <h4 className="text-sm font-semibold text-[var(--foreground)] flex items-center gap-1.5">
                     {step.title}
                   </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                  <p className="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed">
                     {step.description}
                   </p>
                   {step.example && (
-                    <div className="mt-2 text-[11px] px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-mono inline-block">
+                    <div className="mt-2 text-[11px] px-2.5 py-1 rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--primary)] font-mono inline-block">
                       💡 Example: {step.example}
                     </div>
                   )}
@@ -78,8 +78,8 @@ export function FeatureGuideModal({
 
           {/* Pro Tip */}
           {tip && (
-            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2.5">
-              <Lightbulb className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
+            <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2.5">
+              <Lightbulb className="w-4 h-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
               <div className="leading-relaxed">
                 <span className="font-semibold">Pro Tip: </span>
                 {tip}
@@ -87,7 +87,7 @@ export function FeatureGuideModal({
             </div>
           )}
 
-          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end">
+          <div className="pt-3 border-t border-[var(--border-subtle)] flex justify-end">
             <Button variant="primary" size="sm" onClick={() => setIsOpen(false)}>
               Got It
             </Button>

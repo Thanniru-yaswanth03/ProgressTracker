@@ -58,13 +58,13 @@ export function SectionList({ initialSections }: SectionListProps) {
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         {/* Search Input */}
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--muted-foreground)] pointer-events-none" />
           <input
             type="text"
             placeholder="Search sections..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl glass-input pl-10 pr-4 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none"
+            className="w-full rounded-xl bg-[var(--input)] border border-[var(--border)] pl-10 pr-4 py-2 text-xs sm:text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] focus:outline-none focus:border-[var(--ring)] focus:ring-3 focus:ring-[var(--primary-soft)]"
           />
         </div>
 
@@ -99,7 +99,7 @@ export function SectionList({ initialSections }: SectionListProps) {
           <Button
             onClick={() => setIsCreateOpen(true)}
             size="md"
-            className="gap-2 shrink-0 shadow-lg shadow-indigo-500/20"
+            className="gap-2 shrink-0 shadow-xs"
           >
             <FolderPlus className="w-4 h-4" />
             <span>New Section</span>
@@ -111,8 +111,8 @@ export function SectionList({ initialSections }: SectionListProps) {
       {sections.length === 0 ? (
         <SectionEmptyState onCreate={() => setIsCreateOpen(true)} />
       ) : filteredSections.length === 0 ? (
-        <div className="text-center py-12 rounded-2xl glass-panel border border-slate-200 dark:border-slate-800/80">
-          <p className="text-sm text-slate-600 dark:text-slate-400">
+        <div className="text-center py-12 rounded-2xl bg-[var(--surface)] border border-[var(--border)]">
+          <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">
             No sections match &ldquo;{searchQuery}&rdquo;
           </p>
         </div>

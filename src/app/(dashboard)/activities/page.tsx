@@ -6,40 +6,37 @@ import { ActivityTimeline } from "@/components/features/activities/ActivityTimel
 import { Sparkles } from "lucide-react";
 
 export const metadata = {
-  title: "Activity Timeline — Progress Tracker",
-  description: "Chronological audit trail of your completed accomplishments, work sessions, and milestones.",
+  title: "Activities — Progress Tracker",
+  description: "Track focus sessions, log deep work, and celebrate automated accomplishments.",
 };
 
 export default async function ActivitiesPage() {
   const user = await requireUser();
   const [activities, sections] = await Promise.all([
-    activityService.getActivities(user.id, { limit: 100 }),
+    activityService.getActivities(user.id),
     sectionService.getSections(user.id),
   ]);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-6 animate-enter-fade">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--border-subtle)] pb-5">
         <div>
-          <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-1">
+          <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider mb-1">
             <Sparkles className="w-4 h-4" />
-            <span>Accomplishment Journal</span>
+            <span>Focus & Execution Log</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Activity Timeline
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
+            Accomplishments & Activities
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            A chronological record of what you actually completed, deep-work sessions, workouts, and milestones.
+          <p className="text-xs sm:text-sm text-[var(--muted-foreground)] mt-1">
+            Track focused sessions, deep work blocks, and see automated completions from tasks and habits.
           </p>
         </div>
       </div>
 
-      {/* Main Activities Timeline with Stats */}
-      <ActivityTimeline
-        initialActivities={activities}
-        sections={sections}
-      />
+      {/* Main Activity Timeline */}
+      <ActivityTimeline initialActivities={activities} sections={sections} />
     </div>
   );
 }

@@ -94,18 +94,18 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
   };
 
   return (
-    <Card className="p-5 border-slate-200 dark:border-slate-800/80 space-y-4">
+    <Card className="p-5 space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/60 pb-3">
+      <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+          <div className="w-7 h-7 rounded-lg bg-[var(--primary-soft)] border border-[var(--primary-soft-border)] flex items-center justify-center text-[var(--primary)]">
             <Target className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
+            <h3 className="text-sm font-bold text-[var(--foreground)] tracking-tight">
               Active Targets & Milestones
             </h3>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400">
+            <span className="text-[11px] text-[var(--muted-foreground)]">
               {goals.length} ongoing long-term goals
             </span>
           </div>
@@ -114,7 +114,7 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
         <div className="flex items-center gap-2">
           <Link
             href="/goals"
-            className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors flex items-center gap-0.5 px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="text-xs font-semibold text-[var(--primary)] hover:underline transition-colors flex items-center gap-0.5 px-2 py-1 rounded-lg hover:bg-[var(--surface-hover)]"
           >
             <span>View All</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -135,7 +135,7 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
       {/* Goals Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
         {goals.length === 0 ? (
-          <div className="col-span-full flex flex-col items-center justify-center py-8 text-center text-slate-400 dark:text-slate-500">
+          <div className="col-span-full flex flex-col items-center justify-center py-8 text-center text-[var(--muted-foreground)]">
             <Target className="w-8 h-8 opacity-30 mb-2" />
             <p className="text-xs">No active goals yet. Set a target milestone! 🎯</p>
           </div>
@@ -146,20 +146,20 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
             return (
               <div
                 key={goal.id}
-                className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700/80 transition-all flex flex-col justify-between space-y-3 group shadow-xs"
+                className="p-4 rounded-xl bg-[var(--surface-sub)] border border-[var(--border-subtle)] hover:border-[var(--border-strong)] transition-all flex flex-col justify-between space-y-3 group shadow-xs"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1 space-y-0.5">
                     {goal.section && (
                       <span
                         className="inline-flex items-center gap-1 text-[10px] font-semibold"
-                        style={{ color: goal.section.color || "#818cf8" }}
+                        style={{ color: goal.section.color || "var(--primary)" }}
                       >
                         <Folder className="w-2.5 h-2.5" />
                         <span>{goal.section.name}</span>
                       </span>
                     )}
-                    <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                    <h4 className="text-xs font-bold text-[var(--foreground)] truncate">
                       {goal.title}
                     </h4>
                   </div>
@@ -167,7 +167,7 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
                   <button
                     type="button"
                     onClick={() => openEdit(goal)}
-                    className="p-1 rounded text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors opacity-60 group-hover:opacity-100 cursor-pointer"
+                    className="p-1 rounded text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface)] transition-colors opacity-70 group-hover:opacity-100 cursor-pointer"
                     title="Edit goal"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
@@ -177,27 +177,27 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
                 {/* Progress Bar & Numeric Indicator */}
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    <span className="font-semibold text-[var(--foreground)]">
                       {goal.currentValue} / {goal.targetValue} {goal.unit}
                     </span>
                     <span
                       className={cn(
                         "font-extrabold",
-                        isCompleted ? "text-emerald-600 dark:text-emerald-400" : "text-indigo-600 dark:text-indigo-400"
+                        isCompleted ? "text-emerald-700 dark:text-emerald-400" : "text-[var(--primary)]"
                       )}
                     >
                       {goal.progressPercentage}%
                     </span>
                   </div>
 
-                  <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-[var(--border)] overflow-hidden">
                     <div
                       style={{ width: `${goal.progressPercentage}%` }}
                       className={cn(
                         "h-full rounded-full transition-all duration-500",
                         isCompleted
                           ? "bg-emerald-500 dark:bg-emerald-400"
-                          : "bg-gradient-to-r from-indigo-500 to-sky-400"
+                          : "bg-[var(--primary)]"
                       )}
                     />
                   </div>
@@ -205,8 +205,8 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
 
                 {/* Days remaining badge */}
                 {goal.daysRemaining !== null && goal.daysRemaining !== undefined && (
-                  <div className="flex items-center gap-1 text-[10px] text-slate-500 dark:text-slate-400">
-                    <Clock className="w-3 h-3 text-slate-400" />
+                  <div className="flex items-center gap-1 text-[10px] text-[var(--muted-foreground)]">
+                    <Clock className="w-3 h-3" />
                     <span>
                       {goal.daysRemaining > 0
                         ? `${goal.daysRemaining} days remaining`
@@ -241,8 +241,8 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
             required
           />
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+          <div className="space-y-1.5 text-left">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
               Description (Optional)
             </label>
             <textarea
@@ -250,17 +250,19 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Why this goal matters, milestones, or notes..."
               rows={2}
-              className="w-full rounded-xl glass-input px-3.5 py-2 text-sm focus:outline-none"
+              className="w-full rounded-xl bg-[var(--input)] border border-[var(--border)] px-3.5 py-2 text-xs sm:text-sm text-[var(--foreground)] focus:outline-none focus:border-[var(--ring)] focus:ring-3 focus:ring-[var(--primary-soft)]"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Section Domain</label>
+            <div className="space-y-1.5 text-left">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
+                Section Domain
+              </label>
               <select
                 value={sectionId}
                 onChange={(e) => setSectionId(e.target.value)}
-                className="w-full rounded-xl glass-input px-3.5 py-2 text-sm bg-white dark:bg-slate-900 focus:outline-none cursor-pointer"
+                className="w-full rounded-xl bg-[var(--input)] border border-[var(--border)] px-3.5 py-2.5 text-xs sm:text-sm text-[var(--foreground)] focus:outline-none focus:border-[var(--ring)] cursor-pointer"
               >
                 <option value="">None (General)</option>
                 {sections.map((s) => (
@@ -305,7 +307,7 @@ export function GoalsWidget({ goals: initialGoals, sections }: GoalsWidgetProps)
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border-subtle)]">
             <Button
               type="button"
               variant="outline"

@@ -20,11 +20,11 @@ export function SectionCard({ section, onEdit, onDelete }: SectionCardProps) {
   });
 
   return (
-    <Card className="group flex flex-col justify-between border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700/90 transition-all duration-200 hover:shadow-xl hover:shadow-indigo-500/5 p-5 relative overflow-hidden">
+    <Card className="group flex flex-col justify-between transition-all duration-200 p-5 relative overflow-hidden">
       {/* Top Color Accent Line */}
       <div
         className="absolute top-0 left-0 right-0 h-1.5 transition-opacity"
-        style={{ backgroundColor: section.color || "#6366f1" }}
+        style={{ backgroundColor: section.color || "var(--primary)" }}
       />
 
       <div>
@@ -32,23 +32,23 @@ export function SectionCard({ section, onEdit, onDelete }: SectionCardProps) {
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <div
-              className="w-8 h-8 rounded-xl flex items-center justify-center text-white shrink-0 shadow-inner"
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-white shrink-0 shadow-xs"
               style={{
-                backgroundColor: `${section.color || "#6366f1"}20`,
-                borderColor: `${section.color || "#6366f1"}40`,
+                backgroundColor: `${section.color || "#ea580c"}20`,
+                borderColor: `${section.color || "#ea580c"}40`,
                 borderWidth: "1px",
               }}
             >
               <Folder
                 className="w-4 h-4"
-                style={{ color: section.color || "#6366f1" }}
+                style={{ color: section.color || "var(--primary)" }}
               />
             </div>
             <div className="min-w-0">
-              <h3 className="font-bold text-base text-slate-900 dark:text-slate-100 truncate transition-colors">
+              <h3 className="font-bold text-sm sm:text-base text-[var(--foreground)] truncate transition-colors">
                 {section.name}
               </h3>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400">Created {formattedDate}</p>
+              <p className="text-[10px] text-[var(--muted-foreground)]">Created {formattedDate}</p>
             </div>
           </div>
 
@@ -57,7 +57,7 @@ export function SectionCard({ section, onEdit, onDelete }: SectionCardProps) {
             <button
               type="button"
               onClick={() => onEdit(section)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
               title="Rename / Edit"
               aria-label={`Edit ${section.name}`}
             >
@@ -66,7 +66,7 @@ export function SectionCard({ section, onEdit, onDelete }: SectionCardProps) {
             <button
               type="button"
               onClick={() => onDelete(section)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-rose-600 hover:bg-rose-500/10 transition-colors cursor-pointer"
               title="Delete Section"
               aria-label={`Delete ${section.name}`}
             >
@@ -76,31 +76,31 @@ export function SectionCard({ section, onEdit, onDelete }: SectionCardProps) {
         </div>
 
         {/* Description */}
-        <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 min-h-[32px] mb-4 leading-relaxed">
+        <p className="text-xs text-[var(--muted-foreground)] line-clamp-2 min-h-[32px] mb-4 leading-relaxed">
           {section.description || "No description provided."}
         </p>
       </div>
 
       {/* Footer Link */}
-      <div className="pt-3 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between">
+      <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between">
         <span
-          className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold border"
+          className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-semibold border"
           style={{
-            color: section.color || "#6366f1",
-            backgroundColor: `${section.color || "#6366f1"}15`,
-            borderColor: `${section.color || "#6366f1"}30`,
+            color: section.color || "var(--primary)",
+            backgroundColor: `${section.color || "#ea580c"}15`,
+            borderColor: `${section.color || "#ea580c"}30`,
           }}
         >
           <span
             className="w-1.5 h-1.5 rounded-full"
-            style={{ backgroundColor: section.color || "#6366f1" }}
+            style={{ backgroundColor: section.color || "var(--primary)" }}
           />
           Active Domain
         </span>
 
         <Link
           href={`/sections/${section.id}`}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors"
+          className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--primary)] hover:underline transition-colors"
         >
           <span>Workspace</span>
           <ExternalLink className="w-3.5 h-3.5" />

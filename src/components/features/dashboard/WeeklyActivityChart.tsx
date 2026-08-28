@@ -17,36 +17,36 @@ export function WeeklyActivityChart({ metrics }: WeeklyActivityChartProps) {
   const totalHabits = metrics.reduce((sum, m) => sum + m.habitsCompleted, 0);
 
   return (
-    <Card className="p-5 sm:p-6 border-slate-200 dark:border-slate-800/80 space-y-5">
+    <Card className="p-5 sm:p-6 space-y-5">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800/60 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+          <div className="w-8 h-8 rounded-xl bg-[var(--primary-soft)] border border-[var(--primary-soft-border)] flex items-center justify-center text-[var(--primary)]">
             <BarChart3 className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight">
-              7-Day Activity & Focus Chart
+            <h3 className="text-sm sm:text-base font-bold text-[var(--foreground)] tracking-tight">
+              7-Day Activity & Focus Velocity
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Minutes logged, tasks finished, and habits completed across the past week
+            <p className="text-xs text-[var(--muted-foreground)]">
+              Focus time logged, tasks completed, and habits checked over the past 7 days
             </p>
           </div>
         </div>
 
         {/* Aggregate Badges */}
-        <div className="flex items-center gap-2">
-          <div className="px-2.5 py-1 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 shadow-xs">
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="px-2.5 py-1 rounded-xl bg-[var(--surface-sub)] border border-[var(--border-subtle)] text-xs font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5 shadow-xs">
             <Timer className="w-3.5 h-3.5" />
             <span>{totalMinutes}m logged</span>
           </div>
 
-          <div className="px-2.5 py-1 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-sky-600 dark:text-sky-400 flex items-center gap-1.5 shadow-xs">
+          <div className="px-2.5 py-1 rounded-xl bg-[var(--surface-sub)] border border-[var(--border-subtle)] text-xs font-semibold text-sky-700 dark:text-sky-400 flex items-center gap-1.5 shadow-xs">
             <CheckSquare className="w-3.5 h-3.5" />
             <span>{totalTasks} tasks</span>
           </div>
 
-          <div className="px-2.5 py-1 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-amber-600 dark:text-amber-400 flex items-center gap-1.5 shadow-xs">
+          <div className="px-2.5 py-1 rounded-xl bg-[var(--surface-sub)] border border-[var(--border-subtle)] text-xs font-semibold text-amber-700 dark:text-amber-400 flex items-center gap-1.5 shadow-xs">
             <Flame className="w-3.5 h-3.5" />
             <span>{totalHabits} habits</span>
           </div>
@@ -65,32 +65,32 @@ export function WeeklyActivityChart({ metrics }: WeeklyActivityChartProps) {
             return (
               <div
                 key={day.date}
-                className="flex flex-col items-center justify-end h-full group"
+                className="flex flex-col items-center justify-end h-full group relative"
               >
                 {/* Hover Details Tooltip Popup */}
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity mb-2 text-[10px] text-center font-bold px-2 py-1 rounded-lg bg-slate-900 dark:bg-slate-950 border border-slate-700 text-slate-100 dark:text-slate-200 pointer-events-none shadow-xl shrink-0 z-20">
-                  <div>{day.activityMinutes} mins</div>
-                  <div className="text-slate-400 text-[9px]">
-                    {day.tasksCompleted}t &bull; {day.habitsCompleted}h
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity mb-2 text-[10px] text-center font-bold px-2.5 py-1 rounded-lg bg-[var(--foreground)] text-[var(--background)] pointer-events-none shadow-md shrink-0 z-20 whitespace-nowrap">
+                  <div>{day.activityMinutes} mins focus</div>
+                  <div className="opacity-80 text-[9px]">
+                    {day.tasksCompleted} tasks &bull; {day.habitsCompleted} habits
                   </div>
                 </div>
 
-                {/* Animated Bar */}
-                <div className="w-full max-w-[36px] flex flex-col justify-end items-center h-full bg-slate-100 dark:bg-slate-900/60 rounded-xl p-1 relative overflow-hidden border border-slate-200 dark:border-slate-800 group-hover:border-indigo-500/50 transition-colors">
+                {/* Animated Bar Container */}
+                <div className="w-full max-w-[40px] flex flex-col justify-end items-center h-full bg-[var(--surface-sub)] rounded-xl p-1 relative overflow-hidden border border-[var(--border-subtle)] group-hover:border-[var(--primary)]/50 transition-colors">
                   <div
                     style={{ height: `${heightPercent}%` }}
                     className={cn(
                       "w-full rounded-lg transition-all duration-500 relative flex flex-col justify-between items-center py-1",
                       day.isToday
-                        ? "bg-gradient-to-t from-indigo-600 via-sky-500 to-amber-400 shadow-lg shadow-indigo-500/30"
+                        ? "bg-gradient-to-t from-[var(--primary)] to-amber-400 shadow-xs"
                         : day.activityMinutes > 0
-                        ? "bg-gradient-to-t from-indigo-600/80 to-sky-500/80"
-                        : "bg-slate-200 dark:bg-slate-800/40"
+                        ? "bg-gradient-to-t from-[var(--secondary)] to-teal-400"
+                        : "bg-[var(--border)]"
                     )}
                   >
                     {/* Micro badges for tasks and habits */}
                     {day.tasksCompleted > 0 && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-white shadow-xs" />
                     )}
                   </div>
                 </div>
@@ -99,13 +99,15 @@ export function WeeklyActivityChart({ metrics }: WeeklyActivityChartProps) {
                 <div className="mt-2 text-center">
                   <div
                     className={cn(
-                      "text-[10px] font-semibold uppercase tracking-wider",
-                      day.isToday ? "text-indigo-600 dark:text-indigo-400 font-bold" : "text-slate-500 dark:text-slate-400"
+                      "text-[10px] font-bold uppercase tracking-wider",
+                      day.isToday
+                        ? "text-[var(--primary)] font-extrabold"
+                        : "text-[var(--muted-foreground)]"
                     )}
                   >
                     {day.isToday ? "Today" : day.dayLabel}
                   </div>
-                  <div className="text-[9px] text-slate-400 dark:text-slate-500">
+                  <div className="text-[9px] text-[var(--muted-foreground)]">
                     {day.dayNumber}
                   </div>
                 </div>

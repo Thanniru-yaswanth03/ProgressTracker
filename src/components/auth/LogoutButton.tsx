@@ -19,7 +19,7 @@ export function LogoutButton() {
       size="sm"
       onClick={handleLogout}
       isLoading={isLoading}
-      className="text-xs border-slate-700/60 hover:bg-red-500/10 hover:border-red-500/30 hover:text-red-400 transition-all gap-1.5"
+      className="text-xs hover:bg-rose-500/10 hover:border-rose-500/30 hover:text-rose-600 dark:hover:text-rose-400 transition-all gap-1.5"
     >
       <LogOut className="w-3.5 h-3.5" />
       <span>Sign Out</span>

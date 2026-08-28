@@ -93,14 +93,14 @@ export function TaskList({
       {/* Control Bar: Status Tabs, Section / Priority Filter, Search & Create */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-2">
         {/* Status Tabs */}
-        <div className="flex items-center p-1 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-none self-start">
+        <div className="flex items-center p-1 rounded-xl bg-[var(--surface)] border border-[var(--border)] shadow-xs self-start">
           <button
             type="button"
             onClick={() => setStatusFilter("all")}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               statusFilter === "all"
-                ? "bg-indigo-600 text-white shadow-sm"
-                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                ? "bg-[var(--primary)] text-white shadow-xs font-bold"
+                : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
             }`}
           >
             All ({tasks.length})
@@ -110,8 +110,8 @@ export function TaskList({
             onClick={() => setStatusFilter("pending")}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               statusFilter === "pending"
-                ? "bg-indigo-600 text-white shadow-sm"
-                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                ? "bg-[var(--primary)] text-white shadow-xs font-bold"
+                : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
             }`}
           >
             Pending ({pendingCount})
@@ -121,8 +121,8 @@ export function TaskList({
             onClick={() => setStatusFilter("completed")}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               statusFilter === "completed"
-                ? "bg-indigo-600 text-white shadow-sm"
-                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                ? "bg-emerald-600 text-white shadow-xs font-bold"
+                : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
             }`}
           >
             Completed ({completedCount})
@@ -133,13 +133,13 @@ export function TaskList({
         <div className="flex flex-wrap items-center gap-2.5">
           {/* Search */}
           <div className="relative min-w-[180px] flex-1 sm:flex-initial">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--muted-foreground)] pointer-events-none" />
             <input
               type="text"
               placeholder="Search tasks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-xl glass-input pl-9 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none"
+              className="w-full rounded-xl bg-[var(--input)] border border-[var(--border)] pl-9 pr-3 py-1.5 text-xs text-[var(--foreground)] placeholder-[var(--muted-foreground)] focus:outline-none focus:border-[var(--ring)] focus:ring-3 focus:ring-[var(--primary-soft)]"
             />
           </div>
 
@@ -148,7 +148,7 @@ export function TaskList({
             <select
               value={sectionFilter}
               onChange={(e) => setSectionFilter(e.target.value)}
-              className="rounded-xl glass-input px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 focus:outline-none cursor-pointer border border-slate-200 dark:border-slate-800"
+              className="rounded-xl bg-[var(--input)] border border-[var(--border)] px-3 py-1.5 text-xs text-[var(--foreground)] focus:outline-none focus:border-[var(--ring)] cursor-pointer"
             >
               <option value="all">All Sections</option>
               <option value="none">General (No Section)</option>
@@ -164,7 +164,7 @@ export function TaskList({
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value as TaskPriority | "all")}
-            className="rounded-xl glass-input px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 focus:outline-none cursor-pointer border border-slate-200 dark:border-slate-800"
+            className="rounded-xl bg-[var(--input)] border border-[var(--border)] px-3 py-1.5 text-xs text-[var(--foreground)] focus:outline-none focus:border-[var(--ring)] cursor-pointer"
           >
             <option value="all">All Priorities</option>
             <option value="urgent">Urgent</option>
@@ -204,7 +204,7 @@ export function TaskList({
           <Button
             onClick={() => setIsCreateOpen(true)}
             size="sm"
-            className="gap-1.5 shrink-0 shadow-md shadow-indigo-500/20"
+            className="gap-1.5 shrink-0 shadow-xs"
           >
             <Plus className="w-4 h-4" />
             <span>New Task</span>

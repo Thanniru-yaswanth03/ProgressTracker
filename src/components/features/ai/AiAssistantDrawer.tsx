@@ -45,7 +45,7 @@ export function AiAssistantDrawer({
       id: "welcome-msg",
       role: "assistant",
       content:
-        "Hello! I'm your ProgressTracker AI Assistant. I have direct context on your live tasks, habits, goals, focus minutes, and streaks. How can I help you optimize your progress today?",
+        "Hello! I'm your ProgressTracker AI Assistant. I have direct context on your live tasks, habits, goals, focus minutes, and streaks. How can I help you optimize your momentum today?",
       createdAt: new Date().toISOString(),
     },
   ]);
@@ -105,7 +105,6 @@ export function AiAssistantDrawer({
     setIsLoading(true);
 
     try {
-      // Send conversation history to server
       const payload = {
         messages: newMessages
           .filter((m) => m.id !== "welcome-msg")
@@ -167,7 +166,7 @@ export function AiAssistantDrawer({
     <div className="fixed inset-0 z-50 flex justify-end">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-enter-fade"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -177,25 +176,25 @@ export function AiAssistantDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="AI Progress Assistant"
-        className="relative w-full max-w-xl sm:max-w-2xl h-full bg-slate-900/95 text-slate-100 border-l border-slate-700/80 shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300 backdrop-blur-xl"
+        className="relative w-full max-w-xl sm:max-w-2xl h-full bg-[var(--surface)] text-[var(--foreground)] border-l border-[var(--border)] shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300"
       >
         {/* Header */}
-        <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60 shrink-0">
+        <div className="px-5 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--surface-sub)] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-sky-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-              <Bot className="w-5 h-5 text-white" />
+            <div className="w-9 h-9 rounded-xl bg-[var(--primary-soft)] border border-[var(--primary-soft-border)] flex items-center justify-center text-[var(--primary)] shadow-xs">
+              <Bot className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-sm sm:text-base text-white tracking-tight">
+                <h3 className="font-bold text-sm sm:text-base text-[var(--foreground)] tracking-tight">
                   Progress AI Assistant
                 </h3>
-                <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Live Grounded Data
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-[var(--muted-foreground)]">
                 Reasoning over your personal tasks, streaks, goals, and focus time.
               </p>
             </div>
@@ -206,7 +205,7 @@ export function AiAssistantDrawer({
               type="button"
               onClick={handleReset}
               title="Reset conversation"
-              className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] rounded-lg transition-colors cursor-pointer"
             >
               <RotateCcw className="w-4 h-4" />
             </button>
@@ -214,7 +213,7 @@ export function AiAssistantDrawer({
               type="button"
               onClick={onClose}
               title="Close drawer"
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] rounded-lg transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -222,9 +221,9 @@ export function AiAssistantDrawer({
         </div>
 
         {/* Quick Suggestion Chips (Shown on top of chat) */}
-        <div className="px-4 py-2.5 border-b border-slate-800/80 bg-slate-900/50 shrink-0 overflow-x-auto no-scrollbar">
+        <div className="px-4 py-2.5 border-b border-[var(--border-subtle)] bg-[var(--surface)] shrink-0 overflow-x-auto no-scrollbar">
           <div className="flex items-center gap-2 min-w-max">
-            <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-1">
+            <span className="text-[10px] font-bold text-[var(--primary)] uppercase tracking-wider flex items-center gap-1">
               <Sparkles className="w-3 h-3" /> Quick Prompts:
             </span>
             {SUGGESTED_PROMPTS.map((prompt, idx) => {
@@ -235,9 +234,9 @@ export function AiAssistantDrawer({
                   type="button"
                   onClick={() => handleSendMessage(prompt.label)}
                   disabled={isLoading}
-                  className="flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg bg-slate-800/80 hover:bg-indigo-600/30 text-slate-300 hover:text-indigo-200 border border-slate-700/60 hover:border-indigo-500/40 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg bg-[var(--surface-sub)] hover:bg-[var(--primary-soft)] text-[var(--foreground)] hover:text-[var(--primary)] border border-[var(--border-subtle)] hover:border-[var(--primary-soft-border)] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-xs"
                 >
-                  <Icon className="w-3 h-3 text-indigo-400" />
+                  <Icon className="w-3 h-3 text-[var(--primary)]" />
                   <span>{prompt.label}</span>
                 </button>
               );
@@ -246,22 +245,22 @@ export function AiAssistantDrawer({
         </div>
 
         {/* Message Stream */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5 bg-[var(--background)]">
           {messages.map((msg) => (
             <div
               key={msg.id}
               className={cn(
-                "flex items-start gap-3 animate-in fade-in duration-200",
+                "flex items-start gap-3 animate-enter-fade",
                 msg.role === "user" ? "flex-row-reverse" : "flex-row"
               )}
             >
               {/* Avatar */}
               <div
                 className={cn(
-                  "w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs font-bold shadow-md",
+                  "w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs font-bold shadow-xs",
                   msg.role === "user"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-gradient-to-tr from-indigo-500 to-sky-500 text-white"
+                    ? "bg-[var(--primary)] text-white"
+                    : "bg-[var(--surface-sub)] border border-[var(--border)] text-[var(--primary)]"
                 )}
               >
                 {msg.role === "user" ? (
@@ -276,8 +275,8 @@ export function AiAssistantDrawer({
                 className={cn(
                   "max-w-[85%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed space-y-3",
                   msg.role === "user"
-                    ? "bg-indigo-600 text-white rounded-tr-xs"
-                    : "bg-slate-850 border border-slate-800 text-slate-200 rounded-tl-xs shadow-lg"
+                    ? "bg-[var(--primary)] text-white rounded-tr-xs"
+                    : "bg-[var(--surface)] border border-[var(--border)] text-[var(--foreground)] rounded-tl-xs shadow-xs"
                 )}
               >
                 {/* Regular text or Markdown Answer */}
@@ -290,7 +289,7 @@ export function AiAssistantDrawer({
                 <div
                   className={cn(
                     "text-[10px] pt-1 flex items-center justify-end",
-                    msg.role === "user" ? "text-indigo-200" : "text-slate-500"
+                    msg.role === "user" ? "text-white/80" : "text-[var(--muted-foreground)]"
                   )}
                 >
                   {new Date(msg.createdAt).toLocaleTimeString([], {
@@ -304,14 +303,14 @@ export function AiAssistantDrawer({
 
           {/* Loading Indicator */}
           {isLoading && (
-            <div className="flex items-start gap-3 animate-in fade-in duration-200">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-sky-500 flex items-center justify-center text-white shrink-0 shadow-md">
+            <div className="flex items-start gap-3 animate-enter-fade">
+              <div className="w-8 h-8 rounded-xl bg-[var(--surface-sub)] border border-[var(--border)] flex items-center justify-center text-[var(--primary)] shrink-0 shadow-xs">
                 <Bot className="w-4 h-4" />
               </div>
-              <div className="bg-slate-850 border border-slate-800 text-slate-300 rounded-2xl rounded-tl-xs p-4 flex items-center gap-3 shadow-lg">
-                <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
-                <span className="text-xs text-slate-300">
-                  Analyzing tasks, habits, and progress data...
+              <div className="bg-[var(--surface)] border border-[var(--border)] text-[var(--foreground)] rounded-2xl rounded-tl-xs p-4 flex items-center gap-3 shadow-xs">
+                <Loader2 className="w-4 h-4 text-[var(--primary)] animate-spin" />
+                <span className="text-xs text-[var(--muted-foreground)]">
+                  Analyzing tasks, habits, and momentum records...
                 </span>
               </div>
             </div>
@@ -319,11 +318,11 @@ export function AiAssistantDrawer({
 
           {/* Error Banner */}
           {error && (
-            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2.5 animate-in shake duration-200">
-              <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs flex items-start gap-2.5">
+              <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
               <div className="flex-1">
-                <p className="font-semibold text-rose-200">Error</p>
-                <p className="mt-0.5 text-rose-300/90">{error}</p>
+                <p className="font-bold text-rose-800 dark:text-rose-200">Error</p>
+                <p className="mt-0.5 text-rose-700 dark:text-rose-300">{error}</p>
               </div>
             </div>
           )}
@@ -332,7 +331,7 @@ export function AiAssistantDrawer({
         </div>
 
         {/* Input Bar */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950/80 shrink-0">
+        <div className="p-4 border-t border-[var(--border-subtle)] bg-[var(--surface-sub)] shrink-0">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -346,17 +345,17 @@ export function AiAssistantDrawer({
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask anything about your tasks, goals, streaks, or time..."
+                placeholder="Ask anything about your tasks, goals, streaks, or focus time..."
                 disabled={isLoading}
                 maxLength={2000}
-                className="w-full px-4 py-2.5 text-xs sm:text-sm bg-slate-900 border border-slate-700/80 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all disabled:opacity-50"
+                className="w-full px-4 py-2.5 text-xs sm:text-sm bg-[var(--input)] border border-[var(--border)] rounded-xl text-[var(--foreground)] placeholder-[var(--muted-foreground)] focus:outline-none focus:border-[var(--ring)] focus:ring-3 focus:ring-[var(--primary-soft)] transition-all disabled:opacity-50"
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 transition-all shadow-md shadow-indigo-600/30 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="px-4 py-2.5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-xl font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-all shadow-xs disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -368,7 +367,7 @@ export function AiAssistantDrawer({
               )}
             </button>
           </form>
-          <div className="mt-1.5 flex items-center justify-between text-[10px] text-slate-500">
+          <div className="mt-1.5 flex items-center justify-between text-[10px] text-[var(--muted-foreground)]">
             <span>Powered by OpenRouter &bull; Privacy preserved</span>
             <span>Esc to close</span>
           </div>
@@ -385,46 +384,46 @@ function StructuredAIResponseView({ data }: { data: AIResponseDTO }) {
   const priorityBadgeConfig = {
     critical: {
       label: "Critical Urgency",
-      bg: "bg-rose-500/10 text-rose-400 border-rose-500/25",
+      bg: "bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/25",
       icon: Flame,
     },
     high: {
       label: "High Priority",
-      bg: "bg-amber-500/10 text-amber-400 border-amber-500/25",
+      bg: "bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/25",
       icon: Clock,
     },
     medium: {
       label: "Medium Priority",
-      bg: "bg-sky-500/10 text-sky-400 border-sky-500/25",
+      bg: "bg-sky-500/10 text-sky-700 dark:text-sky-400 border-sky-500/25",
       icon: ChevronRight,
     },
     low: {
       label: "Low Priority",
-      bg: "bg-slate-500/10 text-slate-400 border-slate-500/25",
+      bg: "bg-[var(--surface-sub)] text-[var(--muted-foreground)] border-[var(--border)]",
       icon: CheckCircle2,
     },
   };
 
   return (
-    <div className="space-y-3.5 text-slate-200">
+    <div className="space-y-3.5 text-[var(--foreground)]">
       {/* 1. Executive Summary */}
       {data.summary && (
-        <div className="p-3 rounded-xl bg-indigo-950/40 border border-indigo-800/40 text-indigo-200 text-xs font-medium flex items-start gap-2.5 shadow-inner">
-          <Sparkles className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+        <div className="p-3 rounded-xl bg-[var(--primary-soft)] border border-[var(--primary-soft-border)] text-[var(--foreground)] text-xs font-medium flex items-start gap-2.5">
+          <Sparkles className="w-4 h-4 text-[var(--primary)] shrink-0 mt-0.5" />
           <div className="leading-relaxed">{data.summary}</div>
         </div>
       )}
 
       {/* 2. Main Markdown Answer */}
-      <div className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed text-slate-200">
+      <div className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
         {data.answer}
       </div>
 
       {/* 3. Prioritized Tasks / Action Items */}
       {data.priorities && data.priorities.length > 0 && (
-        <div className="space-y-2 pt-2 border-t border-slate-800/80">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-white uppercase tracking-wider">
-            <Zap className="w-3.5 h-3.5 text-amber-400" />
+        <div className="space-y-2 pt-2 border-t border-[var(--border-subtle)]">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--foreground)] uppercase tracking-wider">
+            <Zap className="w-3.5 h-3.5 text-amber-500" />
             <span>Intelligent Priority Sequence</span>
           </div>
 
@@ -436,11 +435,11 @@ function StructuredAIResponseView({ data }: { data: AIResponseDTO }) {
               return (
                 <div
                   key={i}
-                  className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all space-y-1.5 text-left"
+                  className="p-3 rounded-xl bg-[var(--surface-sub)] border border-[var(--border-subtle)] space-y-1.5 text-left shadow-xs"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-semibold text-xs text-white flex items-center gap-1.5">
-                      <span className="w-4 h-4 rounded-full bg-slate-800 text-[10px] text-slate-400 flex items-center justify-center">
+                    <span className="font-semibold text-xs text-[var(--foreground)] flex items-center gap-1.5">
+                      <span className="w-4 h-4 rounded-full bg-[var(--surface)] text-[10px] text-[var(--muted-foreground)] flex items-center justify-center border border-[var(--border-subtle)]">
                         {i + 1}
                       </span>
                       {item.taskTitle}
@@ -448,7 +447,7 @@ function StructuredAIResponseView({ data }: { data: AIResponseDTO }) {
 
                     <span
                       className={cn(
-                        "text-[10px] font-semibold px-2 py-0.5 rounded-md border flex items-center gap-1 shrink-0",
+                        "text-[10px] font-bold px-2 py-0.5 rounded-md border flex items-center gap-1 shrink-0",
                         cfg.bg
                       )}
                     >
@@ -457,12 +456,12 @@ function StructuredAIResponseView({ data }: { data: AIResponseDTO }) {
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-slate-400 pl-5 leading-relaxed">
+                  <p className="text-[11px] text-[var(--muted-foreground)] pl-5 leading-relaxed">
                     {item.reason}
                   </p>
 
                   {item.estimatedMinutes && (
-                    <div className="pl-5 text-[10px] text-sky-400 font-mono flex items-center gap-1">
+                    <div className="pl-5 text-[10px] text-sky-600 dark:text-sky-400 font-mono flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       <span>Est. {item.estimatedMinutes} mins</span>
                     </div>
@@ -476,12 +475,12 @@ function StructuredAIResponseView({ data }: { data: AIResponseDTO }) {
 
       {/* 4. Analytical Insights */}
       {data.insights && data.insights.length > 0 && (
-        <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-800/30 text-emerald-300 text-xs space-y-1">
-          <div className="font-bold flex items-center gap-1.5 text-emerald-200">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-800 dark:text-emerald-300 text-xs space-y-1">
+          <div className="font-bold flex items-center gap-1.5 text-emerald-700 dark:text-emerald-200">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
             <span>Key Progress Insights</span>
           </div>
-          <ul className="list-disc list-inside space-y-0.5 text-[11px] text-emerald-300/90 pl-1">
+          <ul className="list-disc list-inside space-y-0.5 text-[11px] text-emerald-800/90 dark:text-emerald-300/90 pl-1">
             {data.insights.map((ins: string, idx: number) => (
               <li key={idx}>{ins}</li>
             ))}
@@ -491,12 +490,12 @@ function StructuredAIResponseView({ data }: { data: AIResponseDTO }) {
 
       {/* 5. Warnings & Risks */}
       {data.warnings && data.warnings.length > 0 && (
-        <div className="p-3 rounded-xl bg-amber-950/30 border border-amber-800/30 text-amber-300 text-xs space-y-1">
-          <div className="font-bold flex items-center gap-1.5 text-amber-200">
-            <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+        <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-800 dark:text-amber-300 text-xs space-y-1">
+          <div className="font-bold flex items-center gap-1.5 text-amber-700 dark:text-amber-200">
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
             <span>Attention Required</span>
           </div>
-          <ul className="list-disc list-inside space-y-0.5 text-[11px] text-amber-300/90 pl-1">
+          <ul className="list-disc list-inside space-y-0.5 text-[11px] text-amber-800/90 dark:text-amber-300/90 pl-1">
             {data.warnings.map((warn: string, idx: number) => (
               <li key={idx}>{warn}</li>
             ))}
@@ -506,15 +505,15 @@ function StructuredAIResponseView({ data }: { data: AIResponseDTO }) {
 
       {/* 6. Concrete Suggested Actions */}
       {data.suggestedActions && data.suggestedActions.length > 0 && (
-        <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-300 text-xs space-y-1">
-          <div className="font-bold text-slate-200 flex items-center gap-1.5">
-            <Target className="w-3.5 h-3.5 text-sky-400" />
+        <div className="p-3 rounded-xl bg-[var(--surface-sub)] border border-[var(--border-subtle)] text-[var(--foreground)] text-xs space-y-1">
+          <div className="font-bold text-[var(--foreground)] flex items-center gap-1.5">
+            <Target className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
             <span>Suggested Next Actions</span>
           </div>
           <ul className="space-y-1 text-[11px] pl-1">
             {data.suggestedActions.map((act: string, idx: number) => (
-              <li key={idx} className="flex items-start gap-1.5 text-slate-300">
-                <span className="text-sky-400 mt-0.5">&bull;</span>
+              <li key={idx} className="flex items-start gap-1.5 text-[var(--muted-foreground)]">
+                <span className="text-sky-600 dark:text-sky-400 mt-0.5">&bull;</span>
                 <span>{act}</span>
               </li>
             ))}

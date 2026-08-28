@@ -86,8 +86,8 @@ export function HabitCard({
   return (
     <Card
       className={cn(
-        "group flex flex-col justify-between p-4 sm:p-5 border-slate-800/80 hover:border-slate-700/80 transition-all",
-        habit.archived && "opacity-60 bg-slate-950/40"
+        "group flex flex-col justify-between p-4 sm:p-5 transition-all duration-200",
+        habit.archived && "opacity-60 bg-[var(--surface-sub)]/50"
       )}
     >
       <div className="space-y-3.5">
@@ -98,11 +98,11 @@ export function HabitCard({
               {/* Section Tag */}
               {habit.section && (
                 <span
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border"
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium border"
                   style={{
-                    color: habit.section.color || "#6366f1",
-                    backgroundColor: `${habit.section.color || "#6366f1"}15`,
-                    borderColor: `${habit.section.color || "#6366f1"}30`,
+                    color: habit.section.color || "var(--primary)",
+                    backgroundColor: `${habit.section.color || "#ea580c"}15`,
+                    borderColor: `${habit.section.color || "#ea580c"}30`,
                   }}
                 >
                   <Folder className="w-2.5 h-2.5" />
@@ -110,23 +110,23 @@ export function HabitCard({
                 </span>
               )}
 
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                {habit.frequency === "daily" ? "Daily" : "Weekly Routine"}
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
+                {habit.frequency === "daily" ? "Daily" : "Weekly Schedule"}
               </span>
 
               {habit.archived && (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[var(--surface-sub)] border border-[var(--border)] text-[var(--muted-foreground)]">
                   Archived
                 </span>
               )}
             </div>
 
-            <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-snug">
+            <h4 className="text-sm sm:text-base font-bold text-[var(--foreground)] tracking-tight leading-snug">
               {habit.title}
             </h4>
 
             {habit.description && (
-              <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+              <p className="text-xs text-[var(--muted-foreground)] line-clamp-2 leading-relaxed">
                 {habit.description}
               </p>
             )}
@@ -138,7 +138,7 @@ export function HabitCard({
               type="button"
               onClick={handleToggleArchive}
               disabled={isArchiving}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
               title={habit.archived ? "Unarchive habit" : "Archive habit"}
               aria-label={habit.archived ? `Unarchive ${habit.title}` : `Archive ${habit.title}`}
             >
@@ -151,7 +151,7 @@ export function HabitCard({
             <button
               type="button"
               onClick={() => onEdit(habit)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
               title="Edit habit"
               aria-label={`Edit ${habit.title}`}
             >
@@ -160,7 +160,7 @@ export function HabitCard({
             <button
               type="button"
               onClick={() => onDelete(habit)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-rose-600 hover:bg-rose-500/10 transition-colors cursor-pointer"
               title="Delete habit"
               aria-label={`Delete ${habit.title}`}
             >
@@ -176,14 +176,14 @@ export function HabitCard({
             className={cn(
               "inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold border shadow-xs transition-all",
               streak.currentStreak > 0
-                ? "bg-amber-500/15 border-amber-500/30 text-amber-600 dark:text-amber-400"
-                : "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400"
+                ? "bg-amber-500/15 border-amber-500/30 text-amber-700 dark:text-amber-400"
+                : "bg-[var(--surface-sub)] border-[var(--border)] text-[var(--muted-foreground)]"
             )}
           >
             <Flame
               className={cn(
                 "w-4 h-4",
-                streak.currentStreak > 0 && "text-amber-500 dark:text-amber-400 fill-amber-400/30 animate-pulse"
+                streak.currentStreak > 0 && "text-amber-500 dark:text-amber-400 fill-amber-400/30"
               )}
             />
             <span>
@@ -193,22 +193,22 @@ export function HabitCard({
 
           {/* Longest Streak Record */}
           {streak.longestStreak > 0 && (
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400">
-              <Award className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-medium bg-[var(--surface-sub)] border border-[var(--border)] text-[var(--foreground)]">
+              <Award className="w-3.5 h-3.5 text-[var(--secondary)]" />
               <span>Record: {streak.longestStreak}d</span>
             </div>
           )}
 
           {/* 30-Day Completion Rate */}
           {streak.completionRate !== undefined && (
-            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400">
+            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-medium bg-[var(--surface-sub)] border border-[var(--border)] text-[var(--muted-foreground)]">
               <span>{streak.completionRate}% consistency</span>
             </div>
           )}
         </div>
 
         {/* 7-Day Rolling Weekly Check-in Circles */}
-        <div className="pt-2 border-t border-slate-200 dark:border-slate-800/60">
+        <div className="pt-2 border-t border-[var(--border-subtle)]">
           <div className="flex items-center justify-between gap-1 sm:gap-2">
             {week.map((day) => {
               const isTogglingThis = togglingDate === day.date;
@@ -219,17 +219,17 @@ export function HabitCard({
                   onClick={() => handleToggleDay(day)}
                   disabled={isTogglingThis || habit.archived}
                   className={cn(
-                    "flex-1 flex flex-col items-center py-2 px-1 rounded-xl border transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500",
-                    day.isToday && "ring-1 ring-indigo-500/50 bg-indigo-500/5",
+                    "flex-1 flex flex-col items-center py-2 px-1 rounded-xl border transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]",
+                    day.isToday && "ring-1 ring-[var(--primary)]/50 bg-[var(--primary-soft)]",
                     day.completed
-                      ? "bg-amber-500/15 border-amber-500/40 text-amber-700 dark:text-amber-300"
+                      ? "bg-amber-500/15 border-amber-500/40 text-amber-800 dark:text-amber-300"
                       : day.isTargetDay
-                      ? "bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-600 dark:text-slate-400"
-                      : "bg-slate-100/50 dark:bg-slate-950/40 border-dashed border-slate-200 dark:border-slate-850 text-slate-400 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-400"
+                      ? "bg-[var(--surface-sub)] border-[var(--border)] hover:border-[var(--border-strong)] text-[var(--foreground)]"
+                      : "bg-[var(--surface)] border-dashed border-[var(--border)] text-[var(--muted-foreground)]"
                   )}
                   title={`${day.date} (${day.completed ? "Completed" : "Incomplete"})`}
                 >
-                  <span className="text-[10px] font-semibold uppercase opacity-80">
+                  <span className="text-[10px] font-bold uppercase opacity-80">
                     {day.isToday ? "Today" : day.dayLabel}
                   </span>
 
@@ -237,10 +237,10 @@ export function HabitCard({
                     className={cn(
                       "w-6 h-6 rounded-full mt-1.5 flex items-center justify-center transition-all",
                       day.completed
-                        ? "bg-gradient-to-tr from-amber-500 to-orange-400 text-slate-950 font-bold shadow-md shadow-amber-500/30 scale-105"
+                        ? "bg-gradient-to-tr from-amber-500 to-orange-400 text-white font-bold shadow-xs animate-check-pop"
                         : day.isTargetDay
-                        ? "border border-slate-700 bg-slate-800/40 text-slate-400"
-                        : "border border-dashed border-slate-800 text-slate-600"
+                        ? "border border-[var(--border-strong)] bg-[var(--surface)] text-[var(--muted-foreground)]"
+                        : "border border-dashed border-[var(--border)] text-[var(--muted-foreground)]/60"
                     )}
                   >
                     {day.completed ? (

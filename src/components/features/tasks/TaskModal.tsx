@@ -11,17 +11,17 @@ import { Calendar, CheckSquare, Flag, Folder } from "lucide-react";
 export interface TaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  task?: TaskDTO | null; // If provided, edit mode; else create mode
+  task?: TaskDTO | null;
   sections: SectionDTO[];
   defaultSectionId?: string | null;
   onSuccess?: (savedTask: TaskDTO) => void;
 }
 
 const PRIORITIES: { id: TaskPriority; label: string; color: string; border: string }[] = [
-  { id: "low", label: "Low", color: "text-slate-400 bg-slate-800/80", border: "border-slate-700" },
-  { id: "medium", label: "Medium", color: "text-sky-400 bg-sky-500/10", border: "border-sky-500/30" },
-  { id: "high", label: "High", color: "text-amber-400 bg-amber-500/10", border: "border-amber-500/30" },
-  { id: "urgent", label: "Urgent", color: "text-rose-400 bg-rose-500/10", border: "border-rose-500/30" },
+  { id: "low", label: "Low", color: "text-[var(--muted-foreground)] bg-[var(--surface-sub)]", border: "border-[var(--border)]" },
+  { id: "medium", label: "Medium", color: "text-sky-700 dark:text-sky-400 bg-sky-500/10", border: "border-sky-500/30" },
+  { id: "high", label: "High", color: "text-amber-700 dark:text-amber-400 bg-amber-500/10", border: "border-amber-500/30" },
+  { id: "urgent", label: "Urgent", color: "text-rose-700 dark:text-rose-400 bg-rose-500/10", border: "border-rose-500/30" },
 ];
 
 export function TaskModal({
@@ -126,7 +126,7 @@ export function TaskModal({
     >
       <form onSubmit={handleSubmit} className="space-y-4 pt-1" noValidate>
         {error && (
-          <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs">
             {error}
           </div>
         )}
@@ -141,20 +141,20 @@ export function TaskModal({
           required
           autoFocus
           disabled={isLoading}
-          icon={<CheckSquare className="w-4 h-4 text-slate-400" />}
+          icon={<CheckSquare className="w-4 h-4 text-[var(--muted-foreground)]" />}
         />
 
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 text-left">
           <label
             htmlFor="task-desc"
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
+            className="block text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]"
           >
-            Description <span className="text-slate-500 lowercase font-normal">(optional)</span>
+            Description <span className="lowercase font-normal opacity-75">(optional)</span>
           </label>
           <textarea
             id="task-desc"
             rows={2}
-            className="w-full rounded-xl glass-input px-3.5 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none resize-none"
+            className="w-full rounded-xl bg-[var(--input)] border border-[var(--border)] px-3.5 py-2 text-xs sm:text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)]/60 focus:outline-none focus:border-[var(--ring)] focus:ring-3 focus:ring-[var(--primary-soft)] resize-none"
             placeholder="Add relevant notes, checklist pointers, or context..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -165,19 +165,19 @@ export function TaskModal({
 
         {/* Section Selector */}
         {sections.length > 0 && (
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 text-left">
             <label
               htmlFor="task-section"
-              className="block text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-1.5"
             >
-              <Folder className="w-3.5 h-3.5 text-indigo-400" />
+              <Folder className="w-3.5 h-3.5 text-[var(--primary)]" />
               <span>Section / Domain</span>
             </label>
             <select
               id="task-section"
               value={sectionId}
               onChange={(e) => setSectionId(e.target.value)}
-              className="w-full rounded-xl glass-input px-3.5 py-2.5 text-sm text-slate-100 bg-slate-900 focus:outline-none cursor-pointer"
+              className="w-full rounded-xl bg-[var(--input)] border border-[var(--border)] px-3.5 py-2.5 text-xs sm:text-sm text-[var(--foreground)] focus:outline-none focus:border-[var(--ring)] cursor-pointer"
               disabled={isLoading}
             >
               <option value="">No Section (General)</option>
@@ -191,9 +191,9 @@ export function TaskModal({
         )}
 
         {/* Priority Selector */}
-        <div className="space-y-1.5">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-            <Flag className="w-3.5 h-3.5 text-indigo-400" />
+        <div className="space-y-1.5 text-left">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-1.5">
+            <Flag className="w-3.5 h-3.5 text-[var(--primary)]" />
             <span>Priority Level</span>
           </label>
           <div className="grid grid-cols-4 gap-2">
@@ -207,8 +207,8 @@ export function TaskModal({
                   disabled={isLoading}
                   className={`py-2 px-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer text-center ${
                     isSelected
-                      ? `${p.color} ${p.border} ring-2 ring-indigo-500/40 shadow-sm`
-                      : "bg-slate-900/60 border-slate-800 text-slate-400 hover:bg-slate-800/60"
+                      ? `${p.color} ${p.border} ring-2 ring-[var(--ring)]/40 shadow-xs font-bold`
+                      : "bg-[var(--surface-sub)] border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--surface-hover)]"
                   }`}
                 >
                   {p.label}
@@ -219,26 +219,26 @@ export function TaskModal({
         </div>
 
         {/* Due Date Picker */}
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 text-left">
           <label
             htmlFor="task-due-date"
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5"
+            className="block text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-1.5"
           >
-            <Calendar className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Due Date <span className="text-slate-500 lowercase font-normal">(optional)</span></span>
+            <Calendar className="w-3.5 h-3.5 text-[var(--primary)]" />
+            <span>Due Date <span className="lowercase font-normal opacity-75">(optional)</span></span>
           </label>
           <input
             id="task-due-date"
             type="date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
-            className="w-full rounded-xl glass-input px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none"
+            className="w-full rounded-xl bg-[var(--input)] border border-[var(--border)] px-3.5 py-2.5 text-xs sm:text-sm text-[var(--foreground)] focus:outline-none focus:border-[var(--ring)] focus:ring-3 focus:ring-[var(--primary-soft)]"
             disabled={isLoading}
           />
         </div>
 
         {/* Modal Actions */}
-        <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-800">
+        <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[var(--border-subtle)]">
           <Button
             type="button"
             variant="ghost"

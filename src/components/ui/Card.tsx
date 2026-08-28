@@ -2,15 +2,26 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  elevated?: boolean;
+  interactive?: boolean;
   glow?: boolean;
 }
 
-export function Card({ className, glow = false, children, ...props }: CardProps) {
+export function Card({
+  className,
+  elevated = false,
+  interactive = false,
+  glow = false,
+  children,
+  ...props
+}: CardProps) {
   return (
     <div
       className={cn(
-        "rounded-2xl glass-panel p-6 relative overflow-hidden transition-all duration-200",
-        glow && "before:absolute before:inset-0 before:bg-gradient-to-br before:from-indigo-500/10 before:via-sky-500/5 before:to-transparent before:pointer-events-none",
+        "rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 sm:p-6 transition-all duration-200",
+        elevated ? "shadow-[var(--shadow-elevated)]" : "shadow-[var(--shadow-card)]",
+        interactive && "hover:border-[var(--border-strong)] hover:shadow-md cursor-pointer",
+        glow && "border-[var(--primary-soft-border)] bg-gradient-to-b from-[var(--primary-soft)]/20 to-[var(--surface)]",
         className
       )}
       {...props}
@@ -40,7 +51,7 @@ export function CardTitle({
   return (
     <h3
       className={cn(
-        "text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2",
+        "text-base sm:text-lg font-bold text-[var(--foreground)] tracking-tight flex items-center gap-2",
         className
       )}
       {...props}
@@ -56,7 +67,13 @@ export function CardDescription({
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn("text-xs text-slate-600 dark:text-slate-400 leading-relaxed", className)} {...props}>
+    <p
+      className={cn(
+        "text-xs sm:text-sm text-[var(--muted-foreground)] leading-relaxed",
+        className
+      )}
+      {...props}
+    >
       {children}
     </p>
   );
@@ -81,7 +98,10 @@ export function CardFooter({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("flex items-center pt-4 border-t border-slate-200 dark:border-slate-800", className)}
+      className={cn(
+        "flex items-center pt-4 border-t border-[var(--border-subtle)]",
+        className
+      )}
       {...props}
     >
       {children}

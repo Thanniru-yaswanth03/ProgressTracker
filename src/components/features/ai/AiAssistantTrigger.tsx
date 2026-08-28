@@ -45,18 +45,15 @@ export function AiAssistantTrigger() {
             setIsOpen(true);
           }}
           aria-label="Open AI Progress Assistant"
-          className="relative flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-500 text-white font-semibold text-xs sm:text-sm shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-indigo-400/30"
+          className="relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[var(--primary)] text-white font-semibold text-xs sm:text-sm shadow-md hover:bg-[var(--primary-hover)] active:scale-[0.98] transition-all cursor-pointer border border-[var(--primary-hover)]"
         >
-          {/* Animated Glow Halo */}
-          <span className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-sky-400 opacity-60 blur-xs group-hover:opacity-100 transition-opacity pointer-events-none -z-10" />
-
           <div className="w-5 h-5 rounded-lg bg-white/20 flex items-center justify-center">
             <Sparkles className="w-3.5 h-3.5 text-white" />
           </div>
 
           <span className="tracking-tight">AI Assistant</span>
 
-          <span className="hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded-md bg-white/20 font-mono text-white/90">
+          <span className="hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded-md bg-white/20 font-mono text-white">
             Ctrl+J
           </span>
         </button>

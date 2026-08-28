@@ -143,13 +143,13 @@ export function ActivityTimeline({
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-1">
         {/* Search */}
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--muted-foreground)] pointer-events-none" />
           <input
             type="text"
             placeholder="Search activities or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl glass-input pl-10 pr-4 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none"
+            className="w-full rounded-xl bg-[var(--input)] border border-[var(--border)] pl-10 pr-4 py-2 text-xs sm:text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] focus:outline-none focus:border-[var(--ring)] focus:ring-3 focus:ring-[var(--primary-soft)]"
           />
         </div>
 
@@ -160,7 +160,7 @@ export function ActivityTimeline({
             <select
               value={sectionFilter}
               onChange={(e) => setSectionFilter(e.target.value)}
-              className="rounded-xl glass-input px-3 py-2 text-xs text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 focus:outline-none cursor-pointer border border-slate-200 dark:border-slate-800"
+              className="rounded-xl bg-[var(--input)] border border-[var(--border)] px-3 py-2 text-xs text-[var(--foreground)] focus:outline-none focus:border-[var(--ring)] cursor-pointer"
             >
               <option value="all">All Sections</option>
               <option value="none">General (No Section)</option>
@@ -177,7 +177,7 @@ export function ActivityTimeline({
             <select
               value={tagFilter}
               onChange={(e) => setTagFilter(e.target.value)}
-              className="rounded-xl glass-input px-3 py-2 text-xs text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 focus:outline-none cursor-pointer border border-slate-200 dark:border-slate-800"
+              className="rounded-xl bg-[var(--input)] border border-[var(--border)] px-3 py-2 text-xs text-[var(--foreground)] focus:outline-none focus:border-[var(--ring)] cursor-pointer"
             >
               <option value="all">All Tags</option>
               {allTags.map((tag) => (
@@ -219,7 +219,7 @@ export function ActivityTimeline({
           <Button
             onClick={() => setIsLogOpen(true)}
             size="md"
-            className="gap-2 shrink-0 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold shadow-md shadow-emerald-500/20"
+            className="gap-2 shrink-0 shadow-xs"
           >
             <Plus className="w-4 h-4" />
             <span>Log Activity</span>
@@ -239,12 +239,12 @@ export function ActivityTimeline({
             <div key={group.date} className="space-y-3">
               {/* Day Header Marker */}
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-xs">
-                  <Calendar className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-xs font-bold text-[var(--foreground)] shadow-xs">
+                  <Calendar className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                   <span>{group.label}</span>
                 </div>
-                <div className="h-[1px] flex-1 bg-slate-200 dark:bg-slate-800" />
-                <span className="text-[11px] font-medium text-slate-500">
+                <div className="h-[1px] flex-1 bg-[var(--border-subtle)]" />
+                <span className="text-[11px] font-medium text-[var(--muted-foreground)]">
                   {group.items.length} {group.items.length === 1 ? "entry" : "entries"}
                 </span>
               </div>

@@ -54,7 +54,7 @@ export function QuickStartGuide({
       completed: sectionsCount > 0,
       href: "/sections",
       icon: Layers,
-      color: "text-indigo-500 dark:text-indigo-400",
+      color: "text-indigo-600 dark:text-indigo-400",
       actionText: "Create Section",
     },
     {
@@ -64,7 +64,7 @@ export function QuickStartGuide({
       completed: tasksCount > 0,
       href: "/tasks",
       icon: CheckSquare,
-      color: "text-sky-500 dark:text-sky-400",
+      color: "text-sky-600 dark:text-sky-400",
       actionText: "Add Task",
     },
     {
@@ -74,7 +74,7 @@ export function QuickStartGuide({
       completed: habitsCount > 0,
       href: "/habits",
       icon: Flame,
-      color: "text-amber-500 dark:text-amber-400",
+      color: "text-amber-600 dark:text-amber-400",
       actionText: "Create Habit",
     },
     {
@@ -84,7 +84,7 @@ export function QuickStartGuide({
       completed: goalsCount > 0,
       href: "/goals",
       icon: Target,
-      color: "text-purple-500 dark:text-purple-400",
+      color: "text-[var(--primary)]",
       actionText: "Set Goal",
     },
     {
@@ -94,7 +94,7 @@ export function QuickStartGuide({
       completed: activitiesCount > 0 || tasksCount > 0 || habitsCount > 0,
       href: "/analytics",
       icon: BarChart3,
-      color: "text-pink-500 dark:text-pink-400",
+      color: "text-[var(--secondary)]",
       actionText: "View Analytics",
     },
   ];
@@ -110,7 +110,7 @@ export function QuickStartGuide({
             setIsDismissed(false);
             localStorage.removeItem("progresstracker_guide_dismissed");
           }}
-          className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
+          className="text-xs text-[var(--primary)] hover:underline flex items-center gap-1 cursor-pointer font-medium"
         >
           <Compass className="w-3.5 h-3.5" />
           <span>Show Quick-Start Guide</span>
@@ -120,40 +120,37 @@ export function QuickStartGuide({
   }
 
   return (
-    <div className="p-5 sm:p-6 rounded-2xl glass-panel border border-indigo-500/20 shadow-lg shadow-indigo-500/5 relative overflow-hidden transition-all duration-300">
-      {/* Decorative gradient glow */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
-
+    <div className="p-5 sm:p-6 rounded-2xl bg-[var(--surface)] border border-[var(--border)] shadow-[var(--shadow-card)] relative overflow-hidden transition-all duration-200">
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
-            <Compass className="w-5 h-5" />
+          <div className="w-8 h-8 rounded-xl bg-[var(--primary-soft)] border border-[var(--primary-soft-border)] flex items-center justify-center text-[var(--primary)]">
+            <Compass className="w-4.5 h-4.5" />
           </div>
           <div>
-            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              Quick-Start & Guide
-              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+            <h3 className="text-sm sm:text-base font-bold text-[var(--foreground)] flex items-center gap-2">
+              Quick-Start Momentum Guide
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--primary-soft)] text-[var(--primary)] border border-[var(--primary-soft-border)]">
                 {completedCount} of {steps.length} completed
               </span>
             </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-              Follow these simple steps to set up your momentum workflow
+            <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
+              Set up your core workspace structure to jumpstart daily consistency
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
             aria-label={isCollapsed ? "Expand Guide" : "Collapse Guide"}
           >
             {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
           </button>
           <button
             onClick={handleDismiss}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
             aria-label="Dismiss Guide"
             title="Hide guide"
           >
@@ -163,9 +160,9 @@ export function QuickStartGuide({
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full mt-4 overflow-hidden">
+      <div className="w-full bg-[var(--surface-sub)] h-1.5 rounded-full mt-4 overflow-hidden border border-[var(--border-subtle)]">
         <div
-          className="bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-500 h-full rounded-full transition-all duration-500"
+          className="bg-gradient-to-r from-[var(--primary)] via-amber-500 to-emerald-500 h-full rounded-full transition-all duration-500"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
@@ -178,49 +175,49 @@ export function QuickStartGuide({
             return (
               <div
                 key={step.id}
-                className={`p-3.5 rounded-xl border transition-all duration-200 flex flex-col justify-between ${
+                className={`p-3.5 rounded-xl border transition-all duration-150 flex flex-col justify-between ${
                   step.completed
-                    ? "bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-500/20"
-                    : "bg-white/80 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:border-indigo-500/30"
+                    ? "bg-emerald-500/5 border-emerald-500/20"
+                    : "bg-[var(--surface-sub)] border-[var(--border)] hover:border-[var(--border-strong)]"
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <div className={`p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 ${step.color}`}>
-                        <Icon className="w-4 h-4" />
+                      <div className={`p-1.5 rounded-lg bg-[var(--surface)] border border-[var(--border-subtle)] ${step.color}`}>
+                        <Icon className="w-3.5 h-3.5" />
                       </div>
-                      <span className="text-[11px] font-bold text-slate-400">STEP {idx + 1}</span>
+                      <span className="text-[10px] font-bold text-[var(--muted-foreground)]">STEP {idx + 1}</span>
                     </div>
 
                     {step.completed ? (
                       <span className="flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                        <CheckCircle2 className="w-4 h-4" />
+                        <CheckCircle2 className="w-3.5 h-3.5" />
                         Done
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1 text-[11px] text-slate-400">
-                        <Circle className="w-3.5 h-3.5" />
+                      <span className="flex items-center gap-1 text-[11px] text-[var(--muted-foreground)]">
+                        <Circle className="w-3 h-3" />
                         To Do
                       </span>
                     )}
                   </div>
 
-                  <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  <h4 className="text-xs sm:text-sm font-semibold text-[var(--foreground)]">
                     {step.title}
                   </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed line-clamp-2">
+                  <p className="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed line-clamp-2">
                     {step.description}
                   </p>
                 </div>
 
-                <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                <div className="mt-3 pt-2.5 border-t border-[var(--border-subtle)] flex items-center justify-between">
                   <Link
                     href={step.href}
                     className={`text-xs font-semibold hover:underline inline-flex items-center gap-1 ${
                       step.completed
                         ? "text-emerald-700 dark:text-emerald-400"
-                        : "text-indigo-600 dark:text-indigo-400"
+                        : "text-[var(--primary)]"
                     }`}
                   >
                     <span>{step.actionText}</span>

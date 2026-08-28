@@ -11,6 +11,7 @@ import {
   Bot,
 } from "lucide-react";
 import { AIQuickInsightsDTO } from "@/types";
+import { Card } from "@/components/ui/Card";
 
 export function AiInsightsWidget() {
   const [insights, setInsights] = React.useState<AIQuickInsightsDTO | null>(null);
@@ -50,36 +51,33 @@ export function AiInsightsWidget() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl p-5 glass-panel border border-slate-200 dark:border-slate-800/80 animate-pulse">
+      <Card className="p-5 animate-pulse">
         <div className="flex items-center justify-between pb-3">
-          <div className="h-4 w-40 bg-slate-200 dark:bg-slate-800 rounded-md" />
-          <div className="h-4 w-20 bg-slate-200 dark:bg-slate-800 rounded-md" />
+          <div className="h-4 w-40 bg-[var(--surface-sub)] rounded-md" />
+          <div className="h-4 w-20 bg-[var(--surface-sub)] rounded-md" />
         </div>
         <div className="space-y-2 mt-2">
-          <div className="h-3 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-md" />
-          <div className="h-3 w-1/2 bg-slate-200 dark:bg-slate-800 rounded-md" />
+          <div className="h-3 w-3/4 bg-[var(--surface-sub)] rounded-md" />
+          <div className="h-3 w-1/2 bg-[var(--surface-sub)] rounded-md" />
         </div>
-      </div>
+      </Card>
     );
   }
 
   if (!insights) return null;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl p-5 sm:p-6 glass-panel border border-indigo-200/50 dark:border-indigo-900/40 shadow-lg transition-all duration-300">
-      {/* Background Subtle Ambient Glow */}
-      <div className="absolute top-0 right-0 -mr-16 -mt-16 w-52 h-52 rounded-full bg-gradient-to-br from-indigo-500/10 via-sky-500/10 to-transparent blur-2xl pointer-events-none" />
-
+    <Card className="relative overflow-hidden p-5 sm:p-6 transition-all duration-200">
       <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         {/* Left: Greeting & AI Highlights */}
         <div className="space-y-2 flex-1">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-lg bg-[var(--primary-soft)] text-[var(--primary)] flex items-center justify-center">
               <Bot className="w-3.5 h-3.5" />
             </div>
-            <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+            <h3 className="text-xs sm:text-sm font-bold text-[var(--foreground)] tracking-tight flex items-center gap-2">
               <span>{insights.greeting}! AI Progress Intelligence</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-normal">
+              <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--primary-soft)] text-[var(--primary)] border border-[var(--primary-soft-border)] font-semibold">
                 Live Analysis
               </span>
             </h3>
@@ -90,7 +88,7 @@ export function AiInsightsWidget() {
             {insights.highlights.map((highlight, idx) => (
               <p
                 key={idx}
-                className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed flex items-start gap-1.5"
+                className="text-xs sm:text-sm text-[var(--foreground)] leading-relaxed flex items-start gap-1.5 opacity-90"
               >
                 <span>{highlight}</span>
               </p>
@@ -99,10 +97,10 @@ export function AiInsightsWidget() {
 
           {/* AI Recommendation Banner */}
           {insights.recommendation && (
-            <div className="mt-2 text-xs px-3 py-2 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/40 text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
+            <div className="mt-2 text-xs px-3 py-2 rounded-xl bg-[var(--primary-soft)] border border-[var(--primary-soft-border)] text-[var(--foreground)] flex items-center gap-2">
               <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
               <span>
-                <strong className="font-semibold">AI Recommendation:</strong>{" "}
+                <strong className="font-semibold text-[var(--primary)]">Recommendation:</strong>{" "}
                 {insights.recommendation}
               </span>
             </div>
@@ -110,16 +108,16 @@ export function AiInsightsWidget() {
         </div>
 
         {/* Right: Quick Stats & Consult Button */}
-        <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-3 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-200 dark:border-slate-800">
+        <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-3 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)]">
           <div className="flex items-center gap-2">
             {insights.overdueTasksCount > 0 && (
-              <span className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+              <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20">
                 <AlertTriangle className="w-3 h-3" />
                 {insights.overdueTasksCount} Overdue
               </span>
             )}
             {insights.bestStreakDays && insights.bestStreakDays > 0 ? (
-              <span className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+              <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
                 <Flame className="w-3 h-3" />
                 {insights.bestStreakDays}d Streak
               </span>
@@ -131,7 +129,7 @@ export function AiInsightsWidget() {
               type="button"
               onClick={() => fetchInsights()}
               title="Refresh AI insights"
-              className="p-2 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-2 rounded-xl text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
             >
               <RotateCw className="w-3.5 h-3.5" />
             </button>
@@ -139,7 +137,7 @@ export function AiInsightsWidget() {
             <button
               type="button"
               onClick={() => openAiChat("Analyze my daily progress and tell me what to focus on next.")}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-500/20 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>Ask Assistant</span>
@@ -148,6 +146,6 @@ export function AiInsightsWidget() {
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

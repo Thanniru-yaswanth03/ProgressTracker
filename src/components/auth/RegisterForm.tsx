@@ -31,7 +31,7 @@ export function RegisterForm() {
 
     if (score <= 1) return { score: 25, label: "Weak", color: "bg-red-500" };
     if (score === 2) return { score: 50, label: "Fair", color: "bg-amber-500" };
-    if (score === 3) return { score: 75, label: "Good", color: "bg-blue-500" };
+    if (score === 3) return { score: 75, label: "Good", color: "bg-sky-500" };
     return { score: 100, label: "Strong", color: "bg-emerald-500" };
   };
 
@@ -69,7 +69,6 @@ export function RegisterForm() {
       });
 
       if (signInRes?.error) {
-        // Redirect to login with success note if auto-sign in has edge-case issue
         router.push("/login?registered=true");
       } else {
         router.push("/dashboard");
@@ -84,7 +83,7 @@ export function RegisterForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {generalError && (
-        <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2.5">
+        <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs sm:text-sm flex items-start gap-2.5">
           <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
           <span>{generalError}</span>
         </div>
@@ -100,7 +99,7 @@ export function RegisterForm() {
         required
         value={name}
         onChange={(e) => setName(e.target.value)}
-        icon={<UserIcon className="w-4 h-4" />}
+        icon={<UserIcon className="w-4 h-4 text-[var(--muted-foreground)]" />}
         error={fieldErrors.name?.[0]}
         disabled={isLoading}
       />
@@ -116,7 +115,7 @@ export function RegisterForm() {
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        icon={<Mail className="w-4 h-4" />}
+        icon={<Mail className="w-4 h-4 text-[var(--muted-foreground)]" />}
         error={fieldErrors.email?.[0]}
         disabled={isLoading}
       />
@@ -132,14 +131,14 @@ export function RegisterForm() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          icon={<Lock className="w-4 h-4" />}
+          icon={<Lock className="w-4 h-4 text-[var(--muted-foreground)]" />}
           error={fieldErrors.password?.[0]}
           disabled={isLoading}
           endAdornment={
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="text-slate-400 hover:text-slate-200 transition-colors p-1 cursor-pointer focus:outline-none"
+              className="text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors p-1 cursor-pointer focus:outline-none"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? (
@@ -152,12 +151,12 @@ export function RegisterForm() {
         />
 
         {password.length > 0 && (
-          <div className="pt-1.5 space-y-1">
-            <div className="flex justify-between items-center text-[10px] text-slate-400 font-medium">
+          <div className="pt-1 space-y-1">
+            <div className="flex justify-between items-center text-[10px] text-[var(--muted-foreground)] font-medium">
               <span>Password strength</span>
-              <span>{strength.label}</span>
+              <span className="font-bold">{strength.label}</span>
             </div>
-            <div className="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
+            <div className="h-1.5 w-full bg-[var(--border)] rounded-full overflow-hidden">
               <div
                 className={`h-full transition-all duration-300 ${strength.color}`}
                 style={{ width: `${strength.score}%` }}
@@ -169,18 +168,18 @@ export function RegisterForm() {
 
       <Button
         type="submit"
-        className="w-full mt-2"
+        className="w-full mt-2 shadow-xs"
         size="lg"
         isLoading={isLoading}
       >
         Create Account
       </Button>
 
-      <div className="text-center pt-2 text-xs text-slate-400">
+      <div className="text-center pt-2 text-xs text-[var(--muted-foreground)]">
         Already have an account?{" "}
         <Link
           href="/login"
-          className="text-indigo-400 hover:text-indigo-300 font-semibold underline underline-offset-4"
+          className="text-[var(--primary)] hover:underline font-semibold"
         >
           Sign in
         </Link>

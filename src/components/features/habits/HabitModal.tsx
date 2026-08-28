@@ -82,7 +82,6 @@ export function HabitModal({
     if (nextFreq === "daily") {
       setTargetDays([0, 1, 2, 3, 4, 5, 6]);
     } else if (targetDays.length === 7) {
-      // Default to weekdays for weekly
       setTargetDays([1, 2, 3, 4, 5]);
     }
   };
@@ -145,7 +144,7 @@ export function HabitModal({
     >
       <form onSubmit={handleSubmit} className="space-y-4 pt-1" noValidate>
         {error && (
-          <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs">
             {error}
           </div>
         )}
@@ -160,21 +159,21 @@ export function HabitModal({
           required
           autoFocus
           disabled={isLoading}
-          icon={<Flame className="w-4 h-4 text-amber-400" />}
+          icon={<Flame className="w-4 h-4 text-amber-500 dark:text-amber-400" />}
         />
 
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 text-left">
           <label
             htmlFor="habit-desc"
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
+            className="block text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]"
           >
             Description / Cue & Reward{" "}
-            <span className="text-slate-500 lowercase font-normal">(optional)</span>
+            <span className="lowercase font-normal opacity-75">(optional)</span>
           </label>
           <textarea
             id="habit-desc"
             rows={2}
-            className="w-full rounded-xl glass-input px-3.5 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none resize-none"
+            className="w-full rounded-xl bg-[var(--input)] border border-[var(--border)] px-3.5 py-2 text-xs sm:text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)]/60 focus:outline-none focus:border-[var(--ring)] focus:ring-3 focus:ring-[var(--primary-soft)] resize-none"
             placeholder="When and where will you perform this habit?..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -185,19 +184,19 @@ export function HabitModal({
 
         {/* Section Selector */}
         {sections.length > 0 && (
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 text-left">
             <label
               htmlFor="habit-section"
-              className="block text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5"
+              className="block text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-1.5"
             >
-              <Folder className="w-3.5 h-3.5 text-indigo-400" />
+              <Folder className="w-3.5 h-3.5 text-[var(--primary)]" />
               <span>Section / Domain</span>
             </label>
             <select
               id="habit-section"
               value={sectionId}
               onChange={(e) => setSectionId(e.target.value)}
-              className="w-full rounded-xl glass-input px-3.5 py-2.5 text-sm text-slate-100 bg-slate-900 focus:outline-none cursor-pointer"
+              className="w-full rounded-xl bg-[var(--input)] border border-[var(--border)] px-3.5 py-2.5 text-xs sm:text-sm text-[var(--foreground)] focus:outline-none focus:border-[var(--ring)] cursor-pointer"
               disabled={isLoading}
             >
               <option value="">No Section (General Habit)</option>
@@ -211,9 +210,9 @@ export function HabitModal({
         )}
 
         {/* Frequency Choice */}
-        <div className="space-y-2">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-            <Repeat className="w-3.5 h-3.5 text-amber-400" />
+        <div className="space-y-2 text-left">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-1.5">
+            <Repeat className="w-3.5 h-3.5 text-[var(--primary)]" />
             <span>Frequency</span>
           </label>
           <div className="grid grid-cols-2 gap-3">
@@ -222,15 +221,15 @@ export function HabitModal({
               onClick={() => handleFrequencyChange("daily")}
               className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                 frequency === "daily"
-                  ? "bg-amber-500/10 border-amber-500/40 ring-2 ring-amber-500/30 text-white"
-                  : "bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800/60"
+                  ? "bg-amber-500/15 border-amber-500/40 ring-2 ring-amber-500/30 text-[var(--foreground)]"
+                  : "bg-[var(--surface-sub)] border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--surface-hover)]"
               }`}
             >
-              <div className="text-xs font-bold text-slate-100 flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5 text-amber-400" />
+              <div className="text-xs font-bold text-[var(--foreground)] flex items-center gap-1.5">
+                <Flame className="w-3.5 h-3.5 text-amber-500" />
                 <span>Daily</span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">
+              <p className="text-[11px] text-[var(--muted-foreground)] mt-1">
                 Every single day (7 days a week)
               </p>
             </button>
@@ -240,15 +239,15 @@ export function HabitModal({
               onClick={() => handleFrequencyChange("weekly")}
               className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                 frequency === "weekly"
-                  ? "bg-amber-500/10 border-amber-500/40 ring-2 ring-amber-500/30 text-white"
-                  : "bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800/60"
+                  ? "bg-amber-500/15 border-amber-500/40 ring-2 ring-amber-500/30 text-[var(--foreground)]"
+                  : "bg-[var(--surface-sub)] border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--surface-hover)]"
               }`}
             >
-              <div className="text-xs font-bold text-slate-100 flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-sky-400" />
+              <div className="text-xs font-bold text-[var(--foreground)] flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-sky-500" />
                 <span>Specific Days</span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">
+              <p className="text-[11px] text-[var(--muted-foreground)] mt-1">
                 Selected days of the week
               </p>
             </button>
@@ -257,8 +256,8 @@ export function HabitModal({
 
         {/* Target Days Selector (for Weekly) */}
         {frequency === "weekly" && (
-          <div className="space-y-1.5 pt-1 animate-in fade-in duration-200">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
+          <div className="space-y-1.5 pt-1 text-left animate-enter-fade">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
               Schedule Target Days
             </label>
             <div className="flex items-center justify-between gap-1.5">
@@ -271,8 +270,8 @@ export function HabitModal({
                     onClick={() => handleToggleDay(d.day)}
                     className={`w-10 h-10 rounded-xl text-xs font-bold border transition-all cursor-pointer flex flex-col items-center justify-center ${
                       isSelected
-                        ? "bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/30 scale-105"
-                        : "bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800"
+                        ? "bg-amber-500 text-white border-amber-400 shadow-xs scale-105"
+                        : "bg-[var(--surface-sub)] border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--surface-hover)]"
                     }`}
                   >
                     <span>{d.label}</span>
@@ -285,7 +284,7 @@ export function HabitModal({
         )}
 
         {/* Modal Actions */}
-        <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-800">
+        <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[var(--border-subtle)]">
           <Button
             type="button"
             variant="ghost"
@@ -299,7 +298,7 @@ export function HabitModal({
             type="submit"
             size="sm"
             isLoading={isLoading}
-            className="min-w-[100px] bg-amber-600 hover:bg-amber-500"
+            className="min-w-[100px]"
           >
             {isEditing ? "Save Changes" : "Create Habit"}
           </Button>

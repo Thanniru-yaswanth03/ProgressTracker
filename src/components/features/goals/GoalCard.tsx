@@ -20,6 +20,8 @@ import {
   deleteGoalAction,
 } from "@/server/actions/goal.actions";
 import { useRouter } from "next/navigation";
+import { Card } from "@/components/ui/Card";
+import { cn } from "@/lib/utils";
 
 interface GoalCardProps {
   goal: GoalDTO;
@@ -93,22 +95,22 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
 
   // Status pill color
   let statusBadge = (
-    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-      <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[var(--primary-soft)] text-[var(--primary)] border border-[var(--primary-soft-border)]">
+      <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] animate-pulse" />
       In Progress
     </span>
   );
 
   if (isCompleted) {
     statusBadge = (
-      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
         <CheckCircle2 className="w-3 h-3" />
         Completed
       </span>
     );
   } else if (isPaused) {
     statusBadge = (
-      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
         <Pause className="w-3 h-3" />
         Paused
       </span>
@@ -119,21 +121,21 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
   let deadlineBadge = null;
   if (goal.targetDate && goal.daysRemaining !== null && goal.daysRemaining !== undefined) {
     let text = `${goal.daysRemaining} days left`;
-    let colorClass = "text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800";
+    let colorClass = "text-[var(--muted-foreground)] bg-[var(--surface-sub)] border-[var(--border)]";
 
     if (goal.daysRemaining < 0) {
       text = `${Math.abs(goal.daysRemaining)}d Overdue`;
-      colorClass = "text-rose-600 dark:text-rose-400 bg-rose-500/10 border-rose-500/20";
+      colorClass = "text-rose-700 dark:text-rose-400 bg-rose-500/10 border-rose-500/20";
     } else if (goal.daysRemaining === 0) {
       text = "Due Today";
-      colorClass = "text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20";
+      colorClass = "text-amber-700 dark:text-amber-400 bg-amber-500/10 border-amber-500/20";
     } else if (goal.daysRemaining <= 3) {
-      colorClass = "text-amber-600 dark:text-amber-300 bg-amber-500/10 border-amber-500/20";
+      colorClass = "text-amber-700 dark:text-amber-300 bg-amber-500/10 border-amber-500/20";
     }
 
     deadlineBadge = (
       <div
-        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium border ${colorClass}`}
+        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium border ${colorClass}`}
       >
         <Calendar className="w-3 h-3" />
         <span>{text}</span>
@@ -142,14 +144,12 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
   }
 
   return (
-    <div
-      className={`group relative flex flex-col justify-between rounded-2xl border glass-panel p-5 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-xl hover:shadow-indigo-500/5 ${
-        isCompleted
-          ? "border-emerald-500/30"
-          : isPaused
-          ? "border-amber-500/30 opacity-85"
-          : "border-slate-200 dark:border-slate-800"
-      }`}
+    <Card
+      className={cn(
+        "group relative flex flex-col justify-between p-5 transition-all duration-200",
+        isCompleted && "border-emerald-500/30",
+        isPaused && "border-amber-500/30 opacity-85"
+      )}
     >
       {/* Top Bar: Section & Actions */}
       <div>
@@ -157,11 +157,11 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
           <div className="flex items-center flex-wrap gap-1.5">
             {goal.section && (
               <span
-                className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border"
+                className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border"
                 style={{
-                  color: goal.section.color,
-                  backgroundColor: `${goal.section.color}15`,
-                  borderColor: `${goal.section.color}35`,
+                  color: goal.section.color || "var(--primary)",
+                  backgroundColor: `${goal.section.color || "#ea580c"}15`,
+                  borderColor: `${goal.section.color || "#ea580c"}35`,
                 }}
               >
                 {goal.section.name}
@@ -176,7 +176,7 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
               type="button"
               disabled={isPending}
               onClick={() => setShowMenu((prev) => !prev)}
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-1 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
               aria-label="Goal Options"
             >
               <MoreVertical className="w-4 h-4" />
@@ -188,22 +188,22 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
                   className="fixed inset-0 z-20"
                   onClick={() => setShowMenu(false)}
                 />
-                <div className="absolute right-0 mt-1 w-44 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl p-1 z-30 flex flex-col gap-0.5 animate-in fade-in zoom-in-95 duration-100">
+                <div className="absolute right-0 mt-1 w-44 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border)] shadow-xl p-1 z-30 flex flex-col gap-0.5 animate-enter-fade">
                   {!isCompleted && (
                     <>
                       <button
                         type="button"
                         onClick={handleTogglePause}
-                        className="flex items-center gap-2 w-full px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-left cursor-pointer"
+                        className="flex items-center gap-2 w-full px-2.5 py-1.5 text-xs text-[var(--foreground)] hover:bg-[var(--surface-hover)] rounded-lg transition-colors text-left cursor-pointer"
                       >
                         {isPaused ? (
                           <>
-                            <Play className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
+                            <Play className="w-3.5 h-3.5 text-emerald-500" />
                             <span>Resume Goal</span>
                           </>
                         ) : (
                           <>
-                            <Pause className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+                            <Pause className="w-3.5 h-3.5 text-amber-500" />
                             <span>Pause Goal</span>
                           </>
                         )}
@@ -212,9 +212,9 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
                       <button
                         type="button"
                         onClick={handleComplete}
-                        className="flex items-center gap-2 w-full px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-left cursor-pointer"
+                        className="flex items-center gap-2 w-full px-2.5 py-1.5 text-xs text-[var(--foreground)] hover:bg-[var(--surface-hover)] rounded-lg transition-colors text-left cursor-pointer"
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                         <span>Mark Completed</span>
                       </button>
                     </>
@@ -226,16 +226,16 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
                       setShowMenu(false);
                       onEdit(goal);
                     }}
-                    className="flex items-center gap-2 w-full px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-left cursor-pointer"
+                    className="flex items-center gap-2 w-full px-2.5 py-1.5 text-xs text-[var(--foreground)] hover:bg-[var(--surface-hover)] rounded-lg transition-colors text-left cursor-pointer"
                   >
-                    <Edit2 className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+                    <Edit2 className="w-3.5 h-3.5 text-[var(--primary)]" />
                     <span>Edit Details</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={handleDelete}
-                    className="flex items-center gap-2 w-full px-2.5 py-1.5 text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors text-left cursor-pointer"
+                    className="flex items-center gap-2 w-full px-2.5 py-1.5 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors text-left cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     <span>Delete Goal</span>
@@ -247,11 +247,11 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
         </div>
 
         {/* Title & Description */}
-        <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
+        <h3 className="text-sm sm:text-base font-bold text-[var(--foreground)] tracking-tight mb-1 group-hover:text-[var(--primary)] transition-colors">
           {goal.title}
         </h3>
         {goal.description ? (
-          <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 mb-4 leading-relaxed">
+          <p className="text-xs text-[var(--muted-foreground)] line-clamp-2 mb-4 leading-relaxed">
             {goal.description}
           </p>
         ) : (
@@ -260,39 +260,40 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
       </div>
 
       {/* Center: Progress Metric Display */}
-      <div className="my-2 bg-slate-50 dark:bg-slate-950/60 rounded-xl p-3.5 border border-slate-200 dark:border-slate-800/80 shadow-xs">
+      <div className="my-2 bg-[var(--surface-sub)] rounded-xl p-3.5 border border-[var(--border-subtle)] shadow-xs">
         <div className="flex items-baseline justify-between mb-2">
           <div className="flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+            <span className="text-xl sm:text-2xl font-extrabold text-[var(--foreground)] tracking-tight">
               {goal.currentValue}
             </span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+            <span className="text-xs text-[var(--muted-foreground)] font-medium">
               / {goal.targetValue} {goal.unit}
             </span>
           </div>
 
-          <div className="flex items-center gap-1 font-bold text-sm text-indigo-600 dark:text-indigo-400">
+          <div className="flex items-center gap-1 font-extrabold text-xs sm:text-sm text-[var(--primary)]">
             <span>{goal.progressPercentage}%</span>
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden p-0.5">
+        <div className="w-full h-2 bg-[var(--border)] rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all duration-500 ${
+            className={cn(
+              "h-full rounded-full transition-all duration-500",
               isCompleted
-                ? "bg-gradient-to-r from-emerald-500 to-teal-400"
+                ? "bg-emerald-500"
                 : isPaused
-                ? "bg-gradient-to-r from-amber-500 to-yellow-400"
-                : "bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-400"
-            }`}
+                ? "bg-amber-500"
+                : "bg-[var(--primary)]"
+            )}
             style={{ width: `${goal.progressPercentage}%` }}
           />
         </div>
       </div>
 
       {/* Bottom Row: Deadline & Quick Actions */}
-      <div className="mt-3 flex items-center justify-between gap-2 pt-2 border-t border-slate-200 dark:border-slate-800/60">
+      <div className="mt-3 flex items-center justify-between gap-2 pt-2 border-t border-[var(--border-subtle)]">
         <div>{deadlineBadge}</div>
 
         {!isCompleted && !isPaused && (
@@ -301,7 +302,7 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
               type="button"
               disabled={isPending || goal.currentValue >= goal.targetValue}
               onClick={() => handleIncrement(1)}
-              className="inline-flex items-center gap-0.5 px-2 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
+              className="inline-flex items-center gap-0.5 px-2 py-1 rounded-lg text-xs font-semibold bg-[var(--surface-sub)] text-[var(--foreground)] hover:bg-[var(--surface-hover)] border border-[var(--border)] transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
               title="Add +1"
             >
               <Plus className="w-3 h-3" />
@@ -313,7 +314,7 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
                 type="button"
                 disabled={isPending || goal.currentValue >= goal.targetValue}
                 onClick={() => handleIncrement(5)}
-                className="hidden sm:inline-flex items-center gap-0.5 px-2 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
+                className="hidden sm:inline-flex items-center gap-0.5 px-2 py-1 rounded-lg text-xs font-semibold bg-[var(--surface-sub)] text-[var(--foreground)] hover:bg-[var(--surface-hover)] border border-[var(--border)] transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
                 title="Add +5"
               >
                 <Plus className="w-3 h-3" />
@@ -325,7 +326,7 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
               type="button"
               disabled={isPending}
               onClick={() => onQuickProgress(goal)}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 shadow-sm transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] shadow-xs transition-colors cursor-pointer"
             >
               <span>Update</span>
             </button>
@@ -333,9 +334,9 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
         )}
 
         {isCompleted && (
-          <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+          <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
             <Flame className="w-3.5 h-3.5 text-emerald-500" />
-            Goal Complete!
+            Goal Complete! 🎉
           </span>
         )}
 
@@ -344,7 +345,7 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
             type="button"
             disabled={isPending}
             onClick={handleTogglePause}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500/20 text-amber-700 dark:text-amber-300 hover:bg-amber-500/30 border border-amber-500/30 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500/20 text-amber-800 dark:text-amber-300 hover:bg-amber-500/30 border border-amber-500/30 transition-colors cursor-pointer"
           >
             <Play className="w-3 h-3" />
             <span>Resume</span>
@@ -353,10 +354,10 @@ export function GoalCard({ goal, onEdit, onQuickProgress }: GoalCardProps) {
       </div>
 
       {errorMsg && (
-        <div className="mt-2 text-xs text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 p-2 rounded-lg border border-rose-200 dark:border-rose-800/40">
+        <div className="mt-2 text-xs text-rose-600 dark:text-rose-400 bg-rose-500/10 p-2 rounded-lg border border-rose-500/20">
           {errorMsg}
         </div>
       )}
-    </div>
+    </Card>
   );
 }

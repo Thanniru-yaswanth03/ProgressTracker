@@ -50,7 +50,7 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {error && (
-        <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2.5">
+        <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs sm:text-sm flex items-start gap-2.5">
           <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
@@ -67,7 +67,7 @@ export function LoginForm() {
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        icon={<Mail className="w-4 h-4" />}
+        icon={<Mail className="w-4 h-4 text-[var(--muted-foreground)]" />}
         disabled={isLoading}
       />
 
@@ -81,13 +81,13 @@ export function LoginForm() {
         required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        icon={<Lock className="w-4 h-4" />}
+        icon={<Lock className="w-4 h-4 text-[var(--muted-foreground)]" />}
         disabled={isLoading}
         endAdornment={
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="text-slate-400 hover:text-slate-200 transition-colors p-1 cursor-pointer focus:outline-none"
+            className="text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors p-1 cursor-pointer focus:outline-none"
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? (
@@ -101,18 +101,18 @@ export function LoginForm() {
 
       <Button
         type="submit"
-        className="w-full mt-2"
+        className="w-full mt-2 shadow-xs"
         size="lg"
         isLoading={isLoading}
       >
         Sign In
       </Button>
 
-      <div className="text-center pt-2 text-xs text-slate-400">
+      <div className="text-center pt-2 text-xs text-[var(--muted-foreground)]">
         Don&apos;t have an account?{" "}
         <Link
           href="/register"
-          className="text-indigo-400 hover:text-indigo-300 font-semibold underline underline-offset-4"
+          className="text-[var(--primary)] hover:underline font-semibold"
         >
           Create one now
         </Link>

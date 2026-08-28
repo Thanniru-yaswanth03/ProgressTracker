@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { AlertCircle } from "lucide-react";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -28,18 +29,18 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, "-") : undefined);
 
     return (
-      <div className="w-full space-y-1.5">
+      <div className="w-full space-y-1.5 text-left">
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
+            className="block text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]"
           >
             {label}
           </label>
         )}
         <div className="relative flex items-center">
           {icon && (
-            <div className="pointer-events-none absolute left-3.5 text-slate-400 flex items-center">
+            <div className="pointer-events-none absolute left-3.5 text-[var(--muted-foreground)] flex items-center">
               {icon}
             </div>
           )}
@@ -48,39 +49,29 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             type={type}
             ref={ref}
             className={cn(
-              "w-full rounded-xl glass-input px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition-all duration-150 focus:outline-none",
+              "w-full rounded-xl bg-[var(--input)] border border-[var(--border)] px-3.5 py-2.5 text-xs sm:text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)]/60 transition-all duration-150 focus:outline-none focus:border-[var(--ring)] focus:ring-3 focus:ring-[var(--primary-soft)] hover:border-[var(--border-strong)]",
               icon && "pl-10",
               endAdornment && "pr-10",
               error
-                ? "border-red-500/80 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+                ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/20"
                 : "",
               className
             )}
             {...props}
           />
           {endAdornment && (
-            <div className="absolute right-3.5 flex items-center">
+            <div className="absolute right-3.5 flex items-center text-[var(--muted-foreground)]">
               {endAdornment}
             </div>
           )}
         </div>
         {error ? (
-          <p className="text-xs text-red-400 font-medium flex items-center gap-1 mt-1">
-            <svg
-              className="w-3.5 h-3.5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
+          <p className="text-xs text-rose-600 dark:text-rose-400 font-medium flex items-center gap-1.5 mt-1">
+            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
             <span>{error}</span>
           </p>
         ) : helperText ? (
-          <p className="text-xs text-slate-400 mt-1">{helperText}</p>
+          <p className="text-xs text-[var(--muted-foreground)] mt-1">{helperText}</p>
         ) : null}
       </div>
     );

@@ -96,42 +96,40 @@ export function HistoryView({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-indigo-500/20 bg-gradient-to-br from-indigo-950/40 via-slate-900/90 to-slate-950 p-6 sm:p-8 backdrop-blur-xl shadow-2xl">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none" />
-
+      <div className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 shadow-[var(--shadow-card)] transition-all">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
           <div>
-            <div className="flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-2">
+            <div className="flex items-center gap-2 text-[var(--primary)] text-xs font-bold uppercase tracking-wider mb-1.5">
               <Calendar className="w-4 h-4" />
               <span>Timeline & Consistency</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
               Activity History & Calendar
             </h1>
-            <p className="text-sm text-slate-400 mt-1 max-w-xl">
+            <p className="text-xs sm:text-sm text-[var(--muted-foreground)] mt-1 max-w-xl leading-relaxed">
               Inspect historical records, completed tasks, focus activities, and daily consistency scores.
             </p>
           </div>
 
           {/* Quick Stats Pill */}
           <div className="flex items-center gap-3">
-            <div className="px-4 py-2 rounded-2xl bg-slate-900/90 border border-slate-800 text-right">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+            <div className="px-4 py-2 rounded-xl bg-[var(--surface-sub)] border border-[var(--border-subtle)] text-right shadow-xs">
+              <span className="text-[10px] uppercase font-bold text-[var(--muted-foreground)] block">
                 Month Focus
               </span>
-              <span className="text-sm font-extrabold text-emerald-400">
+              <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400">
                 {Math.floor(monthData.totalFocusMinutes / 60)}h{" "}
                 {monthData.totalFocusMinutes % 60}m
               </span>
             </div>
 
-            <div className="px-4 py-2 rounded-2xl bg-slate-900/90 border border-slate-800 text-right">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+            <div className="px-4 py-2 rounded-xl bg-[var(--surface-sub)] border border-[var(--border-subtle)] text-right shadow-xs">
+              <span className="text-[10px] uppercase font-bold text-[var(--muted-foreground)] block">
                 Active Days
               </span>
-              <span className="text-sm font-extrabold text-indigo-400">
+              <span className="text-sm font-extrabold text-[var(--primary)]">
                 {monthData.activeDaysCount} days
               </span>
             </div>
@@ -140,7 +138,7 @@ export function HistoryView({
       </div>
 
       {/* Main 2-Column Responsive Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Calendar Grid on Left (5 Cols) */}
         <div className="lg:col-span-5 space-y-6">
           <CalendarGrid
