@@ -20,6 +20,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { NavigationCountsDTO } from "@/types";
 
 interface AppNavigationProps {
   user: {
@@ -27,6 +28,7 @@ interface AppNavigationProps {
     name?: string | null;
     email?: string | null;
   };
+  counts?: NavigationCountsDTO;
 }
 
 const NAV_ITEMS = [
@@ -34,53 +36,63 @@ const NAV_ITEMS = [
     label: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
-    badge: null,
   },
   {
     label: "Sections",
     href: "/sections",
     icon: Layers,
-    badge: null,
   },
   {
     label: "Tasks",
     href: "/tasks",
     icon: CheckSquare,
-    badge: null,
   },
   {
     label: "Habits",
     href: "/habits",
     icon: Flame,
-    badge: null,
   },
   {
     label: "Goals",
     href: "/goals",
     icon: Target,
-    badge: null,
   },
   {
     label: "Activities",
     href: "/activities",
     icon: Sparkles,
-    badge: null,
   },
   {
     label: "History",
     href: "/history",
     icon: Calendar,
-    badge: null,
   },
   {
     label: "Analytics",
     href: "/analytics",
     icon: BarChart3,
-    badge: null,
   },
 ];
 
-export function AppNavigation({ user }: AppNavigationProps) {
+function getBadgeCount(href: string, counts?: NavigationCountsDTO): number | undefined {
+  if (!counts) return undefined;
+  switch (href) {
+    case "/tasks":
+      return counts.tasks;
+    case "/habits":
+      return counts.habits;
+    case "/sections":
+      return counts.sections;
+    case "/goals":
+      return counts.goals;
+    case "/activities":
+      return counts.activities;
+    default:
+      return undefined;
+  }
+}
+
+export function AppNavigation({ user, counts }: AppNavigationProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
@@ -125,6 +137,8 @@ export function AppNavigation({ user }: AppNavigationProps) {
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const active = isActiveRoute(item.href);
+              const badgeCount = getBadgeCount(item.href, counts);
+              const hasBadge = typeof badgeCount === "number" && badgeCount >= 0;
 
               return (
                 <Link
@@ -137,21 +151,36 @@ export function AppNavigation({ user }: AppNavigationProps) {
                       : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]"
                   )}
                 >
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <Icon
                       className={cn(
-                        "w-4 h-4 transition-colors",
+                        "w-4 h-4 transition-colors shrink-0",
                         active
                           ? "text-[var(--primary)]"
                           : "text-[var(--muted-foreground)] group-hover:text-[var(--foreground)]"
                       )}
                     />
-                    <span>{item.label}</span>
+                    <span className="truncate">{item.label}</span>
                   </div>
 
-                  {active && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
-                  )}
+                  <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                    {hasBadge && (
+                      <span
+                        className={cn(
+                          "px-1.5 py-0.5 rounded-md text-[10px] font-bold tabular-nums transition-colors leading-none",
+                          active
+                            ? "bg-[var(--primary)]/20 text-[var(--primary)] border border-[var(--primary)]/30"
+                            : "bg-[var(--surface-sub)] text-[var(--muted-foreground)] border border-[var(--border-subtle)] group-hover:text-[var(--foreground)] group-hover:border-[var(--border)]"
+                        )}
+                      >
+                        {badgeCount}
+                      </span>
+                    )}
+
+                    {active && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] shrink-0" />
+                    )}
+                  </div>
                 </Link>
               );
             })}
@@ -225,20 +254,37 @@ export function AppNavigation({ user }: AppNavigationProps) {
               {NAV_ITEMS.map((item) => {
                 const Icon = item.icon;
                 const active = isActiveRoute(item.href);
+                const badgeCount = getBadgeCount(item.href, counts);
+                const hasBadge = typeof badgeCount === "number" && badgeCount >= 0;
 
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all",
+                      "flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all",
                       active
                         ? "bg-[var(--primary-soft)] text-[var(--primary)] border border-[var(--primary-soft-border)]"
                         : "text-[var(--muted-foreground)] hover:bg-[var(--surface-hover)] hover:text-[var(--foreground)]"
                     )}
                   >
-                    <Icon className="w-4 h-4" />
-                    <span>{item.label}</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Icon className="w-4 h-4 shrink-0" />
+                      <span className="truncate">{item.label}</span>
+                    </div>
+
+                    {hasBadge && (
+                      <span
+                        className={cn(
+                          "px-1.5 py-0.5 rounded-md text-[10px] font-bold tabular-nums shrink-0 ml-1 leading-none",
+                          active
+                            ? "bg-[var(--primary)]/20 text-[var(--primary)]"
+                            : "bg-[var(--surface-sub)] text-[var(--muted-foreground)] border border-[var(--border-subtle)]"
+                        )}
+                      >
+                        {badgeCount}
+                      </span>
+                    )}
                   </Link>
                 );
               })}

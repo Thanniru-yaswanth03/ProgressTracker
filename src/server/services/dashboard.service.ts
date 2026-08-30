@@ -5,9 +5,12 @@ import { activityService } from "@/server/services/activity.service";
 import { goalService } from "@/server/services/goal.service";
 import { formatDateKey, shiftDate } from "@/server/services/streak.service";
 import { HabitLog } from "@/models/HabitLog";
+import { Habit } from "@/models/Habit";
 import { Task } from "@/models/Task";
 import { Activity } from "@/models/Activity";
-import { DashboardDataDTO, WeeklyDayMetric } from "@/types";
+import { Section } from "@/models/Section";
+import { Goal } from "@/models/Goal";
+import { DashboardDataDTO, NavigationCountsDTO, WeeklyDayMetric } from "@/types";
 import mongoose from "mongoose";
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -167,4 +170,40 @@ export const dashboardService = {
       weeklyMetrics,
     };
   },
+
+  /**
+   * Fast aggregated navigation counts for active tasks, habits, sections, and goals.
+   * Matches live metrics shown on the dashboard command center.
+   */
+  async getNavigationCounts(userId: string): Promise<NavigationCountsDTO> {
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return { sections: 0, tasks: 0, habits: 0, goals: 0 };
+    }
+
+    await connectDB();
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const todayDate = formatDateKey(new Date());
+    const startOfToday = new Date(`${todayDate}T00:00:00.000Z`);
+
+    const [sectionsCount, tasksCount, habitsCount, goalsCount] = await Promise.all([
+      Section.countDocuments({ userId: userObjectId }),
+      Task.countDocuments({
+        userId: userObjectId,
+        $or: [
+          { status: "pending" },
+          { status: "completed", completedAt: { $gte: startOfToday } },
+        ],
+      }),
+      Habit.countDocuments({ userId: userObjectId, archived: false }),
+      Goal.countDocuments({ userId: userObjectId, status: "in_progress" }),
+    ]);
+
+    return {
+      sections: sectionsCount,
+      tasks: tasksCount,
+      habits: habitsCount,
+      goals: goalsCount,
+    };
+  },
 };
+

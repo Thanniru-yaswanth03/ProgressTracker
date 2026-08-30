@@ -22,7 +22,8 @@
 - **Global Drawer & Dashboard Widget**: Accessible anywhere across the application via a floating trigger (`Ctrl+J` / `Cmd+J`) or the live dashboard intelligence widget.
 - **Server-Side Security**: OpenRouter API key remains strictly server-side and is never exposed to the client bundle.
 
-### 📊 Daily Command Center
+### 📊 Daily Command Center & Live Navigation Shell
+- **Real-Time Sidebar Navigation Badges**: Dynamic, high-contrast numeric counters for Tasks, Habits, Sections, and Goals in the desktop sidebar and mobile drawer that stay synchronized with your Command Center data.
 - **Live Completion Gauge**: Real-time circular metric tracking your daily combined task and habit completion percentage.
 - **Dynamic Greeting & Quick Metrics**: Instant summary of today's completed tasks, habits checked in, focus minutes logged, and active habits.
 - **Weekly Rolling Activity Chart**: 7-day interactive bar visualization tracking daily tasks, habits, and focus minutes.
@@ -31,7 +32,7 @@
 ### ⚡ Task Management
 - Organized tasks with priority flags (`urgent`, `high`, `medium`, `low`), due dates, and section categorization.
 - Automatic overdue task detection with day-count calculations.
-- Instant check-off with automatic activity logging.
+- Instant check-off with optimistic UI updates and automatic activity logging.
 
 ### 🔥 Habit & Streak Engine
 - Daily and weekly scheduled habit tracking.
@@ -42,6 +43,10 @@
 - Long-term target management with custom units (e.g. `pages`, `problems`, `hours`, `%`).
 - Real-time progress percentages and days remaining countdown.
 - Status management (`in_progress`, `paused`, `completed`, `cancelled`).
+
+### 🗂️ Focus Sections & Workspace Isolation
+- Flexible customizable sections to organize tasks, habits, and goals by focus area or project.
+- Color-coded visual tags and isolated filtering across all views.
 
 ### ⏱️ Focus Time & Activity Logging
 - Track dedicated work sessions with duration in minutes and custom tag categorizations.

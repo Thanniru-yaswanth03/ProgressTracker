@@ -564,3 +564,12 @@ export interface AIQuickInsightsDTO {
   recommendation: string;
 }
 
+export interface NavigationCountsDTO {
+  sections?: number;
+  tasks?: number;
+  habits?: number;
+  goals?: number;
+  activities?: number;
+}
+
+

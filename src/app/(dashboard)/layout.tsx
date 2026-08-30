@@ -1,5 +1,6 @@
 import * as React from "react";
 import { requireUser } from "@/server/auth/session";
+import { dashboardService } from "@/server/services/dashboard.service";
 import { AppNavigation } from "@/components/navigation/AppNavigation";
 import { AiAssistantTrigger } from "@/components/features/ai/AiAssistantTrigger";
 import { Shield } from "lucide-react";
@@ -10,11 +11,12 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const user = await requireUser();
+  const counts = await dashboardService.getNavigationCounts(user.id);
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] transition-colors duration-250">
       {/* Sidebar & Navigation Shell */}
-      <AppNavigation user={user} />
+      <AppNavigation user={user} counts={counts} />
 
       {/* Main Content Area (offset by sidebar on desktop) */}
       <div className="lg:pl-64 flex flex-col flex-1 min-h-screen">
