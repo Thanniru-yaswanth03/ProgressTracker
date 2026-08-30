@@ -306,8 +306,6 @@ export const aiService = {
       );
     }
 
-    const model = process.env.OPENROUTER_MODEL || DEFAULT_MODEL;
-
     // 1. Build live user context
     const userContext = await this.buildUserProgressContext(userId);
 
@@ -368,88 +366,130 @@ You MUST respond with a valid JSON object matching this exact schema:
 
 Return ONLY raw JSON. No markdown backticks wrapping the whole JSON response if possible.`;
 
-    // 3. Format messages payload for OpenRouter
-    const chatPayload = {
-      model,
-      max_tokens: 1000,
-      messages: [
-        { role: "system", content: systemPrompt },
-        ...messages.map((m) => ({
-          role: m.role === "assistant" ? "assistant" : "user",
-          content: m.content.slice(0, 3000), // sanitize max length
-        })),
-      ],
-      temperature: 0.2,
-      response_format: { type: "json_object" },
-    };
+    const configuredModel = process.env.OPENROUTER_MODEL || DEFAULT_MODEL;
+    const candidateModels = Array.from(
+      new Set([
+        configuredModel,
+        DEFAULT_MODEL,
+        "minimax/minimax-m3:free",
+        "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+      ])
+    );
 
-    // 4. Execute server-side fetch with timeout
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 35000);
+    let lastError: unknown = null;
 
-      const response = await fetch(OPENROUTER_ENDPOINT, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "HTTP-Referer": process.env.NEXTAUTH_URL || "http://localhost:3000",
-          "X-Title": "ProgressTracker AI Assistant",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(chatPayload),
-        signal: controller.signal,
-      });
+    for (let i = 0; i < candidateModels.length; i++) {
+      const currentModel = candidateModels[i];
+      const hasFallback = i < candidateModels.length - 1;
 
-      clearTimeout(timeoutId);
+      // 3. Format messages payload for OpenRouter
+      const chatPayload = {
+        model: currentModel,
+        max_tokens: 2048,
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...messages.map((m) => ({
+            role: m.role === "assistant" ? "assistant" : "user",
+            content: m.content.slice(0, 3000), // sanitize max length
+          })),
+        ],
+        temperature: 0.2,
+        response_format: { type: "json_object" },
+      };
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("OpenRouter API error response:", response.status, errorText);
+      // 4. Execute server-side fetch with timeout
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 35000);
 
-        if (response.status === 401) {
-          throw new AppError("Invalid OpenRouter API Key. Please verify your server credentials.", 401);
-        } else if (response.status === 402) {
-          throw new AppError(
-            "OpenRouter credit limit reached or insufficient credits. Please switch to a free model (e.g. minimax/minimax-m3:free) or recharge your balance.",
-            402
-          );
-        } else if (response.status === 429) {
-          throw new AppError("OpenRouter rate limit reached. Please wait a few moments and try again.", 429);
-        } else if (response.status >= 500) {
-          throw new AppError("The AI provider is temporarily unavailable. Please try again shortly.", 503);
-        } else {
-          throw new AppError(`AI Assistant request failed (HTTP ${response.status}). Please try again.`, response.status);
+        const response = await fetch(OPENROUTER_ENDPOINT, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "HTTP-Referer": process.env.NEXTAUTH_URL || "http://localhost:3000",
+            "X-Title": "ProgressTracker AI Assistant",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(chatPayload),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`OpenRouter API error response (${currentModel}):`, response.status, errorText);
+
+          // If credit limit or rate limit and a fallback free model exists, try the next model
+          if ((response.status === 402 || response.status === 429) && hasFallback) {
+            console.warn(
+              `Model ${currentModel} returned HTTP ${response.status}. Automatically falling back to next free model: ${candidateModels[i + 1]}`
+            );
+            continue;
+          }
+
+          if (response.status === 401) {
+            throw new AppError("Invalid OpenRouter API Key. Please verify your server credentials.", 401);
+          } else if (response.status === 402) {
+            throw new AppError(
+              "OpenRouter credit limit reached or insufficient credits. Please switch to a free model (e.g. minimax/minimax-m3:free) or recharge your balance.",
+              402
+            );
+          } else if (response.status === 429) {
+            throw new AppError("OpenRouter rate limit reached. Please wait a few moments and try again.", 429);
+          } else if (response.status >= 500) {
+            if (hasFallback) {
+              continue;
+            }
+            throw new AppError("The AI provider is temporarily unavailable. Please try again shortly.", 503);
+          } else {
+            throw new AppError(`AI Assistant request failed (HTTP ${response.status}). Please try again.`, response.status);
+          }
         }
-      }
 
-      const responseJson = await response.json();
-      const rawContent = responseJson?.choices?.[0]?.message?.content;
+        const responseJson = await response.json();
+        const rawContent = responseJson?.choices?.[0]?.message?.content;
 
-      if (!rawContent) {
-        throw new AppError("Received empty response from AI model. Please try again.", 502);
-      }
+        if (!rawContent) {
+          if (hasFallback) continue;
+          throw new AppError("Received empty response from AI model. Please try again.", 502);
+        }
 
-      // 5. Parse and validate structured output
-      return this.parseStructuredAIResponse(rawContent);
-    } catch (error: unknown) {
-      if (error instanceof AppError) {
-        throw error;
+        // 5. Parse and validate structured output
+        return this.parseStructuredAIResponse(rawContent);
+      } catch (error: unknown) {
+        lastError = error;
+        if (error instanceof AppError && error.statusCode === 401) {
+          throw error;
+        }
+        if (hasFallback) {
+          console.warn(`Error invoking ${currentModel}, trying fallback model:`, error);
+          continue;
+        }
+        if (error instanceof AppError) {
+          throw error;
+        }
+        if (error instanceof Error && error.name === "AbortError") {
+          throw new AppError("AI request timed out. Please try again with a shorter request.", 504);
+        }
+        console.error("aiService.chatWithAssistant error:", error);
+        throw new AppError(
+          error instanceof Error
+            ? error.message
+            : "Failed to communicate with AI Assistant. Please check network connection.",
+          500
+        );
       }
-      if (error instanceof Error && error.name === "AbortError") {
-        throw new AppError("AI request timed out. Please try again with a shorter request.", 504);
-      }
-      console.error("aiService.chatWithAssistant error:", error);
-      throw new AppError(
-        error instanceof Error
-          ? error.message
-          : "Failed to communicate with AI Assistant. Please check network connection.",
-        500
-      );
     }
+
+    if (lastError instanceof AppError) {
+      throw lastError;
+    }
+    throw new AppError("Failed to communicate with AI Assistant after trying all available models.", 500);
   },
 
   /**
-   * Safely parses and normalizes the AI JSON response with fallback tolerance.
+   * Safely parses and normalizes the AI JSON response with multi-stage fallback and auto-repair tolerance.
    */
   parseStructuredAIResponse(rawText: string): AIResponseDTO {
     let cleanText = rawText.trim();
@@ -461,59 +501,184 @@ Return ONLY raw JSON. No markdown backticks wrapping the whole JSON response if 
       cleanText = cleanText.replace(/^```\s*/, "").replace(/\s*```$/, "");
     }
 
-    // Resilient extraction: isolate JSON if surrounded by extraneous text
-    const firstBrace = cleanText.indexOf("{");
-    const lastBrace = cleanText.lastIndexOf("}");
-    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-      cleanText = cleanText.substring(firstBrace, lastBrace + 1);
-    }
-
+    // 1. Direct JSON parse attempt
     try {
       const parsed = JSON.parse(cleanText);
-
-      const answer = typeof parsed.answer === "string" ? parsed.answer : rawText;
-      const summary = typeof parsed.summary === "string" ? parsed.summary : answer.slice(0, 140);
-
-      const rawPriorities = Array.isArray(parsed.priorities) ? parsed.priorities : [];
-      const priorities: AIPriorityItem[] = rawPriorities.map((p: Record<string, unknown>) => ({
-        taskId: typeof p.taskId === "string" ? p.taskId : undefined,
-        taskTitle: typeof p.taskTitle === "string" ? p.taskTitle : "Prioritized Action",
-        priority: ["critical", "high", "medium", "low"].includes(p.priority as string)
-          ? (p.priority as AIPriorityItem["priority"])
-          : "medium",
-        reason: typeof p.reason === "string" ? p.reason : "Recommended by AI analysis",
-        estimatedMinutes: typeof p.estimatedMinutes === "number" ? p.estimatedMinutes : undefined,
-      }));
-
-      const insights = Array.isArray(parsed.insights)
-        ? (parsed.insights as unknown[]).filter((i: unknown): i is string => typeof i === "string")
-        : [];
-      const warnings = Array.isArray(parsed.warnings)
-        ? (parsed.warnings as unknown[]).filter((w: unknown): w is string => typeof w === "string")
-        : [];
-      const suggestedActions = Array.isArray(parsed.suggestedActions)
-        ? (parsed.suggestedActions as unknown[]).filter((a: unknown): a is string => typeof a === "string")
-        : [];
-
-      return {
-        answer,
-        summary,
-        priorities,
-        insights,
-        warnings,
-        suggestedActions,
-      };
+      if (parsed && typeof parsed === "object") {
+        return this.normalizeParsedResponse(parsed as Record<string, unknown>, rawText);
+      }
     } catch {
-      // Fallback if model returned plain text instead of strict JSON
+      // Continue to auto-repair
+    }
+
+    // 2. Auto-repair for truncated JSON streams (e.g. missing closing quotes/brackets/braces)
+    try {
+      let repaired = cleanText.replace(/,\s*$/, "");
+      const quoteCount = (repaired.match(/(?<!\\)"/g) || []).length;
+      if (quoteCount % 2 !== 0) {
+        repaired += '"';
+      }
+      const openBrackets = (repaired.match(/\[/g) || []).length;
+      const closeBrackets = (repaired.match(/\]/g) || []).length;
+      for (let i = 0; i < openBrackets - closeBrackets; i++) repaired += "]";
+
+      const openBraces = (repaired.match(/\{/g) || []).length;
+      const closeBraces = (repaired.match(/\}/g) || []).length;
+      for (let i = 0; i < openBraces - closeBraces; i++) repaired += "}";
+
+      const parsed = JSON.parse(repaired);
+      if (parsed && typeof parsed === "object") {
+        return this.normalizeParsedResponse(parsed as Record<string, unknown>, rawText);
+      }
+    } catch {
+      // Continue to regex field extraction
+    }
+
+    // 3. Fallback regex field extraction
+    const answerMatch = cleanText.match(/"answer"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+    const summaryMatch = cleanText.match(/"summary"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+
+    let extractedAnswer = "";
+    if (answerMatch && answerMatch[1]) {
+      try {
+        extractedAnswer = JSON.parse(`"${answerMatch[1]}"`);
+      } catch {
+        extractedAnswer = answerMatch[1].replace(/\\n/g, "\n").replace(/\\"/g, '"');
+      }
+    }
+
+    let extractedSummary = "";
+    if (summaryMatch && summaryMatch[1]) {
+      try {
+        extractedSummary = JSON.parse(`"${summaryMatch[1]}"`);
+      } catch {
+        extractedSummary = summaryMatch[1].replace(/\\n/g, "\n").replace(/\\"/g, '"');
+      }
+    }
+
+    if (extractedAnswer) {
       return {
-        answer: rawText,
-        summary: rawText.slice(0, 140) + "...",
+        answer: extractedAnswer,
+        summary: extractedSummary || extractedAnswer.slice(0, 140),
         priorities: [],
         insights: [],
         warnings: [],
         suggestedActions: [],
       };
     }
+
+    // 4. Absolute fallback: never display raw JSON formatting to the user
+    let fallbackText = rawText;
+    if (fallbackText.startsWith("{") || fallbackText.includes('"answer":')) {
+      fallbackText = fallbackText
+        .replace(/^[{\s]*/, "")
+        .replace(/"answer"\s*:\s*"/, "")
+        .replace(/",\s*"summary"[\s\S]*$/, "")
+        .replace(/\\n/g, "\n")
+        .replace(/\\"/g, '"')
+        .trim();
+    }
+
+    return {
+      answer: fallbackText,
+      summary: fallbackText.slice(0, 140),
+      priorities: [],
+      insights: [],
+      warnings: [],
+      suggestedActions: [],
+    };
+  },
+
+  /**
+   * Helper to normalize parsed structured AI responses and guarantee clean text.
+   */
+  normalizeParsedResponse(parsed: Record<string, unknown>, rawText: string): AIResponseDTO {
+    let answer = typeof parsed.answer === "string" ? parsed.answer : rawText;
+    let summary = typeof parsed.summary === "string" ? parsed.summary : "";
+
+    // Clean nested JSON string if present
+    if (answer.startsWith("{") && answer.includes('"answer"')) {
+      try {
+        const nested = JSON.parse(answer);
+        if (nested.answer) answer = nested.answer;
+        if (nested.summary && !summary) summary = nested.summary;
+      } catch {
+        // Keep answer
+      }
+    }
+
+    if (!summary || summary.startsWith("{")) {
+      summary = answer.slice(0, 140);
+    }
+
+    const rawPriorities = Array.isArray(parsed.priorities) ? parsed.priorities : [];
+    const priorities: AIPriorityItem[] = rawPriorities
+      .filter((p: unknown): p is Record<string, unknown> => p !== null && typeof p === "object")
+      .map((p: Record<string, unknown>) => {
+        const taskTitle =
+          typeof p.taskTitle === "string"
+            ? p.taskTitle
+            : typeof p.task === "string"
+            ? p.task
+            : typeof p.title === "string"
+            ? p.title
+            : "Prioritized Action";
+
+        const rawPrio = typeof p.priority === "string" ? p.priority.toLowerCase() : "medium";
+        const priority: AIPriorityItem["priority"] = ["critical", "high", "medium", "low"].includes(rawPrio)
+          ? (rawPrio as AIPriorityItem["priority"])
+          : "medium";
+
+        const reason =
+          typeof p.reason === "string"
+            ? p.reason
+            : typeof p.description === "string"
+            ? p.description
+            : "Recommended by AI analysis";
+
+        const estimatedMinutes =
+          typeof p.estimatedMinutes === "number"
+            ? p.estimatedMinutes
+            : typeof p.minutes === "number"
+            ? p.minutes
+            : undefined;
+
+        return {
+          taskId: typeof p.taskId === "string" ? p.taskId : undefined,
+          taskTitle,
+          priority,
+          reason,
+          estimatedMinutes,
+        };
+      });
+
+    const insights = Array.isArray(parsed.insights)
+      ? (parsed.insights as unknown[]).filter((i: unknown): i is string => typeof i === "string")
+      : [];
+    const warnings = Array.isArray(parsed.warnings)
+      ? (parsed.warnings as unknown[]).filter((w: unknown): w is string => typeof w === "string")
+      : [];
+
+    const rawActions = Array.isArray(parsed.suggestedActions) ? parsed.suggestedActions : [];
+    const suggestedActions: string[] = rawActions
+      .map((a: unknown) => {
+        if (typeof a === "string") return a;
+        if (a && typeof a === "object" && "action" in a && typeof (a as { action: unknown }).action === "string") {
+          const actObj = a as { action: string; time?: string };
+          return actObj.time ? `${actObj.action} (${actObj.time})` : actObj.action;
+        }
+        return null;
+      })
+      .filter((a: string | null): a is string => typeof a === "string" && a.length > 0);
+
+    return {
+      answer,
+      summary,
+      priorities,
+      insights,
+      warnings,
+      suggestedActions,
+    };
   },
 
   /**
