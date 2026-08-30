@@ -67,7 +67,7 @@
 - **UI & Frontend**: [React 19](https://react.dev/), [Tailwind CSS v4](https://tailwindcss.com/), [Lucide Icons](https://lucide.dev/)
 - **Database**: [MongoDB Atlas](https://www.mongodb.com/atlas) with [Mongoose ODM](https://mongoosejs.com/)
 - **Authentication**: [NextAuth.js v5 (Auth.js)](https://authjs.dev/) with Credentials Provider & bcryptjs
-- **AI Intelligence**: [OpenRouter API](https://openrouter.ai/) (Configured with `google/gemini-3.7-flash`, compatible with Claude Sonnet, GPT-4o, DeepSeek)
+- **AI Intelligence**: [OpenRouter API](https://openrouter.ai/) (Configured with `minimax/minimax-m3:free`, compatible with Claude Sonnet, GPT-4o, DeepSeek)
 - **Validation**: [Zod](https://zod.dev/)
 
 ---
@@ -105,7 +105,7 @@ NEXTAUTH_URL=http://localhost:3000
 
 # OpenRouter AI Assistant
 OPENROUTER_API_KEY=sk-or-v1-your-openrouter-api-key
-OPENROUTER_MODEL=google/gemini-3.7-flash
+OPENROUTER_MODEL=minimax/minimax-m3:free
 ```
 
 ### 5. Run the Development Server
@@ -146,7 +146,7 @@ npm run build
    - `AUTH_TRUST_HOST`: `true`
    - `NEXTAUTH_URL`: Your Vercel production domain (e.g. `https://your-app.vercel.app`).
    - `OPENROUTER_API_KEY`: Your OpenRouter API key (`sk-or-v1-...`).
-   - `OPENROUTER_MODEL`: `google/gemini-3.7-flash` (or your preferred OpenRouter model).
+   - `OPENROUTER_MODEL`: `minimax/minimax-m3:free` (or your preferred OpenRouter model).
 4. **Deploy**: Click **Deploy**. Vercel will build and host your Next.js application live!
 
 ---

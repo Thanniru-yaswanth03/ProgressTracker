@@ -5,7 +5,7 @@ import { analyticsService } from "@/server/services/analytics.service";
 import { dashboardService } from "@/server/services/dashboard.service";
 import { sectionService } from "@/server/services/section.service";
 import { formatDateKey } from "@/server/services/streak.service";
-import { ValidationError } from "@/lib/errors";
+import { AppError, ValidationError } from "@/lib/errors";
 import {
   AIResponseDTO,
   AIPriorityItem,
@@ -16,7 +16,7 @@ import {
 } from "@/types";
 import mongoose from "mongoose";
 
-const DEFAULT_MODEL = "google/gemini-3.7-flash";
+const DEFAULT_MODEL = "minimax/minimax-m3:free";
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 
 interface UserAIContext {
@@ -339,12 +339,12 @@ CORE PRINCIPLES & RULES:
    - Do NOT overwhelm the user with an unrealistic workload.
 
 3. CONCISE & ACTIONABLE:
-   - Be analytical, crisp, and direct. Avoid generic productivity cliches like "remember to take deep breaths" when actual user data is waiting.
+   - Be analytical, crisp, and direct. Keep the 'answer' field focused and under 250 words (2-3 concise paragraphs or bullet points). Avoid filler, fluff, or lengthy essays.
 
 4. STRUCTURED JSON OUTPUT:
 You MUST respond with a valid JSON object matching this exact schema:
 {
-  "answer": "Comprehensive, nicely formatted markdown answer addressing the user's specific prompt.",
+  "answer": "Concise, nicely formatted markdown answer addressing the user's specific prompt (under 250 words).",
   "summary": "Crisp 1-2 sentence executive summary of the advice or analysis.",
   "priorities": [
     {
@@ -371,7 +371,7 @@ Return ONLY raw JSON. No markdown backticks wrapping the whole JSON response if 
     // 3. Format messages payload for OpenRouter
     const chatPayload = {
       model,
-      max_tokens: 2500,
+      max_tokens: 1000,
       messages: [
         { role: "system", content: systemPrompt },
         ...messages.map((m) => ({
@@ -407,11 +407,18 @@ Return ONLY raw JSON. No markdown backticks wrapping the whole JSON response if 
         console.error("OpenRouter API error response:", response.status, errorText);
 
         if (response.status === 401) {
-          throw new ValidationError("Invalid OpenRouter API Key. Please verify your server credentials.");
+          throw new AppError("Invalid OpenRouter API Key. Please verify your server credentials.", 401);
+        } else if (response.status === 402) {
+          throw new AppError(
+            "OpenRouter credit limit reached or insufficient credits. Please switch to a free model (e.g. minimax/minimax-m3:free) or recharge your balance.",
+            402
+          );
         } else if (response.status === 429) {
-          throw new ValidationError("OpenRouter rate limit reached. Please try again in a few moments.");
+          throw new AppError("OpenRouter rate limit reached. Please wait a few moments and try again.", 429);
+        } else if (response.status >= 500) {
+          throw new AppError("The AI provider is temporarily unavailable. Please try again shortly.", 503);
         } else {
-          throw new Error(`OpenRouter API returned HTTP ${response.status}: ${errorText.slice(0, 200)}`);
+          throw new AppError(`AI Assistant request failed (HTTP ${response.status}). Please try again.`, response.status);
         }
       }
 
@@ -419,23 +426,24 @@ Return ONLY raw JSON. No markdown backticks wrapping the whole JSON response if 
       const rawContent = responseJson?.choices?.[0]?.message?.content;
 
       if (!rawContent) {
-        throw new Error("Received empty response from AI model.");
+        throw new AppError("Received empty response from AI model. Please try again.", 502);
       }
 
       // 5. Parse and validate structured output
       return this.parseStructuredAIResponse(rawContent);
     } catch (error: unknown) {
-      if (error instanceof ValidationError) {
+      if (error instanceof AppError) {
         throw error;
       }
       if (error instanceof Error && error.name === "AbortError") {
-        throw new ValidationError("AI request timed out. Please try again with a shorter request.");
+        throw new AppError("AI request timed out. Please try again with a shorter request.", 504);
       }
       console.error("aiService.chatWithAssistant error:", error);
-      throw new Error(
+      throw new AppError(
         error instanceof Error
           ? error.message
-          : "Failed to communicate with AI Assistant. Please check network connection."
+          : "Failed to communicate with AI Assistant. Please check network connection.",
+        500
       );
     }
   },
@@ -451,6 +459,13 @@ Return ONLY raw JSON. No markdown backticks wrapping the whole JSON response if 
       cleanText = cleanText.replace(/^```json\s*/, "").replace(/\s*```$/, "");
     } else if (cleanText.startsWith("```")) {
       cleanText = cleanText.replace(/^```\s*/, "").replace(/\s*```$/, "");
+    }
+
+    // Resilient extraction: isolate JSON if surrounded by extraneous text
+    const firstBrace = cleanText.indexOf("{");
+    const lastBrace = cleanText.lastIndexOf("}");
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      cleanText = cleanText.substring(firstBrace, lastBrace + 1);
     }
 
     try {

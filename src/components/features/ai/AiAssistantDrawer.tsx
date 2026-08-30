@@ -60,6 +60,7 @@ export function AiAssistantDrawer({
   const [input, setInput] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [lastPrompt, setLastPrompt] = React.useState<string | null>(null);
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -98,6 +99,7 @@ export function AiAssistantDrawer({
     if (!text || isLoading) return;
 
     setError(null);
+    setLastPrompt(text);
     setInput("");
 
     const userMessage: AIChatMessage = {
@@ -325,11 +327,35 @@ export function AiAssistantDrawer({
 
           {/* Error Banner */}
           {error && (
-            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs flex items-start gap-2.5">
-              <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-bold text-rose-800 dark:text-rose-200">Error</p>
-                <p className="mt-0.5 text-rose-700 dark:text-rose-300">{error}</p>
+            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs flex items-start justify-between gap-3 animate-enter-fade">
+              <div className="flex items-start gap-2.5">
+                <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-semibold text-rose-800 dark:text-rose-200">Unable to complete request</p>
+                  <p className="mt-0.5 text-rose-700 dark:text-rose-300 leading-relaxed">{error}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 shrink-0">
+                {lastPrompt && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setError(null);
+                      handleSendMessage(lastPrompt);
+                    }}
+                    className="px-2.5 py-1 text-[11px] font-medium bg-rose-500/20 hover:bg-rose-500/30 text-rose-800 dark:text-rose-200 rounded-lg transition-colors cursor-pointer"
+                  >
+                    Retry
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setError(null)}
+                  className="p-1 text-rose-600 dark:text-rose-400 hover:text-rose-800 dark:hover:text-rose-200 rounded-md transition-colors cursor-pointer"
+                  title="Dismiss error"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
           )}

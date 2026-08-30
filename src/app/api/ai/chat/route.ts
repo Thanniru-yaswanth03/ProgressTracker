@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/server/auth/session";
 import { aiService } from "@/server/services/ai.service";
-import { ValidationError } from "@/lib/errors";
+import { AppError } from "@/lib/errors";
 import { z } from "zod";
 
 const ChatRequestSchema = z.object({
@@ -41,8 +41,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ data: aiResponse });
   } catch (error: unknown) {
-    if (error instanceof ValidationError) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    if (error instanceof AppError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
     }
 
     console.error("POST /api/ai/chat error:", error);
