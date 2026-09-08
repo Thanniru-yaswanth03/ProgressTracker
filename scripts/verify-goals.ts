@@ -136,10 +136,10 @@ async function runGoalsVerification() {
     const deletedGoal = await goalService.getGoalById(goal.id, userA.id);
     assert(deletedGoal === null, "Deleted goal no longer exists");
 
-    // Cleanup
-    await User.deleteMany({ email: /test_goal_.*@example.com/ });
-    await Section.deleteMany({});
-    await Goal.deleteMany({});
+    // Cleanup (only for test users)
+    await Section.deleteMany({ userId: { $in: [userA.id, userB.id] } });
+    await Goal.deleteMany({ userId: { $in: [userA.id, userB.id] } });
+    await User.deleteMany({ _id: { $in: [userA.id, userB.id] } });
     await conn.disconnect();
 
     console.log("\n=========================================");

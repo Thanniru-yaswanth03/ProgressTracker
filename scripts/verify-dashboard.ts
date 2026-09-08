@@ -37,14 +37,18 @@ async function runDashboardVerification() {
     const conn = await connectDB();
     assert(conn.connection.readyState === 1, "MongoDB connected successfully");
 
-    // Clean test data
-    await User.deleteMany({ email: /test_dash_.*@example.com/ });
-    await Section.deleteMany({});
-    await Task.deleteMany({});
-    await Habit.deleteMany({});
-    await HabitLog.deleteMany({});
-    await Activity.deleteMany({});
-    await Goal.deleteMany({});
+    // Clean test data (only for test users)
+    const existingTestUsers = await User.find({ email: /test_dash_.*@example.com/ });
+    const existingTestIds = existingTestUsers.map((u) => u._id);
+    if (existingTestIds.length > 0) {
+      await Section.deleteMany({ userId: { $in: existingTestIds } });
+      await Task.deleteMany({ userId: { $in: existingTestIds } });
+      await Habit.deleteMany({ userId: { $in: existingTestIds } });
+      await HabitLog.deleteMany({ userId: { $in: existingTestIds } });
+      await Activity.deleteMany({ userId: { $in: existingTestIds } });
+      await Goal.deleteMany({ userId: { $in: existingTestIds } });
+      await User.deleteMany({ _id: { $in: existingTestIds } });
+    }
 
     // 1. Setup User & Section
     console.log("\n--- 1. Setting Up Test Environment ---");
@@ -147,14 +151,14 @@ async function runDashboardVerification() {
     const yesterdayMetric = dashData.weeklyMetrics[5];
     assert(yesterdayMetric.habitsCompleted === 1, "Yesterday metric has 1 habit check-in");
 
-    // Cleanup
-    await User.deleteMany({ email: /test_dash_.*@example.com/ });
-    await Section.deleteMany({});
-    await Task.deleteMany({});
-    await Habit.deleteMany({});
-    await HabitLog.deleteMany({});
-    await Activity.deleteMany({});
-    await Goal.deleteMany({});
+    // Cleanup (only for test user)
+    await Section.deleteMany({ userId: user.id });
+    await Task.deleteMany({ userId: user.id });
+    await Habit.deleteMany({ userId: user.id });
+    await HabitLog.deleteMany({ userId: user.id });
+    await Activity.deleteMany({ userId: user.id });
+    await Goal.deleteMany({ userId: user.id });
+    await User.deleteMany({ _id: user.id });
     await conn.disconnect();
 
     console.log("\n=========================================");

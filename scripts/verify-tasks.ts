@@ -174,11 +174,11 @@ async function runTaskVerification() {
     const deletedTask = await taskService.getTaskById(task1.id, userA.id);
     assert(deletedTask === null, "Deleted task no longer exists");
 
-    // Cleanup
-    await User.deleteMany({ email: /test_task_.*@example.com/ });
-    await Section.deleteMany({});
-    await Task.deleteMany({});
-    await Activity.deleteMany({});
+    // Cleanup (only for test users)
+    await Section.deleteMany({ userId: { $in: [userA.id, userB.id] } });
+    await Task.deleteMany({ userId: { $in: [userA.id, userB.id] } });
+    await Activity.deleteMany({ userId: { $in: [userA.id, userB.id] } });
+    await User.deleteMany({ _id: { $in: [userA.id, userB.id] } });
     await conn.disconnect();
 
     console.log("\n=========================================");
