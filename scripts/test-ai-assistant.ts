@@ -1,3 +1,6 @@
+import { loadEnvConfig } from "@next/env";
+loadEnvConfig(process.cwd());
+
 import connectDB from "../src/lib/db";
 import { User } from "../src/models/User";
 import { Task } from "../src/models/Task";

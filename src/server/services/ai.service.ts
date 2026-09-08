@@ -16,7 +16,7 @@ import {
 } from "@/types";
 import mongoose from "mongoose";
 
-const DEFAULT_MODEL = "minimax/minimax-m3:free";
+const DEFAULT_MODEL = "nvidia/nemotron-3.5-lightning:free";
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 
 interface UserAIContext {
@@ -367,11 +367,17 @@ You MUST respond with a valid JSON object matching this exact schema:
 Return ONLY raw JSON. No markdown backticks wrapping the whole JSON response if possible.`;
 
     const configuredModel = process.env.OPENROUTER_MODEL || DEFAULT_MODEL;
+    // Map obsolete/retired free model slugs to the default free router
+    const normalizedConfigured =
+      configuredModel === "minimax/minimax-m3:free" ? DEFAULT_MODEL : configuredModel;
+
     const candidateModels = Array.from(
       new Set([
-        configuredModel,
+        normalizedConfigured,
         DEFAULT_MODEL,
-        "minimax/minimax-m3:free",
+        "openrouter/free",
+        "nvidia/nemotron-3.5-lightning:free",
+        "liquid/lfm-2.5-2.6b:free",
         "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
       ])
     );
@@ -418,29 +424,30 @@ Return ONLY raw JSON. No markdown backticks wrapping the whole JSON response if 
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error(`OpenRouter API error response (${currentModel}):`, response.status, errorText);
+          console.warn(`OpenRouter API error response (${currentModel}): HTTP ${response.status}`, errorText);
 
-          // If credit limit or rate limit and a fallback free model exists, try the next model
-          if ((response.status === 402 || response.status === 429) && hasFallback) {
+          if (response.status === 401) {
+            throw new AppError("Invalid OpenRouter API Key. Please verify your server credentials.", 401);
+          }
+
+          // Any non-401 error (400, 402, 404, 429, 500+) -> fallback if available
+          if (hasFallback) {
             console.warn(
-              `Model ${currentModel} returned HTTP ${response.status}. Automatically falling back to next free model: ${candidateModels[i + 1]}`
+              `Model ${currentModel} returned HTTP ${response.status}. Automatically falling back to candidate model: ${candidateModels[i + 1]}`
             );
             continue;
           }
 
-          if (response.status === 401) {
-            throw new AppError("Invalid OpenRouter API Key. Please verify your server credentials.", 401);
-          } else if (response.status === 402) {
+          if (response.status === 402) {
             throw new AppError(
-              "OpenRouter credit limit reached or insufficient credits. Please switch to a free model (e.g. minimax/minimax-m3:free) or recharge your balance.",
+              "OpenRouter credit limit reached or insufficient credits. Please switch to a free model (e.g. openrouter/free) or recharge your balance.",
               402
             );
           } else if (response.status === 429) {
             throw new AppError("OpenRouter rate limit reached. Please wait a few moments and try again.", 429);
+          } else if (response.status === 404) {
+            throw new AppError(`The configured AI model "${currentModel}" is unavailable or retired on OpenRouter.`, 404);
           } else if (response.status >= 500) {
-            if (hasFallback) {
-              continue;
-            }
             throw new AppError("The AI provider is temporarily unavailable. Please try again shortly.", 503);
           } else {
             throw new AppError(`AI Assistant request failed (HTTP ${response.status}). Please try again.`, response.status);
@@ -448,10 +455,34 @@ Return ONLY raw JSON. No markdown backticks wrapping the whole JSON response if 
         }
 
         const responseJson = await response.json();
-        const rawContent = responseJson?.choices?.[0]?.message?.content;
 
-        if (!rawContent) {
-          if (hasFallback) continue;
+        // Handle error objects returned inside HTTP 200 by OpenRouter upstream providers
+        if (responseJson?.error) {
+          const errMsg = responseJson.error.message || "Upstream provider error";
+          console.warn(`OpenRouter model ${currentModel} returned error object:`, errMsg);
+          if (hasFallback) {
+            console.warn(`Automatically falling back to candidate model: ${candidateModels[i + 1]}`);
+            continue;
+          }
+          throw new AppError(`AI Assistant provider error: ${errMsg}`, responseJson.error.code || 502);
+        }
+
+        let rawContent = responseJson?.choices?.[0]?.message?.content;
+
+        // In reasoning models or some providers, content might be empty while reasoning contains the reply
+        if (!rawContent || (typeof rawContent === "string" && rawContent.trim() === "")) {
+          const reasoning = responseJson?.choices?.[0]?.message?.reasoning;
+          if (reasoning && typeof reasoning === "string" && reasoning.trim().length > 0) {
+            rawContent = reasoning;
+          }
+        }
+
+        if (!rawContent || (typeof rawContent === "string" && rawContent.trim() === "")) {
+          console.warn(`Model ${currentModel} returned empty content.`);
+          if (hasFallback) {
+            console.warn(`Automatically falling back to candidate model: ${candidateModels[i + 1]}`);
+            continue;
+          }
           throw new AppError("Received empty response from AI model. Please try again.", 502);
         }
 
@@ -463,7 +494,7 @@ Return ONLY raw JSON. No markdown backticks wrapping the whole JSON response if 
           throw error;
         }
         if (hasFallback) {
-          console.warn(`Error invoking ${currentModel}, trying fallback model:`, error);
+          console.warn(`Error invoking ${currentModel}, trying fallback model ${candidateModels[i + 1]}:`, error);
           continue;
         }
         if (error instanceof AppError) {
@@ -494,8 +525,11 @@ Return ONLY raw JSON. No markdown backticks wrapping the whole JSON response if 
   parseStructuredAIResponse(rawText: string): AIResponseDTO {
     let cleanText = rawText.trim();
 
-    // Strip markdown codeblocks if present (e.g. ```json ... ```)
-    if (cleanText.startsWith("```json")) {
+    // Strip markdown codeblocks if present (e.g. ```json ... ``` or ``` ... ```)
+    const jsonBlockMatch = cleanText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+    if (jsonBlockMatch && jsonBlockMatch[1]) {
+      cleanText = jsonBlockMatch[1].trim();
+    } else if (cleanText.startsWith("```json")) {
       cleanText = cleanText.replace(/^```json\s*/, "").replace(/\s*```$/, "");
     } else if (cleanText.startsWith("```")) {
       cleanText = cleanText.replace(/^```\s*/, "").replace(/\s*```$/, "");
@@ -509,6 +543,21 @@ Return ONLY raw JSON. No markdown backticks wrapping the whole JSON response if 
       }
     } catch {
       // Continue to auto-repair
+    }
+
+    // Attempt parsing if there is an embedded JSON block inside curly braces
+    const firstBrace = cleanText.indexOf("{");
+    const lastBrace = cleanText.lastIndexOf("}");
+    if (firstBrace !== -1 && lastBrace > firstBrace) {
+      try {
+        const potentialJson = cleanText.slice(firstBrace, lastBrace + 1);
+        const parsed = JSON.parse(potentialJson);
+        if (parsed && typeof parsed === "object") {
+          return this.normalizeParsedResponse(parsed as Record<string, unknown>, rawText);
+        }
+      } catch {
+        // Continue to auto-repair
+      }
     }
 
     // 2. Auto-repair for truncated JSON streams (e.g. missing closing quotes/brackets/braces)
