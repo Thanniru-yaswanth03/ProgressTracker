@@ -153,13 +153,13 @@ async function testDashboardHttpFlow() {
     assert(deleteGoalRes.status === 200, "DELETE /api/goals/[id] returns 200 OK");
 
     // Cleanup
-    await User.deleteMany({ email });
-    await Section.deleteMany({});
-    await Task.deleteMany({});
-    await Habit.deleteMany({});
-    await HabitLog.deleteMany({});
-    await Activity.deleteMany({});
-    await Goal.deleteMany({});
+    await Section.deleteMany({ userId: user.id });
+    await Task.deleteMany({ userId: user.id });
+    await Habit.deleteMany({ userId: user.id });
+    await HabitLog.deleteMany({ userId: user.id });
+    await Activity.deleteMany({ userId: user.id });
+    await Goal.deleteMany({ userId: user.id });
+    await User.deleteMany({ _id: user.id });
     await conn.disconnect();
 
     console.log("\n=================================================");

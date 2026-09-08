@@ -42,3 +42,9 @@ Before completing any task, execute:
 2. `npm run lint` — Zero ESLint warnings or errors.
 3. `npm run build` — Successful Next.js production build.
 4. Validation scripts in `scripts/` (e2e tasks, habits, streak engine, dashboard).
+
+## 7. Mandatory Data Loss Prevention & Test Isolation Protocol
+- **STRICT PROHIBITION ON UNCONDITIONAL DELETES**: Under NO circumstances should any script, test, or server action call `deleteMany({})`, `deleteMany()`, `deleteOne({})`, or `findOneAndDelete({})` without an explicit, non-empty filter object.
+- **DATABASE ISOLATION FOR TESTS**: All test runs, validation scripts, and acceptance audits MUST connect to an isolated test database (e.g., `progress_tracker_test`), NEVER the live application database. `src/lib/db.ts` automatically routes test executions to `progress_tracker_test`.
+- **EPHEMERAL TENANT SCOPING**: All test fixtures, users, and entities created during a test run must have unique, identifiable test prefixes/suffixes (e.g., `@test.local`, `@acceptance.test`) and any test teardown must strictly target only those specific test user IDs (`{ userId: { $in: testUserIds } }`).
+- **NEVER TOUCH USER DATA**: Real user accounts, tasks, habits, goals, and history must never be queried, modified, or cleaned up by automated test scripts.

@@ -29,7 +29,7 @@ async function runVerification() {
     assert(conn.connection.readyState === 1, "MongoDB connected successfully");
 
     // Clean test collection
-    await User.deleteMany({});
+    await User.deleteMany({ email: { $in: ["alice@example.com", "bob@example.com"] } });
 
     // 2. Password Hashing & Verification
     console.log("\n--- Testing Password Hashing & Verification ---");
@@ -95,7 +95,7 @@ async function runVerification() {
     assert(properLookup !== null && properLookup.email === "alice@example.com", "Properly scoped query returns correct tenant data");
 
     // Cleanup
-    await User.deleteMany({});
+    await User.deleteMany({ email: { $in: ["alice@example.com", "bob@example.com"] } });
     await conn.disconnect();
 
     console.log("\n=========================================");

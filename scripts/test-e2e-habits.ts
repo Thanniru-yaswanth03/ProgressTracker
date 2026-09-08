@@ -231,11 +231,11 @@ async function testHabitsHttpFlow() {
     assert(afterDeleteGet.status === 404, "Subsequent GET /api/habits/[id] returns 404 Not Found");
 
     // Cleanup
-    await User.deleteMany({ email: { $in: [emailA, emailB] } });
-    await Section.deleteMany({});
-    await Habit.deleteMany({});
-    await HabitLog.deleteMany({});
-    await Activity.deleteMany({});
+    await Section.deleteMany({ userId: { $in: [userA.id, userB.id] } });
+    await Habit.deleteMany({ userId: { $in: [userA.id, userB.id] } });
+    await HabitLog.deleteMany({ userId: { $in: [userA.id, userB.id] } });
+    await Activity.deleteMany({ userId: { $in: [userA.id, userB.id] } });
+    await User.deleteMany({ _id: { $in: [userA.id, userB.id] } });
     await conn.disconnect();
 
     console.log("\n=================================================");

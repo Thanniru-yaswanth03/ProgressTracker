@@ -214,9 +214,9 @@ async function testActivitiesHttpFlow() {
     assert(afterDeleteGet.status === 404, "Subsequent GET /api/activities/[id] returns 404 Not Found");
 
     // Cleanup
-    await User.deleteMany({ email: { $in: [emailA, emailB] } });
-    await Section.deleteMany({});
-    await Activity.deleteMany({});
+    await Section.deleteMany({ userId: { $in: [userA.id, userB.id] } });
+    await Activity.deleteMany({ userId: { $in: [userA.id, userB.id] } });
+    await User.deleteMany({ _id: { $in: [userA.id, userB.id] } });
     await conn.disconnect();
 
     console.log("\n=================================================");

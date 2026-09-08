@@ -72,14 +72,18 @@ async function runAcceptanceAudit() {
   const userBEmail = `audit.user.b.${Date.now()}@acceptance.test`;
   const password = "Password123!";
 
-  // Cleanup past audit runs
-  await User.deleteMany({ email: { $regex: /@acceptance\.test$/i } });
-  await Section.deleteMany({});
-  await Task.deleteMany({});
-  await Activity.deleteMany({});
-  await Habit.deleteMany({});
-  await HabitLog.deleteMany({});
-  await Goal.deleteMany({});
+  // Cleanup past audit runs (only for acceptance test accounts)
+  const pastAuditUsers = await User.find({ email: { $regex: /@acceptance\.test$/i } });
+  const pastAuditIds = pastAuditUsers.map((u) => u._id);
+  if (pastAuditIds.length > 0) {
+    await Section.deleteMany({ userId: { $in: pastAuditIds } });
+    await Task.deleteMany({ userId: { $in: pastAuditIds } });
+    await Activity.deleteMany({ userId: { $in: pastAuditIds } });
+    await Habit.deleteMany({ userId: { $in: pastAuditIds } });
+    await HabitLog.deleteMany({ userId: { $in: pastAuditIds } });
+    await Goal.deleteMany({ userId: { $in: pastAuditIds } });
+    await User.deleteMany({ _id: { $in: pastAuditIds } });
+  }
 
   // -------------------------------------------------------------------------
   // 1. AUTHENTICATION FLOW
@@ -617,14 +621,18 @@ async function runAcceptanceAudit() {
   });
   assert(crossSectionGoal.status === 400, "SECURITY", "Cross-tenant section injection into Goal rejected (400 Bad Request)");
 
-  // Cleanup test users
-  await User.deleteMany({ email: { $regex: /@acceptance\.test$/i } });
-  await Section.deleteMany({});
-  await Task.deleteMany({});
-  await Activity.deleteMany({});
-  await Habit.deleteMany({});
-  await HabitLog.deleteMany({});
-  await Goal.deleteMany({});
+  // Cleanup test users (strictly scoped to acceptance test accounts)
+  const auditUsers = await User.find({ email: { $regex: /@acceptance\.test$/i } });
+  const auditIds = auditUsers.map((u) => u._id);
+  if (auditIds.length > 0) {
+    await Section.deleteMany({ userId: { $in: auditIds } });
+    await Task.deleteMany({ userId: { $in: auditIds } });
+    await Activity.deleteMany({ userId: { $in: auditIds } });
+    await Habit.deleteMany({ userId: { $in: auditIds } });
+    await HabitLog.deleteMany({ userId: { $in: auditIds } });
+    await Goal.deleteMany({ userId: { $in: auditIds } });
+    await User.deleteMany({ _id: { $in: auditIds } });
+  }
 
   // -------------------------------------------------------------------------
   // FINAL SUMMARY

@@ -31,8 +31,8 @@ async function testSectionsHttpFlow() {
     const emailB = `eobard_${Date.now()}@example.com`;
     const pass = "SpeedForce2026!";
 
-    await userService.registerUser({ name: "Barry Allen", email: emailA, password: pass });
-    await userService.registerUser({ name: "Eobard Thawne", email: emailB, password: pass });
+    const userA = await userService.registerUser({ name: "Barry Allen", email: emailA, password: pass });
+    const userB = await userService.registerUser({ name: "Eobard Thawne", email: emailB, password: pass });
 
     // 2. Authenticate User A
     const csrfRes = await fetch(`${baseUrl}/api/auth/csrf`);
@@ -201,8 +201,8 @@ async function testSectionsHttpFlow() {
     assert(afterDeleteGet.status === 404, "Subsequent GET /api/sections/[id] returns 404 Not Found");
 
     // Cleanup
-    await User.deleteMany({ email: { $in: [emailA, emailB] } });
-    await Section.deleteMany({});
+    await Section.deleteMany({ userId: { $in: [userA.id, userB.id] } });
+    await User.deleteMany({ _id: { $in: [userA.id, userB.id] } });
     await conn.disconnect();
 
     console.log("\n=================================================");
