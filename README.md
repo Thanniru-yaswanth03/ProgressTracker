@@ -66,6 +66,22 @@
 
 ---
 
+## 🛡️ Data Loss Prevention & Test Isolation Architecture
+
+ProgressTracker enforces an enterprise-grade multi-layer safeguard system to guarantee that running tests, benchmarks, or maintenance scripts **never** impacts real user data:
+
+1. **Global Mongoose Deletion Guard (`src/lib/mongooseSafetyPlugin.ts`)**:
+   - Intercepts all `deleteMany`, `deleteOne`, and `findOneAndDelete` operations globally across all Mongoose models.
+   - Rejects any query lacking filter criteria or attempting an unconditional mass wipe (e.g. `Model.deleteMany({})` or `Model.findOneAndDelete({})`), throwing a fatal runtime safeguard exception.
+2. **Automatic Database Routing & Test Isolation (`src/lib/db.ts`)**:
+   - Detects test executions and scripts (`NODE_ENV === "test"`, `IS_TEST_RUN === "true"`, or invocations through `scripts/`).
+   - Automatically reroutes database connections to an isolated test database (`progress_tracker_test`), shielding the production database (`progress_tracker`) from test fixtures.
+3. **Strict Ephemeral Tenant Scoping**:
+   - All test fixtures create uniquely suffixed test users (e.g. `@acceptance.test`, `@test.local`).
+   - All teardowns are strictly scoped by test user IDs (`{ userId: { $in: testIds } }`), ensuring zero cross-tenant contamination or accidental data removal.
+
+---
+
 ## 🛠️ Tech Stack
 
 - **Framework**: [Next.js 16 (App Router & Turbopack)](https://nextjs.org/)
